@@ -53,6 +53,7 @@
     return {
       swipeData: [
         {pic: require('./img/swipe/1.jpg')},
+
         {pic: require('./img/swipe/2.jpg')},
         {pic: require('./img/swipe/3.jpg')},
         {pic: require('./img/swipe/4.jpg')}
