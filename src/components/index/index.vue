@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-
+    <Search></Search>
     <div class="slider">
       <mt-swipe :auto="3000">
         <mt-swipe-item v-for="item in swipeData" :key="item.pic">
@@ -42,18 +42,19 @@
   import typesItem from '@/components/base/types-item/types-item'
   import shopListItem from '@/components/base/shop-list-item/shop-list-item'
   import crossLine from '@/components/base/cross-line/cross-line'
+  import Search from "@/components/base/search/search"
 
   export default {
   components: {
     typesItem,
     shopListItem,
-    crossLine
+    crossLine,
+    Search
   },
   data () {
     return {
       swipeData: [
         {pic: require('./img/swipe/1.jpg')},
-
         {pic: require('./img/swipe/2.jpg')},
         {pic: require('./img/swipe/3.jpg')},
         {pic: require('./img/swipe/4.jpg')}
