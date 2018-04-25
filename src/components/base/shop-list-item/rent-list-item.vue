@@ -1,29 +1,29 @@
 <template>
   <div class="seller-list-item" >
     <div class="left">
-      <img :src="item.pic_url">
+      <img :src="item.rentProductPicture">
     </div>
 
     <div class="content">
       <div class="name">
-        {{item.name}}
+        {{item.rentProductName}}
         <img v-if="isCollectFlag" v-on:click="collect()"class="fr" src="./collect.png"/>
         <img v-if="!isCollectFlag" v-on:click="collect()"class="fr" src="./collect2.png"/>
       </div>
 
       <div class="mid">
-        <span class="describe">{{ item.describe }}</span>
+        <span class="describe">{{ item.rentProductDescribe }}</span>
       </div>
 
       <div class="down">
-        <img class="fl" src="../../../assets/project/credit.png" width=15px height=15px>
+        <img class="fl" src="../../../assets/project/credit.png">
         <span class="credit fl" v-if="item.credit==1">信用优秀</span>
         <span class="credit fl" v-if="item.credit==2">信用极好</span>
         <span class="credit fl" v-if="item.credit==3">信用良好</span>
       </div>
 
       <div>
-        <span class="price"><b>￥{{ item.price }}</b></span>
+        <span class="price"><b>￥{{ item.rentProductPrice }}</b></span>
       </div>
     </div>
   </div>
@@ -136,6 +136,8 @@ export default {
   }
   .down img{
     background-color: #F2FCFC;
+    width: 15px;
+    height: 15px;
   }
   .describe{
     font-size: 12px;

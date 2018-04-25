@@ -3,10 +3,12 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from 'axios'
 /*引入mint-ui*/
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 
+Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 Vue.use(MintUI)
 import '@/assets/css/reset.css'

@@ -24,13 +24,13 @@
       <div class="title-bar">
         <span>精品租恁</span>
       </div>
-      <shop-list-item v-for="item in shopList" :item= "item" :key="item"></shop-list-item>
+      <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
       <div class="bottomFix"></div>
 
       <div class="title-bar">
         <span>热门出售</span>
       </div>
-      <shop-list-item v-for="item in shopList" :item= "item" :key="item"></shop-list-item>
+      <sale-list-item v-for="item in SaleData" :item= "item" :key="item"></sale-list-item>
       <div class="bottomFix"></div>
     </div>
 
@@ -40,14 +40,16 @@
 
 <script>
   import typesItem from '@/components/base/types-item/types-item'
-  import shopListItem from '@/components/base/shop-list-item/shop-list-item'
+  import rentListItem from '@/components/base/shop-list-item/rent-list-item'
+  import saleListItem from '@/components/base/shop-list-item/sale-list-item'
   import crossLine from '@/components/base/cross-line/cross-line'
   import Search from "@/components/base/search/search"
 
   export default {
   components: {
     typesItem,
-    shopListItem,
+    rentListItem,
+    saleListItem,
     crossLine,
     Search
   },
@@ -77,32 +79,8 @@
           title: '无人机'
         }
       ],
-      shopList: [
-        {
-          "id": 1000,//id
-          "credit":1,//1代表信用优秀、2代表信用极好、3代表信用良好
-          "name": " 御 Mavic Air",//商品名
-          "describe": "便携可折叠4K无人机 高清航拍",//商品描述
-          "pic_url": require("../../assets/project/UAV1.jpg"),//图片地址
-          "price": 4999,//价格
-        },
-        {
-          "id": 1001,//id
-          "credit":2,//1代表信用优秀、2代表信用极好、3代表信用良好
-          "name": " 精灵 Phantom 4 Pro",//商品名
-          "describe": "智能航拍无人机 4向避障",//商品描述
-          "pic_url": require("../../assets/project/UAV2.jpg"),//图片地址
-          "price": 3299,//价格
-        },
-        {
-          "id": 1002,//id
-          "credit":3,//1代表信用优秀、2代表信用极好、3代表信用良好
-          "name": " 晓 Spark ",//商品名
-          "describe": "掌上智能无人机 高清航拍 自拍神器",//商品描述
-          "pic_url": require("../../assets/project/UAV3.jpg"),//图片地址
-          "price": 9999,//价格
-        }
-      ]
+      RentData: [],
+      SaleData: []
     }
   },
   props: {},
@@ -110,7 +88,23 @@
   methods: {},
   filters: {},
   computed: {},
-  created () {},
+  created () {
+    var that = this;
+    this.$axios.get("http://127.0.0.1:8081/index/getRentInfo")
+      .then(function (RentResult) {
+        that.RentData = RentResult.data.data;
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
+    this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo")
+      .then(function (SaleResult) {
+        that.SaleData = SaleResult.data.data;
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  },
   mounted () {},
   destroyed () {}
 }

@@ -5,7 +5,7 @@
         <div class="title-bar">
           <span>热门出售</span>
         </div>
-        <shop-list-item v-for="item in shopList" :item= "item" :key="item"></shop-list-item>
+        <!--<shop-list-item v-for="item in shopList" :item= "item" :key="item"></shop-list-item>-->
         <div class="bottomFix"></div>
       </div>
   </div>
@@ -13,11 +13,11 @@
 
 <script>
   import Search from "@/components/base/search/search"
-  import shopListItem from '@/components/base/shop-list-item/shop-list-item'
+  // import shopListItem from '@/components/base/shop-list-item/shop-list-item'
 export default {
   components: {
-    Search,
-    shopListItem
+    Search
+    // shopListItem
   },
   data () {
     return {
