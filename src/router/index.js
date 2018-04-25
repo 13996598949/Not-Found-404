@@ -5,6 +5,7 @@ import Index from '@/components/index/index'
 import Rent from '@/components/rent/rent'
 import Sale from '@/components/sale/sale'
 import Mine from '@/components/mine/mine'
+import RentDetailInfo from '@/components/rent/rentDetailInfo'
 
 Vue.use(Router)
 
@@ -36,6 +37,10 @@ export default new Router({
     {
       path: '/mine',
       component: Mine
+    },
+    {
+      path: '/rentDetailInfo',
+      component: RentDetailInfo
     }
   ]
 })

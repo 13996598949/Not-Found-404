@@ -1,7 +1,7 @@
 <template>
   <div class="seller-list-item" >
     <div class="left">
-      <img :src="item.rentProductPicture">
+      <img :src="'http://localhost:8081/'+item.rentProductPicture">
     </div>
 
     <div class="content">
@@ -23,7 +23,7 @@
       </div>
 
       <div>
-        <span class="price"><b>￥{{ item.rentProductPrice }}</b></span>
+        <span class="price"><b>￥{{ item.rentProductPrice }}/天</b></span>
       </div>
     </div>
   </div>

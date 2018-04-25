@@ -1,6 +1,5 @@
 <template>
   <div class="index">
-    <Search></Search>
     <div class="slider">
       <mt-swipe :auto="3000">
         <mt-swipe-item v-for="item in swipeData" :key="item.pic">
@@ -24,7 +23,7 @@
       <div class="title-bar">
         <span>精品租恁</span>
       </div>
-      <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
+      <router-link to="/rentDetailInfo"><rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item></router-link>
       <div class="bottomFix"></div>
 
       <div class="title-bar">
@@ -43,15 +42,13 @@
   import rentListItem from '@/components/base/shop-list-item/rent-list-item'
   import saleListItem from '@/components/base/shop-list-item/sale-list-item'
   import crossLine from '@/components/base/cross-line/cross-line'
-  import Search from "@/components/base/search/search"
 
   export default {
   components: {
     typesItem,
     rentListItem,
     saleListItem,
-    crossLine,
-    Search
+    crossLine
   },
   data () {
     return {
