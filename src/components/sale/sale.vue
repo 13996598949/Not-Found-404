@@ -1,4 +1,5 @@
 <template>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
   <div>
       <Search></Search>
       <div class="nearby">
@@ -9,6 +10,7 @@
         <div class="bottomFix"></div>
       </div>
   </div>
+  </van-pull-refresh>
 </template>
 
 <script>
@@ -21,12 +23,28 @@ export default {
   },
   data () {
     return {
-      SaleData: []
+      SaleData: [],
+      isLoading: false
     }
   },
   props: {},
   watch: {},
-  methods: {},
+  methods: {
+    onRefresh() {
+      setTimeout(() => {
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo")
+          .then(function (SaleResult) {
+            that.SaleData = SaleResult.data.data;
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+        this.$toast('刷新成功');
+        this.isLoading = false;
+      }, 500);
+    }
+  },
   filters: {},
   computed: {},
   created () {

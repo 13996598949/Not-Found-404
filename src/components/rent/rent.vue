@@ -1,14 +1,16 @@
 <template>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
   <div>
     <Search></Search>
     <div class="nearby">
       <div class="title-bar">
         <span>精品租赁</span>
       </div>
-      <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
+        <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
       <div class="bottomFix"></div>
     </div>
   </div>
+  </van-pull-refresh>
 </template>
 
 <script>
@@ -21,12 +23,28 @@ export default {
   },
   data () {
     return {
-      RentData: []
+      RentData: [],
+      isLoading: false
     }
   },
   props: {},
   watch: {},
-  methods: {},
+  methods: {
+    onRefresh() {
+      setTimeout(() => {
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/rent/getRentAllInfo")
+          .then(function (RentResult) {
+            that.RentData = RentResult.data.data;
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+        this.$toast('刷新成功');
+        this.isLoading = false;
+      }, 500);
+    }
+  },
   filters: {},
   computed: {},
   created () {

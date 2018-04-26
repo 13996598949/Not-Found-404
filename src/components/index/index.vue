@@ -1,4 +1,5 @@
 <template>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
   <div class="index">
     <div class="slider">
       <van-swipe :autoplay="3000">
@@ -23,7 +24,7 @@
       <div class="title-bar">
         <span>精品租恁</span>
       </div>
-      <router-link to="/rentDetailInfo"><rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item></router-link>
+        <router-link to="/rentDetailInfo"><rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item></router-link>
       <div class="bottomFix"></div>
 
       <div class="title-bar">
@@ -34,7 +35,7 @@
     </div>
 
   </div>
-
+  </van-pull-refresh>
 </template>
 
 <script>
@@ -52,6 +53,7 @@
   },
   data () {
     return {
+      isLoading: false,
       swipeData: [
         {pic: require('./img/swipe/1.jpg')},
         {pic: require('./img/swipe/2.jpg')},
@@ -82,7 +84,29 @@
   },
   props: {},
   watch: {},
-  methods: {},
+  methods: {
+    onRefresh() {
+      setTimeout(() => {
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/index/getRentInfo")
+          .then(function (RentResult) {
+            that.RentData = RentResult.data.data;
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+        this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo")
+          .then(function (SaleResult) {
+            that.SaleData = SaleResult.data.data;
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+        this.$toast('刷新成功');
+        this.isLoading = false;
+      }, 500);
+    }
+  },
   filters: {},
   computed: {},
   created () {
