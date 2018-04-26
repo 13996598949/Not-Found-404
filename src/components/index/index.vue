@@ -1,11 +1,11 @@
 <template>
   <div class="index">
     <div class="slider">
-      <mt-swipe :auto="3000">
-        <mt-swipe-item v-for="item in swipeData" :key="item.pic">
+      <van-swipe :autoplay="3000">
+        <van-swipe-item v-for="item in swipeData" :key="item.pic">
           <img :src="item.pic">
-        </mt-swipe-item>
-      </mt-swipe>
+        </van-swipe-item>
+      </van-swipe>
     </div>
     <cross-line></cross-line>
     <div class="index2">

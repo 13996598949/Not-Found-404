@@ -5,7 +5,10 @@ import Index from '@/components/index/index'
 import Rent from '@/components/rent/rent'
 import Sale from '@/components/sale/sale'
 import Mine from '@/components/mine/mine'
+import Person from '@/components/mine/person'
+import ShoppingCart from '@/components/mine/shoppingCart'
 import RentDetailInfo from '@/components/rent/rentDetailInfo'
+
 
 Vue.use(Router)
 
@@ -36,7 +39,15 @@ export default new Router({
     // 我的
     {
       path: '/mine',
-      component: Mine
+      component: Mine,
+    },
+    {
+      path: '/shoppingCart',
+      component: ShoppingCart
+    },
+    {
+      path: '/person',
+      component: Person
     },
     {
       path: '/rentDetailInfo',

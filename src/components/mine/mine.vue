@@ -31,11 +31,11 @@
     <cross-line></cross-line>
 
     <div class="menu">
-      <div class="menu-item">
+      <div class="menu-item" @click="toPerson">
         <img src="./img/peopleMessage.png"/>个人中心<img class="fr" src="./img/right.png"/>
       </div>
-      <div class="menu-item">
-        <img src="./img/cart.png"/>购物车<img class="fr" src="./img/right.png"/>
+      <div class="menu-item" @click="toShoppingCart">
+        <img src="./img/cart.png">购物车<img class="fr" src="./img/right.png"/>
       </div>
       <div class="menu-item">
         <img src="./img/public.png"/>我发布的<img class="fr" src="./img/right.png"/>
@@ -63,14 +63,16 @@ export default {
   data () {
     return {}
   },
-  props: {},
-  watch: {},
-  methods: {},
-  filters: {},
-  computed: {},
-  created () {},
-  mounted () {},
-  destroyed () {}
+  created () {
+  },
+  methods: {
+    toPerson () {
+      this.$router.push({path:'/person'})
+    },
+    toShoppingCart () {
+      this.$router.push({path:'/shoppingCart'})
+    }
+  }
 }
 </script>
 
@@ -80,14 +82,11 @@ export default {
   width: 100%;
   height: 150px;
   background-color: #ABDAF2;
+  border: 1px solid transparent;
 }
   .info{
-    position: absolute;
-    top:30px;
-    bottom: 0;
-    left: 0;
-    right: 0;
     margin: auto 0;
+    margin-top: 30px;
     text-align: center;
   }
   .info img{

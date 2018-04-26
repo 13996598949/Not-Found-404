@@ -5,12 +5,12 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 /*引入mint-ui*/
-import MintUI from 'mint-ui'
-import 'mint-ui/lib/style.css'
+import Vant from 'vant'
+import 'vant/lib/vant-css/index.css';
 
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
-Vue.use(MintUI)
+Vue.use(Vant)
 import '@/assets/css/reset.css'
 new Vue({
   el: '#app',
