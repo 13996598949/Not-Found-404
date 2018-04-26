@@ -33,16 +33,27 @@
         />
       </van-dialog>
 
-      <van-cell title="性别" is-link :value=this.sex @click="sex_show = true"><van-actionsheet v-model="sex_show"  :actions="sexList" :close-on-click-overlay=closeOnClickOverlay /></van-cell>
+      <van-cell title="性别" is-link :value="sex" @click="sex_show = true"></van-cell>
+      <van-actionsheet v-model="sex_show"  :actions="sexList"/>
 
-      <van-cell title="生日" is-link value="1995-10-23" />
+      <van-cell title="生日" is-link :value="birthday" @click="birthday_show = true"/>
       <van-cell title="收货地址管理" is-link value="重庆市" />
+      <van-datetime-picker
+        v-show="birthday_show"
+        v-model="currentDate"
+        @confirm="birthdayConfirm"
+        @cancel="birthdayCancel"
+        type="date"
+        class="birthday"
+      />
+
     </van-cell-group>
   </div>
 </template>
 
 <script>
   import crossLine from '@/components/base/cross-line/cross-line'
+  import dayjs from 'dayjs'
   export default {
     components: {crossLine},
     data () {
@@ -63,18 +74,30 @@
             name: '女',
             callback: this.onSexClick
           }
-        ]
+        ],
+        birthday_show:false,
+        birthday:'',
+        currentDate: new Date()
       }
     },
     methods:{
       onSexClick(name){
         this.sex = name.name;
+        this.sex_show = false
       },
       onClickLeft(){
         this.$router.go(-1)
       },
       onRead(file) {
         console.log(file)
+      },
+      birthdayConfirm (val) {
+        let newVal = dayjs(val).format('YYYY-MM-DD')
+        this.birthday = newVal
+        this.birthday_show = false
+      },
+      birthdayCancel () {
+        this.birthday_show = false
       },
       beforeClose(action,done) {
         if (action === 'confirm') {
@@ -96,5 +119,12 @@
     line-height: 50px;
     text-align: center;
     background: white;
+  }
+  .birthday{
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 </style>
