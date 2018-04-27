@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import Home from '@/components/base/home/home'
 import Index from '@/components/index/index'
 import Rent from '@/components/rent/rent'
 import Sale from '@/components/sale/sale'
@@ -24,25 +25,48 @@ export default new Router({
     },
     // 首页
     {
-      path: '/index',
-      component: Index
+      path: '/',
+      component: Home,
+      children:[
+        {
+          path: 'index',
+          component: Index,
+        }
+      ]
     },
 
     // 出租
     {
-      path: '/rent',
-      component: Rent
+      path: '/',
+      component: Home,
+      children:[
+        {
+          path: 'rent',
+          component: Rent,
+        }
+      ]
     },
-
     // 出售
     {
-      path: '/sale',
-      component: Sale
+      path: '/',
+      component: Home,
+      children:[
+        {
+          path: 'sale',
+          component: Sale,
+        }
+      ]
     },
     // 我的
     {
-      path: '/mine',
-      component: Mine,
+      path: '/',
+      component: Home,
+      children:[
+        {
+          path: 'mine',
+          component: Mine,
+        }
+      ]
     },
     // 购物车
     {
