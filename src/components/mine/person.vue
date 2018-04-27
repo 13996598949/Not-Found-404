@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="person">
     <van-nav-bar left-arrow @click-left="onClickLeft" title="个人中心"/>
     <cross-line></cross-line>
     <van-cell-group>
@@ -37,7 +37,6 @@
       <van-actionsheet v-model="sex_show"  :actions="sexList"/>
 
       <van-cell title="生日" is-link :value="birthday" @click="birthday_show = true"/>
-      <van-cell title="收货地址管理" is-link value="重庆市" />
       <van-datetime-picker
         v-show="birthday_show"
         v-model="currentDate"
@@ -47,13 +46,20 @@
         class="birthday"
       />
 
+      <van-cell title="收货地址管理" is-link  @click="toAddressList"/>
+
     </van-cell-group>
+
+    <center><van-button class="vanButton" bottom-action @click="saveButton">保存</van-button></center>
+
   </div>
 </template>
 
 <script>
   import crossLine from '@/components/base/cross-line/cross-line'
   import dayjs from 'dayjs'
+  import { Toast } from 'vant';
+
   export default {
     components: {crossLine},
     data () {
@@ -81,6 +87,13 @@
       }
     },
     methods:{
+      toAddressList () {
+        this.$router.push({path:'/addressList'})
+      },
+      saveButton(){
+        Toast('保存成功');
+        this.onClickLeft();
+      },
       onSexClick(name){
         this.sex = name.name;
         this.sex_show = false
@@ -111,20 +124,16 @@
 </script>
 
 <style scoped>
-  .hedaer {
-    position: fixed;
-    z-index: 1;
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    background: white;
-  }
   .birthday{
     position: fixed;
     z-index: 1;
     left: 0;
     right: 0;
     bottom: 0;
+  }
+  .vanButton{
+    background-color: #44BB00;
+    width: 75%;
+    margin-top: 250px;
   }
 </style>
