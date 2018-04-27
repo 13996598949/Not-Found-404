@@ -44,11 +44,16 @@
         this.$router.go(-1)
       },
       onAdd() {
+        this.$router.push({path:'/insertAddressList'})
         Toast('新增收货地址');
       },
       onEdit(item, index) {
+        this.$router.push({path:'/editAddressList'})
         Toast('编辑收货地址:' + index);
       }
+    },
+    created(){
+      console.log("sss")
     }
   }
 </script>

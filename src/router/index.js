@@ -9,6 +9,8 @@ import Person from '@/components/mine/person'
 import ShoppingCart from '@/components/mine/shoppingCart'
 import RentDetailInfo from '@/components/rent/rentDetailInfo'
 import AddressList from '@/components/mine/addressList'
+import InsertAddressList from '@/components/mine/insertAddress'
+import EditAddressList from '@/components/mine/editAddress'
 
 
 Vue.use(Router)
@@ -59,8 +61,18 @@ export default new Router({
     },
     // 收货地址列表
     {
-      path: '/addressList ',
+      path: '/addressList',
       component: AddressList
+    },
+    // 新增收货地址
+    {
+      path: '/insertAddressList',
+      component: InsertAddressList
+    },
+    // 编辑收货地址
+    {
+      path: '/editAddressList',
+      component: EditAddressList
     }
   ]
 })
