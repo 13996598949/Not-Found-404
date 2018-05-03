@@ -1,10 +1,6 @@
 <template>
   <div>
     <div class="types-item">
-      <img src="../../index/img/types/hot.png" >
-      <span>热门</span>
-    </div>
-    <div class="types-item">
       <img src="../../index/img/types/recommend.png" >
       <span>推荐</span>
     </div>
@@ -13,8 +9,12 @@
       <span>新品</span>
     </div>
     <div class="types-item">
+      <img src="../../index/img/types/buy.png" >
+      <span>消费级</span>
+    </div>
+    <div class="types-item">
       <img src="../../index/img/types/uav.png" >
-      <span>无人机</span>
+      <span>专业级</span>
     </div>
   </div>
 </template>

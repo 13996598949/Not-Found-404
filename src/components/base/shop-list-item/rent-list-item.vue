@@ -1,12 +1,12 @@
 <template>
   <div class="seller-list-item" >
     <div class="left">
-      <img :src="'http://localhost:8081/'+item.rentProductPicture">
+      <router-link to="/rentDetailInfo"><img :src="'http://localhost:8081/'+item.rentProductPicture"></router-link>
     </div>
 
     <div class="content">
       <div class="name">
-        {{item.rentProductName}}
+        <router-link to="/rentDetailInfo" style="color: black">{{item.rentProductName}}</router-link>
         <img v-if="isCollectFlag" v-on:click="collect()"class="fr" src="./collect.png"/>
         <img v-if="!isCollectFlag" v-on:click="collect()"class="fr" src="./collect2.png"/>
       </div>

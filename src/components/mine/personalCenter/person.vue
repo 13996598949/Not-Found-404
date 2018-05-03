@@ -18,7 +18,7 @@
 
       <van-cell  title="头像" is-link>
         <van-uploader :after-read="onRead">
-          <img src="./img/header.png" width="40px" height="40px"/>
+          <img src="../img/header.png" width="40px" height="40px"/>
         </van-uploader>
       </van-cell>
 
@@ -46,6 +46,10 @@
         class="birthday"
       />
 
+      <van-cell title="修改登录密码" is-link @click="toEditLoginPassword"/>
+
+      <van-cell title="修改交易密码" is-link @click="toEditBuyPassword"/>
+
       <van-cell title="收货地址管理" is-link  @click="toAddressList"/>
 
     </van-cell-group>
@@ -57,14 +61,17 @@
 
 <script>
   import crossLine from '@/components/base/cross-line/cross-line'
+  import EditLoginPassword from '@/components/mine/personalCenter/editLoginPassword'
   import dayjs from 'dayjs'
   import { Toast } from 'vant';
 
   export default {
-    components: {crossLine},
+    components: {
+      crossLine,
+      EditLoginPassword
+    },
     data () {
       return {
-        closeOnClickOverlay: true,
         show: false,
         alias_show: false,
         sex_show: false,
@@ -87,6 +94,12 @@
       }
     },
     methods:{
+      toEditBuyPassword () {
+        this.$router.push({path:'/editBuyPassword'})
+      },
+      toEditLoginPassword () {
+        this.$router.push({path:'/editLoginPassword'})
+      },
       toAddressList () {
         this.$router.push({path:'/addressList'})
       },

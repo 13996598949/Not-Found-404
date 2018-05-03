@@ -24,7 +24,7 @@
       <div class="title-bar">
         <span>精品租恁</span>
       </div>
-        <router-link to="/rentDetailInfo"><rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item></router-link>
+        <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
       <div class="bottomFix"></div>
 
       <div class="title-bar">

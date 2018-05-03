@@ -2,29 +2,29 @@
   <div class="page">
     <div class="user-box">
       <div class="info">
-        <img src="./img/header.png"/>
-        <p>用户名</p>
+        <img src="./img/header.jpg"/>
+        <p class="username" @click="login">请登录</p>
       </div>
     </div>
 
     <cross-line></cross-line>
 
     <div class="nav">
-      <div class="nav-item">
-        <img src="./img/paying.png">
-        <p>待付款</p>
-      </div>
-      <div class="nav-item">
+        <div class="nav-item" @click="toPayingList">
+          <img src="./img/paying.png">
+          <p>待付款</p>
+        </div>
+      <div class="nav-item" @click="toDeliveryList">
         <img src="./img/sendProject.png"/>
         <p>待发货</p>
       </div>
-      <div class="nav-item">
+      <div class="nav-item" @click="toReceiptList">
         <img src="./img/rePorject.png"/>
         <p>待收货</p>
       </div>
-      <div class="nav-item">
+      <div class="nav-item" @click="toEvaluationList">
         <img src="./img/ok.png"/>
-        <p>已完成</p>
+        <p>待评价</p>
       </div>
     </div>
 
@@ -34,19 +34,19 @@
       <div class="menu-item" @click="toPerson">
         <img src="./img/peopleMessage.png"/>个人中心<img class="fr" src="./img/right.png"/>
       </div>
-      <div class="menu-item" @click="toShoppingCart">
-        <img src="./img/cart.png">购物车<img class="fr" src="./img/right.png"/>
-      </div>
-      <div class="menu-item">
+      <!--<div class="menu-item" @click="toShoppingCart">-->
+        <!--<img src="./img/cart.png">购物车<img class="fr" src="./img/right.png"/>-->
+      <!--</div>-->
+      <div class="menu-item" @click="toMyPublish">
         <img src="./img/public.png"/>我发布的<img class="fr" src="./img/right.png"/>
       </div>
-      <div class="menu-item">
+      <div class="menu-item" @click="toMySale">
         <img src="./img/sell.png"/>我卖出的<img class="fr" src="./img/right.png"/>
       </div>
-      <div class="menu-item">
+      <div class="menu-item" @click="toMyBuy">
         <img src="./img/buy.png"/>我买到的<img class="fr" src="./img/right.png"/>
       </div>
-      <div class="menu-item">
+      <div class="menu-item" @click="toMyCollection">
         <img src="./img/collect.png"/>我收藏的<img class="fr" src="./img/right.png"/>
       </div>
     </div>
@@ -56,8 +56,10 @@
 
 <script>
   import crossLine from '@/components/base/cross-line/cross-line'
+  import RouterLink from "vant/es/mixins/router-link";
 export default {
   components: {
+    RouterLink,
     crossLine
   },
   data () {
@@ -66,6 +68,33 @@ export default {
   created () {
   },
   methods: {
+    login(){
+      this.$router.push({path:'/login'})
+    },
+    toDeliveryList(){
+      this.$router.push({path:'/deliveryList'})
+    },
+    toEvaluationList(){
+      this.$router.push({path:'/evaluationList'})
+    },
+    toReceiptList(){
+      this.$router.push({path:'/receiptList'})
+    },
+    toPayingList(){
+      this.$router.push({path:'/payingList'})
+    },
+    toMyPublish () {
+      this.$router.push({path:'/myPublish'})
+    },
+    toMySale () {
+      this.$router.push({path:'/mySale'})
+    },
+    toMyBuy () {
+      this.$router.push({path:'/myBuy'})
+    },
+    toMyCollection () {
+      this.$router.push({path:'/myCollection'})
+    },
     toPerson () {
       this.$router.push({path:'/person'})
     },
@@ -77,11 +106,14 @@ export default {
 </script>
 
 <style scoped>
-
+.username{
+  font-size: 20px;
+  color: gainsboro;
+}
 .user-box{
   width: 100%;
   height: 150px;
-  background-color: #ABDAF2;
+  background-image: url("img/personBack.jpg");
   border: 1px solid transparent;
 }
   .info{
@@ -90,6 +122,7 @@ export default {
     text-align: center;
   }
   .info img{
+    border-radius: 50%;
     height: 75px;
     width: 75px;
   }
@@ -122,5 +155,13 @@ export default {
   height: 15px;
   padding-right: 5px;
 }
-
+.box{
+  display:flex;
+  align-items: center;//子元素垂直居中
+  justify-content: center;//子元素水平居中
+  padding-top: 10px;
+}
+.box img{
+  padding-left: 10px;
+}
 </style>

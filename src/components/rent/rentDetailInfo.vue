@@ -1,90 +1,135 @@
 <template>
   <div>
-    <Search></Search>
-    <div class="nearby">
-      <div class="title-bar">
-        <span>精品租赁</span>
-      </div>
-      <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
-      <div class="bottomFix"></div>
+    <div class="goods">
+      <van-nav-bar left-arrow @click-left="onClickLeft" title="商品详情"/>
+      <cross-line></cross-line>
+      <img :src="goods.picture" style="width: 100%;height: 100%;">
+
+      <van-cell-group class="goods-cell-group">
+        <van-cell>
+          <div class="goods-title">{{ goods.name }}</div>
+          <div class="goods-describe">{{ goods.describe }}</div>
+          <div class="goods-price">{{ formatPrice(goods.price) }}</div>
+        </van-cell>
+
+        <div class="box fl">
+          <img :src="goods.header" style="width: 50px;height: 50px"/>
+          <p style="padding-left: 10px">{{goods.username}}</p>
+        </div>
+      </van-cell-group>
     </div>
-  </div>
+
+    <cross-line></cross-line>
+
+    <p class="liuyan"><b>留言</b></p>
+    <van-cell-group class="goods-cell-group">
+      <van-cell>
+        <p style="padding-left: 10px">{{goods.username}}:</p>
+      </van-cell>
+    </van-cell-group>
+
+    <div class="goods">
+      <van-goods-action>
+        <van-goods-action-mini-btn icon="chat">
+          留言
+        </van-goods-action-mini-btn>
+        <van-goods-action-mini-btn :icon=icon @click="collect">
+          收藏
+        </van-goods-action-mini-btn>
+        <van-goods-action-big-btn primary>
+          立即下单
+        </van-goods-action-big-btn>
+      </van-goods-action>
+    </div>
+
+    </div>
 </template>
 
 <script>
-  import Search from "@/components/base/search/search"
-  import rentListItem from '@/components/base/shop-list-item/rent-list-item'
+  import CrossLine from "@/components/base/cross-line/cross-line"
 export default {
   components: {
-    Search,
-    rentListItem
+    CrossLine
   },
   data () {
     return {
-      RentData: []
+      icon: "like-o",
+      isCollectFlag: false,
+      goods: {
+        username: "哈哈",
+        header: require("../../components/mine/img/header.png"),
+        id: '1',
+        name: '御Mavic Pro铂金版',
+        describe: '可折叠4K航拍无人机',
+        price: 6899,
+        picture: require('../../assets/project/UAV1.jpg')
+      }
     }
   },
   props: {},
   watch: {},
-  methods: {},
+  methods: {
+    collect(){
+      this.isCollectFlag = !this.isCollectFlag
+      if (this.isCollectFlag){
+        this.icon = "like"
+      } else {
+        this.icon = "like-o"
+      }
+    },
+    onClickLeft(){
+      this.$router.go(-1)
+    },
+    formatPrice() {
+      return '¥' + (this.goods.price / 100).toFixed(2);
+    }
+  },
   filters: {},
   computed: {},
-  created () {
-    var that = this;
-    this.$axios.get("http://127.0.0.1:8081/rent/getRentAllInfo")
-      .then(function (RentResult) {
-        that.RentData = RentResult.data.data;
-      })
-      .catch(function (error) {
-        console.log(error)
-      });
-  },
+  created () {},
   mounted () {},
   destroyed () {}
 }
 </script>
 
-<style scoped>
-div {
-  height: 100%;
-}
-.nearby {
-
-}
-
-.bottomFix {
-  height: 50px;
-  background-color: transparent;
-}
-
-.title-bar {
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  font-size: 20px;
-}
-.title-bar span {
-  display: inline-block;
-  position: relative;
-  font-weight: bold;
-  color: #333;
-}
-.title-bar span:before {
-  content: '';
-  position: absolute;
-  top: 20px;
-  left: -45px;
-  width: 30px;
-  border-top: 1px solid #333;
-  transform: scaleY(0.5);
-}
-.title-bar span:after {
-  content: '';
-  position: absolute;
-  top: 20px;
-  right: -43px;
-  width: 30px;
-  border-top: 1px solid #333;
-  transform: scaleY(0.5);
+<style lang="less" scoped>
+  .liuyan{
+    padding-top: 10px;
+    padding-left: 5px;
+    font-size: 20px;
+    color: gray;
+  }
+  .box{
+    display:flex;
+    align-items: center;//子元素垂直居中
+    justify-content: center;//子元素水平居中
+    padding-top: 10px;
+  }
+  .box img{
+    padding-left: 10px;
+  }
+.goods {
+  padding-bottom: 50px;
+  &-title {
+    font-size: 16px;
+  }
+  &-describe{
+    font-size: 10px;
+    color: gray;
+  }
+  &-price {
+    color: #f44;
+  }
+  &-express {
+    color: #999;
+    font-size: 12px;
+    padding: 5px 15px;
+  }
+  &-cell-group {
+    margin: 15px 0;
+    .van-cell__value {
+      color: #999;
+    }
+  }
 }
 </style>

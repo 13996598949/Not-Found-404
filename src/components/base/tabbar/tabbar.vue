@@ -2,6 +2,20 @@
   <ul class="tab-bar">
     <router-link tag="li" to="/index"><i class="icon-index"></i><span>首页</span></router-link>
     <router-link tag="li" to="/rent"><i class="icon-rent"></i><span>租赁区</span></router-link>
+    <div style="padding-left: 15px;padding-right: 15px;" @click="show = true">
+      <i class="icon-publish"></i><span>发布</span>
+      <van-popup v-model="show" position="bottom" style="height: 150px;padding-top: 15px" >
+        <div class="rent fl" @click="toRent">
+          <img src="../../../components/base/tabbar/resource/rentLight.png"/>
+          <p>我要出租</p>
+        </div>
+
+        <div class="sale fr" @click="toSale">
+          <img src="../../../components/base/tabbar/resource/saleLight.png"/>
+          <p>我要出售</p>
+        </div>
+      </van-popup>
+    </div>
     <router-link tag="li" to="/sale"><i class="icon-sale"></i><span>销售区</span></router-link>
     <router-link tag="li" to="/mine"><i class="icon-mine"></i><span>我的</span></router-link>
   </ul>
@@ -11,11 +25,20 @@
 export default {
   components: {},
   data(){
-    return {}
+    return {
+      show: false
+    }
   },
   props: {},
   watch: {},
-  methods: {},
+  methods: {
+    toRent(){
+      this.$router.push({path:'/rentPublish'})
+    },
+    toSale(){
+      this.$router.push({path:'/salePublish'})
+    }
+  },
   filters: {},
   computed: {},
   created () {},
@@ -60,6 +83,10 @@ export default {
     background-image: url("resource/rent.png");
     background-position: 0 -25px;
   }
+  .icon-publish {
+    background-image: url("resource/publish.png");
+    background-position: 0 -25px;
+  }
   .icon-sale {
     background-image: url("resource/sale.png");
     background-position: 0 -25px;
@@ -86,5 +113,21 @@ export default {
   .router-link-active .icon-mine {
     background-image: url("resource/mineLight.png");
     background-position: 0 -100px;
+  }
+  .rent{
+    width: 50%;
+    text-align: center;
+  }
+  .rent img{
+    width: 100px;
+    height: 100px;
+  }
+  .sale{
+    width: 50%;
+    text-align: center;
+  }
+  .sale img{
+    width: 100px;
+    height: 100px;
   }
 </style>

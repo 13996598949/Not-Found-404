@@ -14,9 +14,14 @@
           :num="item.num"
           :price="formatPrice(item.price)"
           :thumb="item.thumb"
-        />
+        >
+          <div slot="footer">
+            <van-stepper v-model="value" />
+          </div>
+        </van-card>
       </van-checkbox>
     </van-checkbox-group>
+
     <van-submit-bar
       :price="totalPrice"
       :disabled="!checkedGoods.length"
