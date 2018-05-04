@@ -2,20 +2,23 @@
   <ul class="tab-bar">
     <router-link tag="li" to="/index"><i class="icon-index"></i><span>首页</span></router-link>
     <router-link tag="li" to="/rent"><i class="icon-rent"></i><span>租赁区</span></router-link>
-    <div style="padding-left: 15px;padding-right: 15px;" @click="show = true">
-      <i class="icon-publish"></i><span>发布</span>
-      <van-popup v-model="show" position="bottom" style="height: 150px;padding-top: 15px" >
-        <div class="rent fl" @click="toRent">
-          <img src="../../../components/base/tabbar/resource/rentLight.png"/>
-          <p>我要出租</p>
-        </div>
 
-        <div class="sale fr" @click="toSale">
-          <img src="../../../components/base/tabbar/resource/saleLight.png"/>
-          <p>我要出售</p>
-        </div>
-      </van-popup>
+    <div style="padding-left: 15px;padding-right: 15px;" @click="publish_show = true">
+      <i class="icon-publish"></i><span style="color: gray">发布</span>
     </div>
+    
+    <van-popup v-model="publish_show" position="bottom" style="height: 150px;padding-top: 15px" >
+      <div class="rent fl" @click="toRent">
+        <img src="../../../components/base/tabbar/resource/rentLight.png"/>
+        <p>我要出租</p>
+      </div>
+
+      <div class="sale fr" @click="toSale">
+        <img src="../../../components/base/tabbar/resource/saleLight.png"/>
+        <p>我要出售</p>
+      </div>
+    </van-popup>
+
     <router-link tag="li" to="/sale"><i class="icon-sale"></i><span>销售区</span></router-link>
     <router-link tag="li" to="/mine"><i class="icon-mine"></i><span>我的</span></router-link>
   </ul>
@@ -26,7 +29,7 @@ export default {
   components: {},
   data(){
     return {
-      show: false
+      publish_show: false,
     }
   },
   props: {},

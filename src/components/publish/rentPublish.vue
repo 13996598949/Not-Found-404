@@ -28,7 +28,7 @@
           </van-uploader>
         </van-cell>
 
-        <van-cell title="价格" is-link :value=this.price @click="price_show = true"/>
+        <van-cell title="价格" is-link :value="this.price+'/天'" @click="price_show = true"/>
         <van-dialog v-model="price_show"
                     show-cancel-button
                     :before-close="beforeClose">

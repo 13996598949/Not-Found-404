@@ -46,6 +46,28 @@
         class="birthday"
       />
 
+      <van-cell title="手机号" is-link :value=this.telephone @click="phone_show = true"/>
+      <van-dialog v-model="phone_show"
+                  show-cancel-button
+                  :before-close="beforeClose">
+        <van-field
+          v-model="telephone"
+          label="手机号"
+          placeholder="请输入手机号"
+        />
+      </van-dialog>
+
+      <van-cell title="邮箱" is-link :value=this.mail @click="mail_show = true"/>
+      <van-dialog v-model="mail_show"
+                  show-cancel-button
+                  :before-close="beforeClose">
+        <van-field
+          v-model="mail"
+          label="邮箱"
+          placeholder="请输入邮箱地址"
+        />
+      </van-dialog>
+
       <van-cell title="修改登录密码" is-link @click="toEditLoginPassword"/>
 
       <van-cell title="修改交易密码" is-link @click="toEditBuyPassword"/>
@@ -75,6 +97,10 @@
         show: false,
         alias_show: false,
         sex_show: false,
+        phone_show: false,
+        mail_show: false,
+        telephone: "",
+        mail: "",
         personame: "",
         alias: "",
         sex: "",

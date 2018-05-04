@@ -36,7 +36,7 @@
         <van-goods-action-mini-btn :icon=icon @click="collect">
           收藏
         </van-goods-action-mini-btn>
-        <van-goods-action-big-btn primary>
+        <van-goods-action-big-btn primary @click="toOrderPaying">
           立即下单
         </van-goods-action-big-btn>
       </van-goods-action>
@@ -69,6 +69,9 @@ export default {
   props: {},
   watch: {},
   methods: {
+    toOrderPaying(){
+      this.$router.push({path:'/order_buy_paying'})
+    },
     collect(){
       this.isCollectFlag = !this.isCollectFlag
       if (this.isCollectFlag){

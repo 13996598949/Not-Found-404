@@ -25,7 +25,16 @@ import evaluationList from "@/components/mine/menu/evaluationList"
 import salePublish from "@/components/publish/salePublish"
 import rentPublish from "@/components/publish/rentPublish"
 import login from "@/components/mine/login/login"
-import register from "@/components/mine/login/register"
+import order_buy_paying from "@/components/order/order_buy_paying"
+import order_buy_delivery from "@/components/order/order_buy_delivery"
+import order_buy_receive from "@/components/order/order_buy_receive"
+import order_buy_confirm from "@/components/order/order_buy_confirm"
+import order_buy_evaluate from "@/components/order/order_buy_evaluate"
+import order_sale_delivery from "@/components/order/order_sale_delivery"
+import order_sale_toDelivery from "@/components/order/order_sale_toDelivery"
+import order_sale_receive from "@/components/order/order_sale_receive"
+import order_sale_confirm from "@/components/order/order_sale_confirm"
+import order_sale_evaluate from "@/components/order/order_sale_evaluate"
 
 
 Vue.use(Router)
@@ -177,10 +186,55 @@ export default new Router({
       path: '/login',
       component: login
     },
-    // 注册
+    // 买家 订单未付款
     {
-      path: '/register',
-      component: register
+      path: '/order_buy_paying',
+      component: order_buy_paying
+    },
+    // 卖家 订单已付款，未发货
+    {
+      path: '/order_sale_delivery',
+      component: order_sale_delivery
+    },
+    // 买家 订单已付款，未发货
+    {
+      path: '/order_buy_delivery',
+      component: order_buy_delivery
+    },
+    // 买家 订单已发货，未收货
+    {
+      path: '/order_buy_receive',
+      component: order_buy_receive
+    },
+    // 买家 订单已收货，未评价
+    {
+      path: '/order_buy_confirm',
+      component: order_buy_confirm
+    },
+    // 买家 订单已评价
+    {
+      path: '/order_buy_evaluate',
+      component: order_buy_evaluate
+    },
+    // 卖家 我要发货
+    {
+      path: '/order_sale_toDelivery',
+      component: order_sale_toDelivery
+    },
+    // 卖家 已发货
+    {
+      path: '/order_sale_receive',
+      component: order_sale_receive
+    },
+    // 卖家 已收货
+    {
+      path: '/order_sale_confirm',
+      component: order_sale_confirm
+    },
+    // 卖家 评价
+    {
+      path: '/order_sale_evaluate',
+      component: order_sale_evaluate
     },
   ]
 })
