@@ -25,6 +25,7 @@ import evaluationList from "@/components/mine/menu/evaluationList"
 import salePublish from "@/components/publish/salePublish"
 import rentPublish from "@/components/publish/rentPublish"
 import login from "@/components/mine/login/login"
+import register from "@/components/mine/login/register"
 import order_buy_paying from "@/components/order/order_buy_paying"
 import order_buy_delivery from "@/components/order/order_buy_delivery"
 import order_buy_receive from "@/components/order/order_buy_receive"
@@ -185,6 +186,11 @@ export default new Router({
     {
       path: '/login',
       component: login
+    },
+    // 注册
+    {
+      path: '/register',
+      component: register
     },
     // 买家 订单未付款
     {
