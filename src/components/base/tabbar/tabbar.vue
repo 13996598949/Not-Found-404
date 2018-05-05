@@ -3,10 +3,10 @@
     <router-link tag="li" to="/index"><i class="icon-index"></i><span>首页</span></router-link>
     <router-link tag="li" to="/rent"><i class="icon-rent"></i><span>租赁区</span></router-link>
 
-    <div style="padding-left: 15px;padding-right: 15px;" @click="publish_show = true">
+    <div style="padding-left: 15px;padding-right: 15px;" @click="toPublish">
       <i class="icon-publish"></i><span style="color: gray">发布</span>
     </div>
-    
+
     <van-popup v-model="publish_show" position="bottom" style="height: 150px;padding-top: 15px" >
       <div class="rent fl" @click="toRent">
         <img src="../../../components/base/tabbar/resource/rentLight.png"/>
@@ -30,11 +30,19 @@ export default {
   data(){
     return {
       publish_show: false,
+      userInfo:{}
     }
   },
   props: {},
   watch: {},
   methods: {
+    toPublish(){
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      } else {
+        this.publish_show = true;
+      }
+    },
     toRent(){
       this.$router.push({path:'/rentPublish'})
     },
@@ -44,7 +52,11 @@ export default {
   },
   filters: {},
   computed: {},
-  created () {},
+  created () {
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
+  },
   mounted () {},
   destroyed () {}
 }

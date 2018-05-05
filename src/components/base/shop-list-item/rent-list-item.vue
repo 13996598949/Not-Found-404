@@ -1,7 +1,7 @@
 <template>
   <div class="seller-list-item" >
     <div class="left">
-      <router-link to="/rentDetailInfo"><img :src="'http://localhost:8081/'+item.rentProductPicture"></router-link>
+      <router-link to="/rentDetailInfo"><img :src="'http://127.0.0.1:8081/'+item.rentProductPicture"></router-link>
     </div>
 
     <div class="content">

@@ -39,8 +39,11 @@
         var that = this;
         this.$axios.post("http://127.0.0.1:8081/user/register",this.userDto)
           .then(function (registerResult) {
-            console.log(registerResult.data)
-            that.$router.push({path:'/login'})
+            if (registerResult.data.status==false){
+              alert(registerResult.data.message);
+            } else {
+              that.$router.push({path:'/login'})
+            }
           })
           .catch(function (error) {
             console.log(error)

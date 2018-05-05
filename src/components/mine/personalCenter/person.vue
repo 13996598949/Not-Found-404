@@ -4,10 +4,10 @@
     <cross-line></cross-line>
     <van-cell-group>
 
-      <van-cell title="昵称" is-link :value=this.alias @click="alias_show = true"/>
+      <van-cell title="昵称" is-link v-model="this.userInfo.alias" @click="alias_show = true"/>
       <van-dialog v-model="alias_show"
                   show-cancel-button
-                  :before-close="beforeClose">
+                  :before-close="alias_beforeClose">
         <van-field
           v-model="alias"
           label="昵称"
@@ -16,40 +16,42 @@
       </van-dialog>
 
 
-      <van-cell  title="头像" is-link>
-        <van-uploader :after-read="onRead">
-          <img src="../img/header.png" width="40px" height="40px"/>
-        </van-uploader>
-      </van-cell>
+      <!--<van-cell  title="头像" is-link>-->
+        <!--<van-uploader :after-read="onRead" multiple>-->
+          <!--<img id="header" :src="'http://127.0.0.1:8081/'+this.userInfo.header" width="40px" height="40px"/>-->
+        <!--</van-uploader>-->
+      <!--</van-cell>-->
 
-      <van-cell title="真实姓名" is-link :value=this.personame @click="show = true"/>
+      <van-cell title="真实姓名" is-link v-model=this.userInfo.personName @click="show = true"/>
       <van-dialog v-model="show"
                   show-cancel-button
-                  :before-close="beforeClose">
+                  :before-close="personName_beforeClose">
         <van-field
-          v-model="personame"
+          v-model="personName"
           label="真实姓名"
           placeholder="请输入真实姓名"
         />
       </van-dialog>
 
-      <van-cell title="性别" is-link :value="sex" @click="sex_show = true"></van-cell>
+      <van-cell title="性别" is-link v-model="this.userInfo.sex" @click="sex_show = true"></van-cell>
       <van-actionsheet v-model="sex_show"  :actions="sexList"/>
 
-      <van-cell title="生日" is-link :value="birthday" @click="birthday_show = true"/>
-      <van-datetime-picker
-        v-show="birthday_show"
-        v-model="currentDate"
-        @confirm="birthdayConfirm"
-        @cancel="birthdayCancel"
-        type="date"
-        class="birthday"
-      />
+      <van-cell title="生日" is-link v-model="this.userInfo.birthdayStr" @click="birthday_show = true"/>
+      <van-popup v-model="birthday_show" position="bottom">
+        <van-datetime-picker
+          v-show="birthday_show"
+          v-model="birthday"
+          @confirm="birthdayConfirm"
+          @cancel="birthdayCancel"
+          type="date"
+          class="birthday"
+        />
+      </van-popup>
 
-      <van-cell title="手机号" is-link :value=this.telephone @click="phone_show = true"/>
+      <van-cell title="手机号" is-link v-model="this.userInfo.telephone" @click="phone_show = true"/>
       <van-dialog v-model="phone_show"
                   show-cancel-button
-                  :before-close="beforeClose">
+                  :before-close="tel_beforeClose">
         <van-field
           v-model="telephone"
           label="手机号"
@@ -57,10 +59,10 @@
         />
       </van-dialog>
 
-      <van-cell title="邮箱" is-link :value=this.mail @click="mail_show = true"/>
+      <van-cell title="邮箱" is-link v-model="this.userInfo.mail" @click="mail_show = true"/>
       <van-dialog v-model="mail_show"
                   show-cancel-button
-                  :before-close="beforeClose">
+                  :before-close="mail_beforeClose">
         <van-field
           v-model="mail"
           label="邮箱"
@@ -76,7 +78,11 @@
 
     </van-cell-group>
 
-    <center><van-button class="vanButton" bottom-action @click="saveButton">保存</van-button></center>
+
+    <van-row gutter="1">
+      <center><van-col span="12"><van-button class="vanCloseButton" bottom-action @click="cancelLogin">退出登录</van-button></van-col></center>
+      <center><van-col span="12"><van-button class="vanButton" bottom-action @click="saveButton">保存</van-button></van-col></center>
+    </van-row>
 
   </div>
 </template>
@@ -99,11 +105,6 @@
         sex_show: false,
         phone_show: false,
         mail_show: false,
-        telephone: "",
-        mail: "",
-        personame: "",
-        alias: "",
-        sex: "",
         sexList: [
           {
             name: '男',
@@ -115,11 +116,22 @@
           }
         ],
         birthday_show:false,
-        birthday:'',
-        currentDate: new Date()
+        currentDate: new Date(),
+        userInfo:{},
+        result:"",
+        alias:"",
+        personName:"",
+        birthday:"",
+        telephone:"",
+        mail:"",
       }
     },
     methods:{
+      cancelLogin(){
+        var storage = window.sessionStorage;
+        storage.clear();
+        this.$router.push({path:'/mine'})
+      },
       toEditBuyPassword () {
         this.$router.push({path:'/editBuyPassword'})
       },
@@ -130,39 +142,87 @@
         this.$router.push({path:'/addressList'})
       },
       saveButton(){
-        Toast('保存成功');
-        this.onClickLeft();
+        var that = this;
+        this.$axios.put("http://127.0.0.1:8081/user/editPersonInfo",this.userInfo)
+          .then(function (result) {
+            that.result = result.data.data;
+            if (that.result != null) {
+              Toast('保存成功');
+              var storage = window.sessionStorage;
+              var userInfo = JSON.stringify(that.result);
+              storage.setItem("session",userInfo);
+              that.$router.push({path:'/mine'})
+            }else {
+              Toast('保存失败');
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       },
       onSexClick(name){
-        this.sex = name.name;
+        this.userInfo.sex = name.name;
         this.sex_show = false
       },
       onClickLeft(){
         this.$router.go(-1)
       },
-      onRead(file) {
-        console.log(file)
-      },
+
       birthdayConfirm (val) {
-        let newVal = dayjs(val).format('YYYY-MM-DD')
-        this.birthday = newVal
+        let newVal = dayjs(val).format('yyyy-MM-dd')
+        this.userInfo.birthdayStr = newVal
         this.birthday_show = false
       },
       birthdayCancel () {
         this.birthday_show = false
       },
-      beforeClose(action,done) {
+      alias_beforeClose(action,done) {
         if (action === 'confirm') {
+          this.userInfo.alias = this.alias
+          setTimeout(done, 1000);
+        } else {
+          done();
+        }
+      },
+      personName_beforeClose(action,done){
+        if (action === 'confirm') {
+          this.userInfo.personName = this.personName
+          setTimeout(done, 1000);
+        } else {
+          done();
+        }
+      },
+      tel_beforeClose(action,done){
+        if (action === 'confirm') {
+          this.userInfo.telephone = this.telephone
+          setTimeout(done, 1000);
+        } else {
+          done();
+        }
+      },
+      mail_beforeClose(action,done){
+        if (action === 'confirm') {
+          this.userInfo.mail = this.mail
           setTimeout(done, 1000);
         } else {
           done();
         }
       }
+    },
+    created(){
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+      this.userInfo = userInfo;
     }
   }
 </script>
 
 <style scoped>
+  .vanCloseButton{
+    background-color: slategray;
+    width: 80%;
+    margin-top: 20px;
+  }
   .birthday{
     position: fixed;
     z-index: 1;
@@ -173,6 +233,6 @@
   .vanButton{
     background-color: #44BB00;
     width: 75%;
-    margin-top: 250px;
+    margin-top: 20px;
   }
 </style>

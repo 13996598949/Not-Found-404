@@ -120,9 +120,5 @@ export default {
   width: 80%;
   margin-top: 25px;
 }
-.vanCloseButton{
-  background-color: slategray;
-  width: 80%;
-  margin-top: 25px;
-}
+
 </style>

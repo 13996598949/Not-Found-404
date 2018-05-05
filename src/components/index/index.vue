@@ -79,7 +79,8 @@
         }
       ],
       RentData: [],
-      SaleData: []
+      SaleData: [],
+      userInfo:{}
     }
   },
   props: {},
@@ -110,6 +111,10 @@
   filters: {},
   computed: {},
   created () {
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
+
     var that = this;
     this.$axios.get("http://127.0.0.1:8081/index/getRentInfo")
       .then(function (RentResult) {

@@ -14,6 +14,7 @@
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
   export default {
     components: {
       CrossLine
@@ -23,15 +24,23 @@
         userLoginDto:{
           userName:'',
           loginPassword:""
-        }
+        },
       }
     },
     methods:{
       toLogin(){
+        var storage = window.sessionStorage;
         var that = this;
         this.$axios.put("http://127.0.0.1:8081/user/login",this.userLoginDto)
           .then(function (loginResult) {
-            that.$router.push({path:'/'})
+            if (loginResult.data.status==false){
+              Toast(loginResult.data.message);
+            } else {
+              var userInfo = JSON.stringify(loginResult.data.data);
+              storage.setItem("session",userInfo);
+              that.$router.push({path:'/mine'});
+              Toast("登录成功");
+            }
           })
           .catch(function (error) {
             console.log(error)

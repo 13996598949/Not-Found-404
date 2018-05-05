@@ -2,8 +2,12 @@
   <div class="page">
     <div class="user-box">
       <div class="info">
-        <img src="./img/header.jpg"/>
-        <p class="username" @click="login">请登录</p>
+        <img v-if="this.userInfo == null" src="./img/default_header.jpg"/>
+        <van-uploader :after-read="onRead" multiple>
+          <img v-if="this.userInfo != null" id="header" :src="'http://127.0.0.1:8081/'+this.userInfo.header" width="40px" height="40px"/>
+        </van-uploader>
+        <p v-if="this.userInfo == null" class="username" @click="login">点击登录</p>
+        <p v-if="this.userInfo != null" class="username">{{this.userInfo.userName}}</p>
       </div>
     </div>
 
@@ -34,9 +38,6 @@
       <div class="menu-item" @click="toPerson">
         <img src="./img/peopleMessage.png"/>个人中心<img class="fr" src="./img/right.png"/>
       </div>
-      <!--<div class="menu-item" @click="toShoppingCart">-->
-        <!--<img src="./img/cart.png">购物车<img class="fr" src="./img/right.png"/>-->
-      <!--</div>-->
       <div class="menu-item" @click="toMyPublish">
         <img src="./img/public.png"/>我发布的<img class="fr" src="./img/right.png"/>
       </div>
@@ -57,49 +58,118 @@
 <script>
   import crossLine from '@/components/base/cross-line/cross-line'
   import RouterLink from "vant/es/mixins/router-link";
+  import { Toast } from 'vant';
 export default {
   components: {
     RouterLink,
     crossLine
   },
   data () {
-    return {}
+    return {
+      userInfo:{},
+      header:""
+    }
   },
   created () {
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
   },
   methods: {
+    onRead(file) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var img = document.getElementById("header");
+        img.src = e.target.result;
+      }
+      reader.readAsDataURL(file.file);
+      this.header = file.file;
+
+      var that = this;
+      let form = new FormData();
+      form.append("multipartFile",this.header);
+      this.$axios.put("http://127.0.0.1:8081/user/editHeader/"+this.userInfo.id,form,{headers:{'Content-Type':'multipart/form-data'}})
+        .then(function (result) {
+          that.result = result.data.data;
+          if (that.result != null) {
+            Toast('保存成功');
+            var storage = window.sessionStorage;
+            var userInfo = JSON.stringify(that.result);
+            storage.setItem("session",userInfo);
+            that.$router.push({path:'/mine'})
+          }else {
+            Toast('保存失败');
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    },
     login(){
       this.$router.push({path:'/login'})
     },
     toDeliveryList(){
-      this.$router.push({path:'/deliveryList'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/deliveryList'})
+      }
     },
     toEvaluationList(){
-      this.$router.push({path:'/evaluationList'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/evaluationList'})
+      }
     },
     toReceiptList(){
-      this.$router.push({path:'/receiptList'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/receiptList'})
+      }
     },
     toPayingList(){
-      this.$router.push({path:'/payingList'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/payingList'})
+      }
     },
     toMyPublish () {
-      this.$router.push({path:'/myPublish'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/myPublish'})
+      }
     },
     toMySale () {
-      this.$router.push({path:'/mySale'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/mySale'})
+      }
     },
     toMyBuy () {
-      this.$router.push({path:'/myBuy'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/myBuy'})
+      }
     },
     toMyCollection () {
-      this.$router.push({path:'/myCollection'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/myCollection'})
+      }
     },
     toPerson () {
-      this.$router.push({path:'/person'})
-    },
-    toShoppingCart () {
-      this.$router.push({path:'/shoppingCart'})
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+      }else {
+        this.$router.push({path: '/person'})
+      }
     }
   }
 }
@@ -121,6 +191,9 @@ export default {
     margin-top: 30px;
     text-align: center;
   }
+.info p{
+  margin-top: 8px;
+}
   .info img{
     border-radius: 50%;
     height: 75px;
