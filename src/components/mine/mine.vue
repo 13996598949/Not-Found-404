@@ -91,14 +91,14 @@ export default {
       this.$axios.put("http://127.0.0.1:8081/user/editHeader/"+this.userInfo.id,form,{headers:{'Content-Type':'multipart/form-data'}})
         .then(function (result) {
           that.result = result.data.data;
-          if (that.result != null) {
+          if (result.data.status != false) {
             Toast('保存成功');
             var storage = window.sessionStorage;
             var userInfo = JSON.stringify(that.result);
             storage.setItem("session",userInfo);
             that.$router.push({path:'/mine'})
           }else {
-            Toast('保存失败');
+            Toast(result.data.message);
           }
         })
         .catch(function (error) {

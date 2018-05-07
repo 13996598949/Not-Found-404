@@ -5,7 +5,6 @@
     <cross-line></cross-line>
 
     <van-address-list
-      v-model="chosenAddressId"
       :list="list"
       @add="onAdd"
       @edit="onEdit"
@@ -22,38 +21,54 @@
     components: {crossLine},
     data () {
       return {
-        chosenAddressId: '1',
-        list: [
-          {
-            id: '1',
-            name: '张三',
-            tel: '13000000000',
-            address: '浙江省杭州市西湖区文三路 138 号东方通信大厦 7 楼 501 室'
-          },
-          {
-            id: '2',
-            name: '李四',
-            tel: '1310000000',
-            address: '浙江省杭州市拱墅区莫干山路 50 号'
-          }
-        ]
+        list: [],
+        addressList:{}
       }
     },
     methods:{
       onClickLeft(){
-        this.$router.go(-1)
+        this.$router.push({path:'/person'})
       },
       onAdd() {
         this.$router.push({path:'/insertAddressList'})
-        Toast('新增收货地址');
       },
       onEdit(item, index) {
-        this.$router.push({path:'/editAddressList'})
-        Toast('编辑收货地址:' + index);
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/user/getAddressById/"+item.id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.addressList = result.data.data;
+              that.$router.push({
+                path:'editAddressList',
+                query: {
+                  data: that.addressList
+                }
+              })
+            }else {
+              Toast(result.data.message);
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       }
     },
     created(){
-      console.log("sss")
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/user/getAddressList/"+userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.list = result.data.data
+          }else {
+            Toast(result.data.message);
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
     }
   }
 </script>

@@ -9,6 +9,7 @@ import Mine from '@/components/mine/mine'
 import Person from '@/components/mine/personalCenter/person'
 import ShoppingCart from '@/components/mine/shoppingCart'
 import RentDetailInfo from '@/components/rent/rentDetailInfo'
+import SaleDetailInfo from '@/components/sale/saleDetailInfo'
 import AddressList from '@/components/mine/personalCenter/addressList'
 import InsertAddressList from '@/components/mine/personalCenter/insertAddress'
 import EditAddressList from '@/components/mine/personalCenter/editAddress'
@@ -106,6 +107,11 @@ export default new Router({
     {
       path: '/rentDetailInfo',
       component: RentDetailInfo
+    },
+    // 出租详情页
+    {
+      path: '/saleDetailInfo',
+      component: SaleDetailInfo
     },
     // 收货地址列表
     {

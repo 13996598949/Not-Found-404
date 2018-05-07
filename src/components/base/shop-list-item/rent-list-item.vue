@@ -1,12 +1,12 @@
 <template>
   <div class="seller-list-item" >
-    <div class="left">
-      <router-link to="/rentDetailInfo"><img :src="'http://127.0.0.1:8081/'+item.rentProductPicture"></router-link>
+    <div class="left" @click="toRentDetail">
+      <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
     </div>
 
     <div class="content">
       <div class="name">
-        <router-link to="/rentDetailInfo" style="color: black">{{item.rentProductName}}</router-link>
+        <span class="fl" @click="toRentDetail">{{item.rentProductName}}</span>
         <img v-if="isCollectFlag" v-on:click="collect()"class="fr" src="./collect.png"/>
         <img v-if="!isCollectFlag" v-on:click="collect()"class="fr" src="./collect2.png"/>
       </div>
@@ -48,6 +48,14 @@ export default {
   },
   watch: {},
   methods: {
+    toRentDetail(){
+      this.$router.push({
+        path:'rentDetailInfo',
+        query: {
+          data: this.item.id
+        }
+      })
+    },
     collect (){
       this.isCollectFlag=!this.isCollectFlag
     }
@@ -106,11 +114,15 @@ export default {
     padding: 0 15px 0 10px;
   }
   .content .name {
+     font-size: 17px;
+     color: #333;
+     overflow: hidden;
+     font-weight: bold;
+     overflow: hidden;
+   }
+  .content .name span{
     font-size: 17px;
-    color: #333;
-    overflow: hidden;
     font-weight: bold;
-    overflow: hidden;
   }
 
   .content .mid {

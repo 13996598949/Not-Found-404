@@ -3,18 +3,18 @@
     <div class="goods">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="商品详情"/>
       <cross-line></cross-line>
-      <img :src="'http://127.0.0.1:8081/'+this.RentData.rentProductPicture" style="width: 100%;height: 100%;">
+      <img :src="goods.picture" style="width: 100%;height: 100%;">
 
       <van-cell-group class="goods-cell-group">
         <van-cell>
-          <div class="goods-title">{{ this.RentData.rentProductName }}</div>
-          <div class="goods-describe">{{ this.RentData.rentProductDescribe }}</div>
-          <div class="goods-price">{{ formatPrice(this.RentData.rentProductPrice) }}/天</div>
+          <div class="goods-title">{{ goods.name }}</div>
+          <div class="goods-describe">{{ goods.describe }}</div>
+          <div class="goods-price">{{ formatPrice(goods.price) }}</div>
         </van-cell>
 
         <div class="box fl">
-          <img :src="'http://127.0.0.1:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
-          <p style="padding-left: 10px">{{this.RentData.alias}}</p>
+          <img :src="goods.header" style="width: 50px;height: 50px"/>
+          <p style="padding-left: 10px">{{goods.username}}</p>
         </div>
       </van-cell-group>
     </div>
@@ -24,7 +24,7 @@
     <p class="liuyan"><b>留言</b></p>
     <van-cell-group class="goods-cell-group">
       <van-cell>
-        <p style="padding-left: 10px">{{this.RentData.alias}}:</p>
+        <p style="padding-left: 10px">{{goods.username}}:</p>
       </van-cell>
     </van-cell-group>
 
@@ -55,9 +55,19 @@ export default {
     return {
       icon: "like-o",
       isCollectFlag: false,
-      RentData:{}
+      goods: {
+        username: "哈哈",
+        header: require("../../components/mine/img/header.png"),
+        id: '1',
+        name: '御Mavic Pro铂金版',
+        describe: '可折叠4K航拍无人机',
+        price: 6899,
+        picture: require('../../assets/project/UAV1.jpg')
+      }
     }
   },
+  props: {},
+  watch: {},
   methods: {
     toOrderPaying(){
       this.$router.push({path:'/order_buy_paying'})
@@ -74,21 +84,14 @@ export default {
       this.$router.go(-1)
     },
     formatPrice() {
-      return '¥' + (this.RentData.rentProductPrice).toFixed(2);
+      return '¥' + (this.goods.price / 100).toFixed(2);
     }
   },
-  created () {
-    // 取到路由带过来的参数
-    let routerParams = this.$route.query.data;
-    var that = this;
-    this.$axios.get("http://127.0.0.1:8081/rent/getRentDetailInfo/"+routerParams)
-      .then(function (RentResult) {
-        that.RentData = RentResult.data.data;
-      })
-      .catch(function (error) {
-        console.log(error)
-      });
-  },
+  filters: {},
+  computed: {},
+  created () {},
+  mounted () {},
+  destroyed () {}
 }
 </script>
 

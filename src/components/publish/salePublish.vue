@@ -24,28 +24,28 @@
         <van-cell class="upload">
           <p>上传图片</p>
           <van-uploader :after-read="onRead">
-            <img src="../../components/publish/img/uploadPicture.png" width="40px" height="40px"/>
+            <img id="picture" src="../../components/publish/img/uploadPicture.png" width="40px" height="40px"/>
           </van-uploader>
         </van-cell>
 
-        <van-cell title="价格" is-link :value=this.price @click="price_show = true"/>
+        <van-cell title="价格" is-link :value="this.price" @click="price_show = true"/>
         <van-dialog v-model="price_show"
                     show-cancel-button
-                    :before-close="beforeClose">
+                    :before-close="price_beforeClose">
           <van-field
             v-model="price"
             label="价格"
             placeholder="请输入价格"
-          />
+          >
+          </van-field>
         </van-dialog>
-
 
 
         <van-cell title="分类" is-link v-if="this.type==0" value="消费级" @click="type_show = true"/>
         <van-cell title="分类" is-link v-if="this.type==1" value="专业级" @click="type_show = true"/>
         <van-dialog v-model="type_show"
                     show-cancel-button
-                    :before-close="beforeClose">
+                    :before-close="type_beforeClose">
           <van-radio-group v-model="type">
             <van-radio name="0">消费级</van-radio>
             <van-radio name="1">专业级</van-radio>
@@ -59,57 +59,109 @@
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
-export default {
-  components: {
-    CrossLine
-  },
-  data () {
-    return {
-      title: "",
-      desc: "",
-      price_show: false,
-      type_show: false,
-      price: "",
-      type: "0"
-    }
-  },
-  methods: {
-    saveButton(){
-      this.onClickLeft();
+  import { Toast } from 'vant';
+  export default {
+    components: {
+      CrossLine
     },
-    beforeClose(action,done) {
-      if (action === 'confirm') {
-        setTimeout(done, 1000);
-      } else {
-        done();
+    data () {
+      return {
+        title: "",
+        desc: "",
+        price_show: false,
+        type_show: false,
+        price: "",
+        picture:"",
+        type: "0",
+        userInfo:{},
+        saleProductDto:{}
       }
     },
-    onClickLeft(){
-      this.$router.go(-1)
+    methods: {
+      saveButton(){
+        this.saleProductDto.saleProductName = this.title;
+        this.saleProductDto.saleProductDescribe = this.desc;
+
+        var that = this;
+        this.$axios.post("http://127.0.0.1:8081/sale/insertSaleInfo/"+this.userInfo.id,this.saleProductDto)
+          .then(function (result) {
+            if (result.data.status != false) {
+              var id = result.data.data;
+              let form = new FormData();
+              form.append("multipartFile",that.picture);
+              that.$axios.put("http://127.0.0.1:8081/sale/insertSaleInfoPicture/"+id,form,{headers:{'Content-Type':'multipart/form-data'}})
+                .then(function (result) {
+                  if (result.data.status != false) {
+                    Toast('发布成功');
+                    that.$router.push({path:'/index'})
+                  }else {
+                    Toast("商品图片上传失败");
+                  }
+                })
+                .catch(function (error) {
+                  console.log(error)
+                });
+            }else {
+              Toast(result.data.message);
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      },
+      price_beforeClose(action,done) {
+        if (action === 'confirm') {
+          this.saleProductDto.saleProductPrice = this.price;
+          setTimeout(done, 1000);
+        } else {
+          done();
+        }
+      },
+      type_beforeClose(action,done){
+        if (action === 'confirm') {
+          this.saleProductDto.type = this.type;
+          setTimeout(done, 1000);
+        } else {
+          done();
+        }
+      },
+      onClickLeft(){
+        this.$router.push({path:'/index'})
+      },
+      onRead(file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var img = document.getElementById("picture");
+          img.src = e.target.result;
+        }
+        reader.readAsDataURL(file.file);
+        this.picture = file.file;
+      }
     },
-    onRead(file) {
-      console.log(file)
+    created(){
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+      this.userInfo = userInfo;
     }
-  },
-}
+  }
 </script>
 
 <style scoped>
-.desc{
-  min-height: 100px;
-}
-.upload{
-  padding-top: 10px;
-  height: 100px;
-}
-.van-radio{
-  padding-left: 10px;
-  padding-top: 10px;
-  height: 30px;
-}
-.vanButton{
-  background-color: #44BB00;
-  width: 75%;
-  margin-top: 100px;
-}
+  .desc{
+    min-height: 100px;
+  }
+  .upload{
+    padding-top: 10px;
+    height: 100px;
+  }
+  .van-radio{
+    padding-left: 10px;
+    padding-top: 10px;
+    height: 30px;
+  }
+  .vanButton{
+    background-color: #44BB00;
+    width: 75%;
+    margin-top: 100px;
+  }
 </style>

@@ -38,20 +38,35 @@
 </template>
 
 <script>
-
+  import { Toast } from 'vant';
   export default {
     components: {},
     data () {
       return {
         oldPassword: "",
         newPassword: "",
-        okPassword: ""
+        okPassword: "",
+        passwordDto:{}
       }
     },
     methods:{
       editBuyPassword(oldPassword,newPassword,okPassword){
         if (newPassword==okPassword){
-
+          this.passwordDto.oldPassword = oldPassword;
+          this.passwordDto.newPassword = newPassword;
+          var that = this;
+          this.$axios.put("http://127.0.0.1:8081/user/editBuyPassword/"+this.userInfo.id,this.passwordDto)
+            .then(function (result) {
+              if (result.data.status != false) {
+                Toast('交易密码修改成功！');
+                that.$router.push({path:'/mine'})
+              }else {
+                Toast(result.data.message);
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
         } else {
           this.$toast("密码输入不一致")
         }
@@ -59,6 +74,14 @@
       onClickLeft(){
         this.$router.go(-1)
       },
+    },
+    created(){
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+      this.userInfo = userInfo;
+      if(userInfo == null){
+        this.$router.push({path:'/mine'})
+      }
     }
   }
 </script>

@@ -146,7 +146,7 @@
         this.$axios.put("http://127.0.0.1:8081/user/editPersonInfo",this.userInfo)
           .then(function (result) {
             that.result = result.data.data;
-            if (that.result != null) {
+            if (result.data.status != false) {
               Toast('保存成功');
               var storage = window.sessionStorage;
               var userInfo = JSON.stringify(that.result);
@@ -165,7 +165,7 @@
         this.sex_show = false
       },
       onClickLeft(){
-        this.$router.go(-1)
+        this.$router.push({path:'/mine'})
       },
 
       birthdayConfirm (val) {
