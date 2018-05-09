@@ -24,16 +24,23 @@ export default {
   data () {
     return {
       SaleData: [],
-      isLoading: false
+      isLoading: false,
+      userInfo:{}
     }
   },
   props: {},
   watch: {},
   methods: {
     onRefresh() {
+      var id;
+      if (this.userInfo == null){
+        id=0;
+      } else {
+        id=this.userInfo.id
+      }
       setTimeout(() => {
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo")
+        this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id)
           .then(function (SaleResult) {
             that.SaleData = SaleResult.data.data;
           })
@@ -48,8 +55,19 @@ export default {
   filters: {},
   computed: {},
   created () {
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
+
+    var id;
+    if (this.userInfo == null){
+      id=0;
+    } else {
+      id=this.userInfo.id
+    }
+
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo")
+    this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id)
       .then(function (SaleResult) {
         that.SaleData = SaleResult.data.data;
       })

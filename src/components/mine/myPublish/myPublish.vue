@@ -7,25 +7,25 @@
     <div class="title-bar">
       <span>租赁区</span>
     </div>
-    <div class="seller-list-item" v-for="item in publishData" :item= "item" :key="item">
-      <div class="left">
-        <img :src="item.picture">
+    <div class="seller-list-item" v-for="item in publishRentData" :item= "item" :key="item">
+      <div class="left" @click="toAdminRentDetail(item.id)">
+        <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
       </div>
 
       <div class="content">
-        <div class="name">
-          {{item.name}}
+        <div class="name" @click="toAdminRentDetail(item.id)">
+          {{item.rentProductName}}
         </div>
 
         <div class="mid">
-          <span class="describe">{{item.describe}}</span>
+          <span class="describe">{{item.rentProductDescribe}}</span>
         </div>
 
         <div>
-          <span class="price fl"><b>￥{{item.price}}/天</b></span>
+          <span class="price fl"><b>￥{{item.rentProductPrice}}/天</b></span>
           <div class="fr">
-            <van-button size="small" @click="toEditMyPublish(item.id)">编辑</van-button>
-            <van-button size="small" @click="toDeleteMyPublish(item.id)">删除</van-button>
+            <van-button size="small" @click="toEditRentMyPublish(item.id)">编辑</van-button>
+            <van-button size="small" @click="toDeleteRentMyPublish(item.id)">删除</van-button>
           </div>
         </div>
       </div>
@@ -35,25 +35,25 @@
     <div class="title-bar">
       <span>出售区</span>
     </div>
-    <div class="seller-list-item" v-for="item in publishData" :item= "item" :key="item">
-      <div class="left">
-      <img :src="item.picture">
+    <div class="seller-list-item" v-for="item in publishSaleData" :item= "item" :key="item">
+      <div class="left" @click="toAdminSaleDetail(item.id)">
+        <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
       </div>
 
       <div class="content">
-        <div class="name">
-          {{item.name}}
+        <div class="name" @click="toAdminSaleDetail(item.id)">
+          {{item.saleProductName}}
         </div>
 
         <div class="mid">
-          <span class="describe">{{item.describe}}</span>
+          <span class="describe">{{item.saleProductDescribe}}</span>
         </div>
 
         <div>
-         <span class="price fl"><b>￥{{item.price}}</b></span>
+         <span class="price fl"><b>￥{{item.saleProductPrice}}</b></span>
           <div class="fr">
-            <van-button size="small" @click="toEditMyPublish(item.id)">编辑</van-button>
-            <van-button size="small" @click="toDeleteMyPublish(item.id)">删除</van-button>
+            <van-button size="small" @click="toEditSaleMyPublish(item.id)">编辑</van-button>
+            <van-button size="small" @click="toDeleteSaleMyPublish(item.id)">删除</van-button>
           </div>
        </div>
 
@@ -67,6 +67,9 @@
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
+  import { Dialog } from 'vant';
+
   export default {
     components: {
       CrossLine
@@ -74,22 +77,9 @@
     data () {
       return {
         isLoading: false,
-        publishData:[
-          {
-            id: '1',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV1.jpg')
-          },
-          {
-            id: '2',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV2.jpg')
-          }
-        ]
+        userInfo:{},
+        publishRentData:[],
+        publishSaleData:[]
       }
     },
     props: {
@@ -99,21 +89,111 @@
       }
     },
     methods:{
-      toDeleteMyPublish(id){
-        this.$toast('删除'+id);
+      toAdminRentDetail(id){
+        this.$router.push({
+          path:'rentAdminDetailInfo',
+          query: {
+            data: id
+          }
+        })
       },
-      toEditMyPublish(id){
-        this.$toast('编辑'+id);
+      toAdminSaleDetail(id){
+        this.$router.push({
+          path:'saleAdminDetailInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toDeleteRentMyPublish(id){
+        Dialog.confirm({
+          title: '提示',
+          message: '确认要删除吗？'
+        }).then(() => {
+          var that = this;
+          this.$axios.delete("http://127.0.0.1:8081/rent/deleteMyPublishRent/"+id)
+            .then(function (RentResult) {
+              if (RentResult.data.status){
+                Toast("删除成功!");
+                that.$axios.get("http://127.0.0.1:8081/rent/getMyPublishRent/"+that.userInfo.id)
+                  .then(function (RentResult) {
+                    that.publishRentData = RentResult.data.data;
+                  })
+                  .catch(function (error) {
+                    console.log(error)
+                  });
+              } else {
+                Toast("删除失败!");
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }).catch(() => {
+
+        });
+      },
+      toEditRentMyPublish(id){
+        this.$router.push({
+          path:'rentEdit',
+          query: {
+            data: id
+          }
+        })
+      },
+      toDeleteSaleMyPublish(id){
+        Dialog.confirm({
+          title: '提示',
+          message: '确认要删除吗？'
+        }).then(() => {
+          var that = this;
+          this.$axios.delete("http://127.0.0.1:8081/sale/deleteMyPublishSale/"+id)
+            .then(function (SaleResult) {
+              if (SaleResult.data.status){
+                Toast("删除成功!");
+                that.$axios.get("http://127.0.0.1:8081/sale/getMyPublishSale/"+that.userInfo.id)
+                  .then(function (SaleResult) {
+                    that.publishSaleData = SaleResult.data.data;
+                  })
+                  .catch(function (error) {
+                    console.log(error)
+                  });
+              } else {
+                Toast("删除失败!");
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }).catch(() => {
+
+        });
+      },
+      toEditSaleMyPublish(id){
+        this.$router.push({
+          path:'saleEdit',
+          query: {
+            data: id
+          }
+        })
       },
       onClickLeft(){
-        this.$router.go(-1)
+        this.$router.push({path:"/mine"})
       },
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/")
+          this.$axios.get("http://127.0.0.1:8081/rent/getMyPublishRent/"+this.userInfo.id)
             .then(function (RentResult) {
-              that.RentData = RentResult.data.data;
+              that.publishRentData = RentResult.data.data;
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+
+          this.$axios.get("http://127.0.0.1:8081/sale/getMyPublishSale/"+this.userInfo.id)
+            .then(function (SaleResult) {
+              that.publishSaleData = SaleResult.data.data;
             })
             .catch(function (error) {
               console.log(error)
@@ -122,6 +202,28 @@
           this.isLoading = false;
         }, 500);
       }
+    },
+    created(){
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+      this.userInfo = userInfo;
+
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/rent/getMyPublishRent/"+this.userInfo.id)
+        .then(function (RentResult) {
+          that.publishRentData = RentResult.data.data;
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+
+      this.$axios.get("http://127.0.0.1:8081/sale/getMyPublishSale/"+this.userInfo.id)
+        .then(function (SaleResult) {
+          that.publishSaleData = SaleResult.data.data;
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
     }
   }
 </script>

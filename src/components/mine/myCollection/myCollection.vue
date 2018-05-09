@@ -4,29 +4,71 @@
       <van-nav-bar left-arrow @click-left="onClickLeft" title="我收藏的"/>
       <cross-line></cross-line>
 
-      <div class="seller-list-item" v-for="item in publishData" :item= "item" :key="item">
-        <div class="left">
-          <img :src="item.picture">
+
+        <div class="title-bar">
+          <span>租恁收藏</span>
         </div>
+        <div v-if="CollectRentData==''">
+          <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未收藏租赁产品哦~快去添加吧！</span>
+          <div class="bottomFix"></div>
+        </div>
+        <div v-if="CollectRentData!=''">
+          <div class="seller-list-item" v-for="item in CollectRentData" :item= "item" :key="item">
+            <div class="left"  @click="toRentDetail(item.id)">
+              <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
+            </div>
 
-        <div class="content">
-          <div class="name">
-            {{item.name}}
-          </div>
+            <div class="content">
+              <div class="name"  @click="toRentDetail(item.id)">
+                {{item.rentProductName}}
+              </div>
 
-          <div class="mid">
-            <span class="describe">{{item.describe}}</span>
-          </div>
+              <div class="mid">
+                <span class="describe">{{item.rentProductDescribe}}</span>
+              </div>
 
-          <div>
-            <span class="price fl"><b>￥{{item.price}}</b></span>
-            <div class="fr">
-              <van-button size="small" @click="toDeleteMyPublish(item.id)">取消收藏</van-button>
+              <div>
+                <span class="price fl"><b>￥{{item.rentProductPrice}}/天</b></span>
+                <div class="fr">
+                  <van-button size="small" @click="toDeleteRentMyCollect(item.id)">取消收藏</van-button>
+                </div>
+              </div>
             </div>
           </div>
+          <div class="bottomFix"></div>
         </div>
 
-      </div>
+          <div class="title-bar">
+            <span>出售收藏</span>
+          </div>
+          <div v-if="CollectSaleData==''">
+            <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未收藏出售产品哦~快去添加吧！</span>
+            <div class="bottomFix"></div>
+          </div>
+          <div v-if="CollectSaleData!=''">
+            <div class="seller-list-item" v-for="item in CollectSaleData" :item= "item" :key="item">
+                <div class="left" @click="toSaleDetail(item.id)">
+                  <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
+                </div>
+
+                <div class="content">
+                  <div class="name" @click="toSaleDetail(item.id)">
+                    {{item.saleProductName}}
+                  </div>
+
+                  <div class="mid">
+                    <span class="describe">{{item.saleProductDescribe}}</span>
+                  </div>
+
+                  <div>
+                    <span class="price fl"><b>￥{{item.saleProductPrice}}</b></span>
+                    <div class="fr">
+                      <van-button size="small" @click="toDeleteSaleMyCollect(item.id)">取消收藏</van-button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
     </div>
   </van-pull-refresh>
 </template>
@@ -39,23 +81,10 @@
     },
     data () {
       return {
+        userInfo:{},
         isLoading: false,
-        publishData:[
-          {
-            id: '1',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV1.jpg')
-          },
-          {
-            id: '2',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV2.jpg')
-          }
-        ]
+        CollectRentData:[],
+        CollectSaleData:[]
       }
     },
     props: {
@@ -65,8 +94,53 @@
       }
     },
     methods:{
-      toDeleteMyPublish(id){
-        this.$toast('删除'+id);
+      toRentDetail(id){
+        this.$router.push({
+          path:'rentDetailInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toSaleDetail(id){
+        this.$router.push({
+          path:'saleDetailInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toDeleteRentMyCollect(id){
+        var that = this;
+        this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectRent/"+this.userInfo.id+"/"+id)
+          .then(function (result) {
+            that.$axios.get("http://127.0.0.1:8081/collect/getCollectRent/"+that.userInfo.id)
+              .then(function (result) {
+                that.CollectRentData = result.data.data;
+              })
+              .catch(function (error) {
+                console.log(error)
+              });
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      },
+      toDeleteSaleMyCollect(id){
+        var that = this;
+        this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/"+this.userInfo.id+"/"+id)
+          .then(function (result) {
+            that.$axios.get("http://127.0.0.1:8081/collect/getCollectSale/"+that.userInfo.id)
+              .then(function (result) {
+                that.CollectSaleData = result.data.data;
+              })
+              .catch(function (error) {
+                console.log(error)
+              });
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       },
       toEditMyPublish(id){
         this.$toast('编辑'+id);
@@ -77,24 +151,83 @@
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/")
-            .then(function (RentResult) {
-              that.RentData = RentResult.data.data;
+          this.$axios.get("http://127.0.0.1:8081/collect/getCollectRent/"+this.userInfo.id)
+            .then(function (result) {
+              that.CollectRentData = result.data.data;
             })
             .catch(function (error) {
               console.log(error)
             });
+          this.$axios.get("http://127.0.0.1:8081/collect/getCollectSale/"+this.userInfo.id)
+            .then(function (result) {
+              that.CollectSaleData = result.data.data;
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
           this.$toast('刷新成功');
           this.isLoading = false;
         }, 500);
       }
+    },
+    created(){
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+      this.userInfo = userInfo;
+
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/collect/getCollectRent/"+this.userInfo.id)
+        .then(function (result) {
+          that.CollectRentData = result.data.data;
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+      this.$axios.get("http://127.0.0.1:8081/collect/getCollectSale/"+this.userInfo.id)
+        .then(function (result) {
+          that.CollectSaleData = result.data.data;
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   }
 </script>
 
 <style scoped>
-  .user{
-
+  .bottomFix {
+    height: 50px;
+    background-color: transparent;
+  }
+  .title-bar {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 20px;
+  }
+  .title-bar span {
+    display: inline-block;
+    position: relative;
+    font-weight: bold;
+    color: #333;
+  }
+  .title-bar span:before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: -45px;
+    width: 30px;
+    border-top: 1px solid #333;
+    transform: scaleY(0.5);
+  }
+  .title-bar span:after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: -43px;
+    width: 30px;
+    border-top: 1px solid #333;
+    transform: scaleY(0.5);
   }
   .user img{
     width: 25px;

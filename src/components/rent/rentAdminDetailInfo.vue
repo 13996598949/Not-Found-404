@@ -15,12 +15,6 @@
         <div class="box fl">
           <img :src="'http://127.0.0.1:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
           <p style="padding-left: 10px">{{this.RentData.alias}}</p>
-          <!--<div class="down fr">-->
-            <!--<img class="fl" src="../../assets/project/credit.png">-->
-            <!--<span class="credit fl" v-if="this.RentData.credit==1">信用优秀</span>-->
-            <!--<span class="credit fl" v-if="this.RentData.credit==2">信用极好</span>-->
-            <!--<span class="credit fl" v-if="this.RentData.credit==3">信用良好</span>-->
-          <!--</div>-->
         </div>
       </van-cell-group>
     </div>
@@ -36,14 +30,11 @@
 
     <div class="goods">
       <van-goods-action>
-        <van-goods-action-mini-btn icon="chat">
-          留言
+        <van-goods-action-mini-btn icon="close" @click="toDeleteRent">
+          删除
         </van-goods-action-mini-btn>
-        <van-goods-action-mini-btn :icon=icon @click="collect">
-          收藏
-        </van-goods-action-mini-btn>
-        <van-goods-action-big-btn primary @click="toOrderPaying">
-          立即下单
+        <van-goods-action-big-btn primary @click="toEditRent">
+          编辑
         </van-goods-action-big-btn>
       </van-goods-action>
     </div>
@@ -54,57 +45,50 @@
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import { Dialog } from 'vant';
 export default {
   components: {
     CrossLine
   },
   data () {
     return {
-      icon: "like-o",
       RentData:{},
       userInfo:{}
     }
   },
   methods: {
-    toOrderPaying(){
-      this.$router.push({path:'/order_buy_paying'})
+    toDeleteRent(){
+      Dialog.confirm({
+        title: '提示',
+        message: '确认要删除吗？'
+      }).then(() => {
+        var that = this;
+        this.$axios.delete("http://127.0.0.1:8081/rent/deleteMyPublishRent/"+this.RentData.id)
+          .then(function (RentResult) {
+            if (RentResult.data.status){
+              Toast("删除成功!");
+              that.$router.push({path:"/myPublish"})
+            } else {
+              Toast("删除失败!");
+            }
+          })
+          .catch(function (error) {
+
+          });
+      }).catch(() => {
+
+      });
     },
-    collect(){
-      if (this.userInfo == null) {
-        this.$router.push({path: '/login'});
-        Toast("请先登录");
-      } else {
-        var that = this
-        if (that.RentData.collectFlag) {
-          this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectRent/" + that.userInfo.id + "/" + this.RentData.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.RentData.collectFlag = false
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
-        } else {
-          this.$axios.post("http://127.0.0.1:8081/collect/insertCollectRent/" + that.userInfo.id + "/" + this.RentData.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.RentData.collectFlag = true
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
+    toEditRent(){
+      this.$router.push({
+        path:'rentEdit',
+        query: {
+          data: this.RentData.id
         }
-        if (!this.RentData.collectFlag) {
-          this.icon = "like"
-        } else {
-          this.icon = "like-o"
-        }
-      }
+      })
     },
     onClickLeft(){
-      this.$router.go(-1)
+      this.$router.push({path:"/myPublish"})
     },
     formatPrice() {
       return '¥' + (this.RentData.rentProductPrice).toFixed(2);
@@ -114,47 +98,22 @@ export default {
     var storage = window.sessionStorage;
     var userInfo = JSON.parse(storage.getItem("session"));
     this.userInfo = userInfo;
-    var id;
-    if (this.userInfo == null){
-      id=0;
-    } else {
-      id=this.userInfo.id
-    }
+
     // 取到路由带过来的参数
     let routerParams = this.$route.query.data;
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/rent/getRentDetailInfo/"+routerParams+"/"+id)
+    this.$axios.get("http://127.0.0.1:8081/rent/getRentDetailInfo/"+routerParams+"/"+this.userInfo.id)
       .then(function (RentResult) {
         that.RentData = RentResult.data.data;
-        if (that.RentData.collectFlag){
-          that.icon = "like"
-        } else {
-          that.icon = "like-o"
-        }
       })
       .catch(function (error) {
-        console.log(error)
+
       });
   },
 }
 </script>
 
 <style lang="less" scoped>
-  .down {
-    flex: 1;
-    margin-top: 7px;
-    font-size: 13px;
-    color: #656565;
-  }
-  .down img{
-    background-color: #F2FCFC;
-    width: 15px;
-    height: 15px;
-  }
-  .credit{
-    background-color: #F2FCFC;
-    color: #30D0CC;
-  }
   .liuyan{
     padding-top: 10px;
     padding-left: 5px;

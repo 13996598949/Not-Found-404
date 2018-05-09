@@ -1,14 +1,14 @@
 <template>
   <div class="seller-list-item" >
-    <div class="left">
-      <router-link to="/saleDetailInfo"><img :src="'http://127.0.0.1:8081/'+item.saleProductPicture"></router-link>
+    <div class="left" @click="toSaleDetail">
+      <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
     </div>
 
     <div class="content">
       <div class="name">
-        <router-link to="/saleDetailInfo" style="color: black">{{item.saleProductName}}</router-link>
-        <img v-if="isCollectFlag" v-on:click="collect()"class="fr" src="./collect.png"/>
-        <img v-if="!isCollectFlag" v-on:click="collect()"class="fr" src="./collect2.png"/>
+        <span class="fl" @click="toSaleDetail">{{item.saleProductName}}</span>
+        <img v-if="!item.collectFlag" v-on:click="collect()"class="fr" src="./collect.png"/>
+        <img v-if="item.collectFlag" v-on:click="collect()"class="fr" src="./collect2.png"/>
       </div>
 
       <div class="mid">
@@ -31,13 +31,15 @@
 
 <script>
   import star from '@/components/base/star/star'
+  import { Toast } from 'vant';
 export default {
   components: {
     star
   },
   data () {
     return {
-      isCollectFlag: true
+      userInfo:{},
+      item:{}
     }
   },
   props: {
@@ -46,18 +48,50 @@ export default {
   		default:{}
   	}
   },
-  watch: {},
   methods: {
     collect (){
-      this.isCollectFlag=!this.isCollectFlag
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'});
+        Toast("请先登录");
+      }else {
+        var that = this
+        if (that.item.collectFlag) {
+          this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/" + that.userInfo.id + "/" + that.item.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.item.collectFlag = false
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        } else {
+          this.$axios.post("http://127.0.0.1:8081/collect/insertCollectSale/" + that.userInfo.id + "/" + that.item.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.item.collectFlag = true
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }
+      }
+    },
+    toSaleDetail() {
+      this.$router.push({
+        path: 'saleDetailInfo',
+        query: {
+          data: this.item.id
+        }
+      })
     }
   },
-  filters: {},
-  computed: {
+  created () {
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
   },
-  created () {},
-  mounted () {},
-  destroyed () {}
 }
 </script>
 

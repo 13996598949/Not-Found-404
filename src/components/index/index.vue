@@ -20,7 +20,7 @@
     <!-- 横线分隔条 -->
     <cross-line></cross-line>
 
-    <div class="nearby">
+    <div>
       <div class="title-bar">
         <span>精品租恁</span>
       </div>
@@ -87,16 +87,22 @@
   watch: {},
   methods: {
     onRefresh() {
+      var id;
+      if (this.userInfo == null){
+        id=0;
+      } else {
+        id=this.userInfo.id
+      }
       setTimeout(() => {
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/index/getRentInfo")
+        this.$axios.get("http://127.0.0.1:8081/index/getRentInfo/"+id)
           .then(function (RentResult) {
             that.RentData = RentResult.data.data;
           })
           .catch(function (error) {
             console.log(error)
           });
-        this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo")
+        this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo/"+id)
           .then(function (SaleResult) {
             that.SaleData = SaleResult.data.data;
           })
@@ -115,15 +121,21 @@
     var userInfo = JSON.parse(storage.getItem("session"));
     this.userInfo = userInfo;
 
+    var id;
+    if (this.userInfo == null){
+      id=0;
+    } else {
+      id=this.userInfo.id
+    }
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/index/getRentInfo")
+    this.$axios.get("http://127.0.0.1:8081/index/getRentInfo/"+id)
       .then(function (RentResult) {
         that.RentData = RentResult.data.data;
       })
       .catch(function (error) {
         console.log(error)
       });
-    this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo")
+    this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo/"+id)
       .then(function (SaleResult) {
         that.SaleData = SaleResult.data.data;
       })
@@ -162,9 +174,6 @@
     padding-bottom: 20px;
     background-color: #fff;
     margin-top: 2px;
-  }
-  .nearby {
-
   }
 
   .bottomFix {

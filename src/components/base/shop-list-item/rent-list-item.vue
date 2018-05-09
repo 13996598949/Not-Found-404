@@ -7,8 +7,8 @@
     <div class="content">
       <div class="name">
         <span class="fl" @click="toRentDetail">{{item.rentProductName}}</span>
-        <img v-if="isCollectFlag" v-on:click="collect()"class="fr" src="./collect.png"/>
-        <img v-if="!isCollectFlag" v-on:click="collect()"class="fr" src="./collect2.png"/>
+        <img v-if="!item.collectFlag" @click="collect"class="fr" src="./collect.png"/>
+        <img v-if="item.collectFlag" @click="collect"class="fr" src="./collect2.png"/>
       </div>
 
       <div class="mid">
@@ -31,13 +31,15 @@
 
 <script>
   import star from '@/components/base/star/star'
+  import { Toast } from 'vant';
 export default {
   components: {
     star
   },
   data () {
     return {
-      isCollectFlag: true
+      userInfo:{},
+      item:{}
     }
   },
   props: {
@@ -46,7 +48,6 @@ export default {
   		default:{}
   	}
   },
-  watch: {},
   methods: {
     toRentDetail(){
       this.$router.push({
@@ -56,16 +57,41 @@ export default {
         }
       })
     },
-    collect (){
-      this.isCollectFlag=!this.isCollectFlag
+    collect () {
+      if (this.userInfo == null) {
+        this.$router.push({path: '/login'});
+        Toast("请先登录");
+      } else {
+        var that = this
+        if (that.item.collectFlag) {
+          this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectRent/" + that.userInfo.id + "/" + that.item.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.item.collectFlag = false
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        } else {
+          this.$axios.post("http://127.0.0.1:8081/collect/insertCollectRent/" + that.userInfo.id + "/" + that.item.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.item.collectFlag = true
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }
+      }
     }
   },
-  filters: {},
-  computed: {
+  created () {
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
   },
-  created () {},
-  mounted () {},
-  destroyed () {}
 }
 </script>
 

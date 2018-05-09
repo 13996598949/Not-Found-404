@@ -30,14 +30,11 @@
 
     <div class="goods">
       <van-goods-action>
-        <van-goods-action-mini-btn icon="chat">
-          留言
+        <van-goods-action-mini-btn icon="chat" @click="toDeleteSale">
+          删除
         </van-goods-action-mini-btn>
-        <van-goods-action-mini-btn :icon=icon @click="collect">
-          收藏
-        </van-goods-action-mini-btn>
-        <van-goods-action-big-btn primary @click="toOrderPaying">
-          立即下单
+        <van-goods-action-big-btn primary icon="chat" @click="toEditSale">
+          编辑
         </van-goods-action-big-btn>
       </van-goods-action>
     </div>
@@ -48,57 +45,50 @@
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import { Dialog } from 'vant';
 export default {
   components: {
     CrossLine
   },
   data () {
     return {
-      icon: "like-o",
       SaleData:{},
       userInfo:{}
     }
   },
   methods: {
-    toOrderPaying(){
-      this.$router.push({path:'/order_buy_paying'})
+    toDeleteSale(){
+      Dialog.confirm({
+        title: '提示',
+        message: '确认要删除吗？'
+      }).then(() => {
+        var that = this;
+        this.$axios.delete("http://127.0.0.1:8081/sale/deleteMyPublishSale/"+this.SaleData.id)
+          .then(function (SaleResult) {
+            if (SaleResult.data.status){
+              Toast("删除成功!");
+              that.$router.push({path:"/myPublish"})
+            } else {
+              Toast("删除失败!");
+            }
+          })
+          .catch(function (error) {
+
+          });
+      }).catch(() => {
+
+      });
     },
-    collect(){
-      if (this.userInfo == null) {
-        this.$router.push({path: '/login'});
-        Toast("请先登录");
-      } else {
-        var that = this
-        if (that.SaleData.collectFlag) {
-          this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/" + that.userInfo.id + "/" + this.SaleData.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.SaleData.collectFlag = false
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
-        } else {
-          this.$axios.post("http://127.0.0.1:8081/collect/insertCollectSale/" + that.userInfo.id + "/" + this.SaleData.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.SaleData.collectFlag = true
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
+    toEditSale(){
+      this.$router.push({
+        path:'saleEdit',
+        query: {
+          data: this.SaleData.id
         }
-        if (!this.SaleData.collectFlag) {
-          this.icon = "like"
-        } else {
-          this.icon = "like-o"
-        }
-      }
+      })
     },
     onClickLeft(){
-      this.$router.go(-1)
+      this.$router.push({path:"/myPublish"})
     },
     formatPrice() {
       return '¥' + (this.SaleData.saleProductPrice).toFixed(2);
@@ -109,17 +99,10 @@ export default {
     var userInfo = JSON.parse(storage.getItem("session"));
     this.userInfo = userInfo;
 
-    var id;
-    if (this.userInfo == null){
-      id=0;
-    } else {
-      id=this.userInfo.id
-    }
-
     // 取到路由带过来的参数
     let routerParams = this.$route.query.data;
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/sale/getSaleDetailInfo/"+routerParams+"/"+id)
+    this.$axios.get("http://127.0.0.1:8081/sale/getSaleDetailInfo/"+routerParams+"/"+this.userInfo.id)
       .then(function (SaleResult) {
         that.SaleData = SaleResult.data.data;
         if (that.SaleData.collectFlag){
