@@ -24,23 +24,10 @@
     <p class="liuyan"><b>留言</b></p>
     <van-cell-group class="goods-cell-group">
       <van-cell>
-        <p style="padding-left: 10px">{{this.SaleData.alias}}:</p>
+        <!--<p style="padding-left: 10px">{{this.SaleData.alias}}:</p>-->
+        <p style="font-size: 16px;text-align: center;">暂无留言</p>
       </van-cell>
     </van-cell-group>
-
-    <div class="goods">
-      <van-goods-action>
-        <van-goods-action-mini-btn icon="chat">
-          留言
-        </van-goods-action-mini-btn>
-        <van-goods-action-mini-btn :icon=icon @click="collect">
-          收藏
-        </van-goods-action-mini-btn>
-        <van-goods-action-big-btn primary @click="toOrderPaying">
-          立即下单
-        </van-goods-action-big-btn>
-      </van-goods-action>
-    </div>
 
     </div>
 </template>
@@ -48,62 +35,20 @@
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import { Dialog } from 'vant';
 export default {
   components: {
     CrossLine
   },
   data () {
     return {
-      icon: "like-o",
       SaleData:{},
       userInfo:{}
     }
   },
   methods: {
-    toOrderPaying(){
-      this.$router.push({
-        path:'saleToBuy',
-        query:{
-          SaleData:this.SaleData
-        }
-      })
-    },
-    collect(){
-      if (this.userInfo == null) {
-        this.$router.push({path: '/login'});
-        Toast("请先登录");
-      } else {
-        var that = this
-        if (that.SaleData.collectFlag) {
-          this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/" + that.userInfo.id + "/" + this.SaleData.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.SaleData.collectFlag = false
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
-        } else {
-          this.$axios.post("http://127.0.0.1:8081/collect/insertCollectSale/" + that.userInfo.id + "/" + this.SaleData.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.SaleData.collectFlag = true
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
-        }
-        if (!this.SaleData.collectFlag) {
-          this.icon = "like"
-        } else {
-          this.icon = "like-o"
-        }
-      }
-    },
     onClickLeft(){
-      this.$router.push({path:"/index"})
+      this.$router.push({path:"/mySale"})
     },
     formatPrice() {
       return '¥' + (this.SaleData.saleProductPrice).toFixed(2);
@@ -114,24 +59,12 @@ export default {
     var userInfo = JSON.parse(storage.getItem("session"));
     this.userInfo = userInfo;
 
-    var id;
-    if (this.userInfo == null){
-      id=0;
-    } else {
-      id=this.userInfo.id
-    }
-
     // 取到路由带过来的参数
     let routerParams = this.$route.query.data;
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/sale/getSaleDetailInfo/"+routerParams+"/"+id)
+    this.$axios.get("http://127.0.0.1:8081/sale/getSaleSimpleInfo/"+routerParams)
       .then(function (SaleResult) {
         that.SaleData = SaleResult.data.data;
-        if (that.SaleData.collectFlag){
-          that.icon = "like"
-        } else {
-          that.icon = "like-o"
-        }
       })
       .catch(function (error) {
         console.log(error)

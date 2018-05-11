@@ -41,6 +41,10 @@ import rentAdminDetailInfo from '@/components/rent/rentAdminDetailInfo'
 import saleAdminDetailInfo from '@/components/sale/saleAdminDetailInfo'
 import rentEdit from '@/components/publish/rentEdit'
 import saleEdit from '@/components/publish/saleEdit'
+import rentSimpleInfo from '@/components/rent/rentSimpleInfo'
+import saleSimpleInfo from '@/components/sale/saleSimpleInfo'
+import rentToBuy from '@/components/rent/rentToBuy'
+import saleToBuy from '@/components/sale/saleToBuy'
 
 
 Vue.use(Router)
@@ -271,6 +275,22 @@ export default new Router({
     {
       path: '/saleEdit',
       component: saleEdit
+    },
+    {
+      path: '/rentSimpleInfo',
+      component: rentSimpleInfo
+    },
+    {
+      path: '/saleSimpleInfo',
+      component: saleSimpleInfo
+    },
+    {
+      path: '/rentToBuy',
+      component: rentToBuy
+    },
+    {
+      path: '/saleToBuy',
+      component: saleToBuy
     },
   ]
 })

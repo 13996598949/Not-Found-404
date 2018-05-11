@@ -4,7 +4,15 @@
 
     <cross-line></cross-line>
 
-    <van-address-list
+    <van-address-list v-if="this.flag=='rent'||this.flag=='sale'"
+      v-model="list.id"
+      :list="list"
+      @add="onAdd"
+      @edit="onEdit"
+      @select="onSelect"
+    />
+
+    <van-address-list v-if="this.flag=='person'"
       :list="list"
       @add="onAdd"
       @edit="onEdit"
@@ -22,17 +30,35 @@
     data () {
       return {
         list: [],
-        addressList:{}
+        addressList:{},
+        flag:""
       }
     },
     methods:{
       onClickLeft(){
-        this.$router.push({path:'/person'})
+        this.$router.go(-1)
+      },
+      onSelect(item){
+        if (this.flag=='rent') {
+          this.$router.push({
+            path: 'rentToBuy',
+            query: {
+              data: item
+            }
+          })
+        }else if (this.flag=='sale'){
+          this.$router.push({
+            path: 'saleToBuy',
+            query: {
+              data: item
+            }
+          })
+        }
       },
       onAdd() {
         this.$router.push({path:'/insertAddressList'})
       },
-      onEdit(item, index) {
+      onEdit(item) {
         var that = this;
         this.$axios.get("http://127.0.0.1:8081/user/getAddressById/"+item.id)
           .then(function (result) {
@@ -56,6 +82,10 @@
     created(){
       var storage = window.sessionStorage;
       var userInfo = JSON.parse(storage.getItem("session"));
+
+      // 取到路由带过来的参数
+      let routerParams = this.$route.query.data;
+      this.flag = routerParams
 
       var that = this;
       this.$axios.get("http://127.0.0.1:8081/user/getAddressList/"+userInfo.id)

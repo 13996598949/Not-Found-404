@@ -101,7 +101,7 @@
           .then(function (result) {
             if (result.data.status != false) {
               Toast('添加成功！');
-              that.$router.push({path:'/addressList'})
+              that.$router.go(-1)
             }else {
               Toast(result.data.message);
             }
@@ -112,7 +112,7 @@
       },
 
       onClickLeft(){
-        this.$router.push({path:'/addressList'})
+        this.$router.go(-1)
       }
     },
     created(){

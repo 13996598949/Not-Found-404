@@ -15,12 +15,6 @@
         <div class="box fl">
           <img :src="'http://127.0.0.1:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
           <p style="padding-left: 10px">{{this.RentData.alias}}</p>
-          <!--<div class="down fr">-->
-            <!--<img class="fl" src="../../assets/project/credit.png">-->
-            <!--<span class="credit fl" v-if="this.RentData.credit==1">信用优秀</span>-->
-            <!--<span class="credit fl" v-if="this.RentData.credit==2">信用极好</span>-->
-            <!--<span class="credit fl" v-if="this.RentData.credit==3">信用良好</span>-->
-          <!--</div>-->
         </div>
       </van-cell-group>
     </div>
@@ -34,7 +28,7 @@
       </van-cell>
     </van-cell-group>
 
-    <div class="goods">
+    <div>
       <van-goods-action>
         <van-goods-action-mini-btn icon="chat">
           留言
@@ -67,7 +61,12 @@ export default {
   },
   methods: {
     toOrderPaying(){
-      this.$router.push({path:'/order_buy_paying'})
+      this.$router.push({
+        path:'rentToBuy',
+        query:{
+          RentData:this.RentData
+        }
+      })
     },
     collect(){
       if (this.userInfo == null) {
@@ -104,7 +103,7 @@ export default {
       }
     },
     onClickLeft(){
-      this.$router.go(-1)
+      this.$router.push({path:"/index"})
     },
     formatPrice() {
       return '¥' + (this.RentData.rentProductPrice).toFixed(2);

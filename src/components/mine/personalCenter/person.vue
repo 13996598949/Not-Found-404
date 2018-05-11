@@ -139,7 +139,12 @@
         this.$router.push({path:'/editLoginPassword'})
       },
       toAddressList () {
-        this.$router.push({path:'/addressList'})
+        this.$router.push({
+          path:'addressList',
+          query:{
+            data:"person"
+          }
+        })
       },
       saveButton(){
         var that = this;

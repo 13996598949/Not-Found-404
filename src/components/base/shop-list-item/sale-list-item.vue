@@ -55,36 +55,49 @@ export default {
         Toast("请先登录");
       }else {
         var that = this
-        if (that.item.collectFlag) {
-          this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/" + that.userInfo.id + "/" + that.item.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.item.collectFlag = false
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
-        } else {
-          this.$axios.post("http://127.0.0.1:8081/collect/insertCollectSale/" + that.userInfo.id + "/" + that.item.id)
-            .then(function (result) {
-              if (result.data.status != false) {
-                that.item.collectFlag = true
-              }
-            })
-            .catch(function (error) {
-              console.log(error)
-            });
+        if (that.item.userId == that.userInfo.id){
+          Toast("不能收藏自己的商品哦~");
+        }else {
+          if (that.item.collectFlag) {
+            this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/" + that.userInfo.id + "/" + that.item.id)
+              .then(function (result) {
+                if (result.data.status != false) {
+                  that.item.collectFlag = false
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              });
+          } else {
+            this.$axios.post("http://127.0.0.1:8081/collect/insertCollectSale/" + that.userInfo.id + "/" + that.item.id)
+              .then(function (result) {
+                if (result.data.status != false) {
+                  that.item.collectFlag = true
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              });
+          }
         }
       }
     },
     toSaleDetail() {
-      this.$router.push({
-        path: 'saleDetailInfo',
-        query: {
-          data: this.item.id
-        }
-      })
+      if (this.item.userId == this.userInfo.id) {
+        this.$router.push({
+          path: 'saleAdminDetailInfo',
+          query: {
+            data: this.item.id
+          }
+        })
+      } else {
+        this.$router.push({
+          path: 'saleDetailInfo',
+          query: {
+            data: this.item.id
+          }
+        })
+      }
     }
   },
   created () {

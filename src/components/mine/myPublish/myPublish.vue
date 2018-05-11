@@ -7,6 +7,11 @@
     <div class="title-bar">
       <span>租赁区</span>
     </div>
+    <div v-if="publishRentData==''">
+      <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在租赁区发布过产品哦~快去发布吧！</span>
+      <div class="bottomFix"></div>
+    </div>
+    <div v-if="publishRentData!=''">
     <div class="seller-list-item" v-for="item in publishRentData" :item= "item" :key="item">
       <div class="left" @click="toAdminRentDetail(item.id)">
         <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
@@ -30,11 +35,16 @@
         </div>
       </div>
     </div>
-
+    </div>
 
     <div class="title-bar">
       <span>出售区</span>
     </div>
+    <div v-if="publishSaleData==''">
+      <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在出售区发布过产品哦~快去发布吧！</span>
+      <div class="bottomFix"></div>
+    </div>
+    <div v-if="publishSaleData!=''">
     <div class="seller-list-item" v-for="item in publishSaleData" :item= "item" :key="item">
       <div class="left" @click="toAdminSaleDetail(item.id)">
         <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
@@ -56,9 +66,8 @@
             <van-button size="small" @click="toDeleteSaleMyPublish(item.id)">删除</van-button>
           </div>
        </div>
-
-
       </div>
+    </div>
 
     </div>
   </div>
