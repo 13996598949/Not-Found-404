@@ -2,7 +2,7 @@
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" title="订单信息"/>
     <cross-line></cross-line>
-    <van-steps :active="active" style="height: 60px">
+    <van-steps :active="active" style="height: 65px">
       <van-step>已拍下</van-step>
       <van-step>已付款</van-step>
       <van-step>已发货</van-step>
@@ -88,12 +88,13 @@ export default {
 .price{
   padding-top: 25px;
   font-size: 35px;
-  color: gray;
+  color: red;
   text-align: center;
 }
 .price p{
   padding-top: 10px;
   font-size: 10px;
+  color: gray;
 }
 .product{
   padding-left: 10px;

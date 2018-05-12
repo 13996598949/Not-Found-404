@@ -58,6 +58,7 @@
         address:{},
         userInfo:{},
         orderSaleDto:{},
+        price:""
       }
     },
     methods: {
@@ -66,12 +67,19 @@
         this.orderSaleDto.buyId = this.userInfo.id;
         this.orderSaleDto.productId = this.resultData.id;
         this.orderSaleDto.addressId = this.address.id;
+        this.orderSaleDto.price = this.price/100;
 
         var that = this;
         this.$axios.post("http://127.0.0.1:8081/order/insertSaleOrder",that.orderSaleDto)
           .then(function (result) {
             if (result.data.status != false) {
-              that.$router.push({path:"/order_buy_paying"})
+              that.$router.push({
+                path:"order_buy_paying",
+                query:{
+                  data:result.data.data,
+                  flag:"sale"
+                }
+              })
             }else {
               Toast("系统错误！")
             }
@@ -97,7 +105,8 @@
         })
       },
       formatPrice(price) {
-        return (price*100);
+        this.price = price*100;
+        return (this.price);
       }
     },
     created () {

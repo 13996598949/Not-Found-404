@@ -71,6 +71,7 @@ export default {
       address:{},
       userInfo:{},
       orderRentDto:{},
+      price:"",
       rentDay:3,
     }
   },
@@ -81,12 +82,19 @@ export default {
       this.orderRentDto.productId = this.resultData.id;
       this.orderRentDto.rentDay = this.rentDay;
       this.orderRentDto.addressId = this.address.id;
+      this.orderRentDto.price = this.price/100;
 
       var that = this;
       this.$axios.post("http://127.0.0.1:8081/order/insertRentOrder",that.orderRentDto)
         .then(function (result) {
           if (result.data.status != false) {
-            that.$router.push({path:"/order_buy_paying"})
+            that.$router.push({
+              path:"order_buy_paying",
+              query:{
+                data:result.data.data,
+                flag:"rent"
+              }
+            })
           }else {
             Toast("系统错误！")
           }
@@ -112,7 +120,8 @@ export default {
       })
     },
     formatPrice(price,rentday) {
-      return (price*rentday*100);
+      this.price = price*rentday*100;
+      return (this.price);
     }
   },
   created () {

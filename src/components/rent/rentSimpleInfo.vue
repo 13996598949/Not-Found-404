@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     onClickLeft(){
-      this.$router.push({path:"/mySale"})
+      this.$router.go(-1)
     },
     formatPrice() {
       return '¥' + (this.RentData.rentProductPrice).toFixed(2);

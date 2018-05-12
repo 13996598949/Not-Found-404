@@ -7,56 +7,67 @@
       <div class="title-bar">
         <span>租赁区</span>
       </div>
-      <div class="seller-list-item" v-for="item in publishData" :item= "item" :key="item">
+      <div v-if="RentData==''">
+        <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在租赁区产品哦~快去购买吧！</span>
+        <div class="bottomFix"></div>
+      </div>
+      <div v-if="RentData!=''">
+        <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
 
-        <div class="left">
-          <img :src="item.picture">
-        </div>
-
-        <div class="content">
-          <div class="name">
-            {{item.name}}
+          <div class="left" @click="toRentSimpleInfo(item.productId)">
+            <img :src="'http://127.0.0.1:8081/'+item.picture">
           </div>
 
-          <div class="mid">
-            <span class="describe">{{item.describe}}</span>
-          </div>
+          <div class="content">
+            <div class="name" @click="toRentSimpleInfo(item.productId)">
+              {{item.productName}}
+            </div>
 
-          <div>
-            <span class="price fl"><b>￥{{item.price}}</b></span>
-            <div class="fr">
-              <van-button size="small" @click="toEditMyPublish(item.id)">查看评价</van-button>
-              <van-button size="small" @click="toEditMyPublish(item.id)">订单信息</van-button>
-              <van-button size="small" @click="toDeleteMyPublish(item.id)">删除</van-button>
+            <div class="mid">
+              <span class="describe">{{item.productDescribe}}</span>
+            </div>
+
+            <div>
+              <span class="price fl"><b>￥{{item.price}}</b></span>
+              <div class="fr">
+                <van-button size="small" @click="toOrderRentInfo(item.orderId,item.active)">订单信息</van-button>
+                <van-button v-if="item.active>=3" size="small" @click="toDeleteRentOrder(item.orderId)">删除</van-button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+
       <div class="title-bar">
         <span>出售区</span>
       </div>
-      <div class="seller-list-item" v-for="item in publishData" :item= "item" :key="item">
+      <div v-if="SaleData==''">
+        <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在出售区购买产品哦~快去购买吧！</span>
+        <div class="bottomFix"></div>
+      </div>
+      <div v-if="SaleData!=''">
+        <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
 
-        <div class="left">
-          <img :src="item.picture">
-        </div>
-
-        <div class="content">
-          <div class="name">
-            {{item.name}}
+          <div class="left" @click="toSaleSimpleInfo(item.productId)">
+            <img :src="'http://127.0.0.1:8081/'+item.picture">
           </div>
 
-          <div class="mid">
-            <span class="describe">{{item.describe}}</span>
-          </div>
+          <div class="content">
+            <div class="name" @click="toSaleSimpleInfo(item.productId)">
+              {{item.productName}}
+            </div>
 
-          <div>
-            <span class="price fl"><b>￥{{item.price}}</b></span>
-            <div class="fr">
-              <van-button size="small" @click="toEditMyPublish(item.id)">查看评价</van-button>
-              <van-button size="small" @click="toEditMyPublish(item.id)">订单信息</van-button>
-              <van-button size="small" @click="toDeleteMyPublish(item.id)">删除</van-button>
+            <div class="mid">
+              <span class="describe">{{item.productDescribe}}</span>
+            </div>
+
+            <div>
+              <span class="price fl"><b>￥{{item.price}}</b></span>
+              <div class="fr">
+                <van-button size="small" @click="toOrderSaleInfo(item.orderId,item.active)">订单信息</van-button>
+                <van-button v-if="item.active>=3" size="small" @click="toDeleteSaleOrder(item.orderId)">删除</van-button>
+              </div>
             </div>
           </div>
         </div>
@@ -67,6 +78,7 @@
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
   export default {
     components: {
       CrossLine
@@ -74,22 +86,9 @@
     data () {
       return {
         isLoading: false,
-        publishData:[
-          {
-            id: '1',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV1.jpg')
-          },
-          {
-            id: '2',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV2.jpg')
-          }
-        ]
+        userInfo: {},
+        RentData: [],
+        SaleData: [],
       }
     },
     props: {
@@ -99,21 +98,184 @@
       }
     },
     methods:{
-      toDeleteMyPublish(id){
+      toSaleSimpleInfo(id){
+        this.$router.push({
+          path:'saleSimpleInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toRentSimpleInfo(id){
+        this.$router.push({
+          path:'rentSimpleInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toDeleteRentOrder(id){
         this.$toast('删除'+id);
       },
-      toEditMyPublish(id){
-        this.$toast('编辑'+id);
+      toOrderRentInfo(id,active){
+        if (active != 5) {
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              if (result.data.data.active==0){
+                that.$router.push({
+                  path:"order_buy_paying",
+                  query:{
+                    data:result.data.data,
+                    flag:"rent"
+                  }
+                })
+              }else if (result.data.data.active==1){
+                that.$router.push({
+                  path:"order_buy_delivery",
+                  query:{
+                    data:result.data.data,
+                    flag:"rent"
+                  }
+                })
+              }else if (result.data.data.active==2){
+                that.$router.push({
+                  path:"order_buy_receive",
+                  query:{
+                    data:result.data.data,
+                    flag:"rent"
+                  }
+                })
+              }else if (result.data.data.active==3){
+                that.$router.push({
+                  path:"order_buy_confirm",
+                  query:{
+                    data:result.data.data,
+                    flag:"rent"
+                  }
+                })
+              }else if (result.data.data.active==4){
+                that.$router.push({
+                  path:"order_buy_evaluate",
+                  query:{
+                    data:result.data.data,
+                    flag:"rent"
+                  }
+                })
+              }
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+        }else {
+          this.$router.push({
+            path: 'order_refund',
+            query: {
+              orderId: id,
+              flag:"rent"
+            }
+          })
+        }
+      },
+      toDeleteSaleOrder(id){
+        this.$toast('删除'+id);
+      },
+      toOrderSaleInfo(id,active){
+        console.log(active)
+        if (active != 5) {
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              if (result.data.data.active==0){
+                that.$router.push({
+                  path:"order_buy_paying",
+                  query:{
+                    data:result.data.data,
+                    flag:"sale"
+                  }
+                })
+              }else if (result.data.data.active==1){
+                that.$router.push({
+                  path:"order_buy_delivery",
+                  query:{
+                    data:result.data.data,
+                    flag:"sale"
+                  }
+                })
+              }else if (result.data.data.active==2){
+                that.$router.push({
+                  path:"order_buy_receive",
+                  query:{
+                    data:result.data.data,
+                    flag:"sale"
+                  }
+                })
+              }else if (result.data.data.active==3){
+                that.$router.push({
+                  path:"order_buy_confirm",
+                  query:{
+                    data:result.data.data,
+                    flag:"sale"
+                  }
+                })
+              }else if (result.data.data.active==4){
+                that.$router.push({
+                  path:"order_buy_evaluate",
+                  query:{
+                    data:result.data.data,
+                    flag:"sale"
+                  }
+                })
+              }
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+        }else {
+          this.$router.push({
+            path: 'order_refund',
+            query: {
+              orderId: id,
+              flag:"sale"
+            }
+          })
+        }
       },
       onClickLeft(){
-        this.$router.go(-1)
+        this.$router.push({path:"/mine"})
       },
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/")
-            .then(function (RentResult) {
-              that.RentData = RentResult.data.data;
+          this.$axios.get("http://127.0.0.1:8081/order/getMyBuyRentInfo/"+this.userInfo.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.RentData = result.data.data;
+              }else {
+                Toast("系统错误！");
+                that.$router.push({path:"/mine"})
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+
+          this.$axios.get("http://127.0.0.1:8081/order/getMyBuySaleInfo/"+this.userInfo.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.SaleData = result.data.data;
+              }else {
+                Toast("系统错误！");
+                that.$router.push({path:"/mine"})
+              }
             })
             .catch(function (error) {
               console.log(error)
@@ -122,6 +284,38 @@
           this.isLoading = false;
         }, 500);
       }
+    },
+    created(){
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+      this.userInfo = userInfo;
+
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/order/getMyBuyRentInfo/"+this.userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.RentData = result.data.data;
+          }else {
+            Toast("系统错误！");
+            that.$router.push({path:"/mine"})
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+
+      this.$axios.get("http://127.0.0.1:8081/order/getMyBuySaleInfo/"+this.userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.SaleData = result.data.data;
+          }else {
+            Toast("系统错误！");
+            that.$router.push({path:"/mine"})
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
     }
   }
 </script>

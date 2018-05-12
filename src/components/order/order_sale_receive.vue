@@ -2,7 +2,7 @@
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" title="订单信息"/>
     <cross-line></cross-line>
-    <van-steps :active="active" style="height: 60px">
+    <van-steps :active="this.orderData.active" style="height: 65px">
       <van-step>已拍下</van-step>
       <van-step>已付款</van-step>
       <van-step>已发货</van-step>
@@ -13,63 +13,50 @@
     <van-cell-group>
       <van-cell>
         <div class="price">
-          {{product.price}}元
+          {{this.orderData.price}}元
           <p>已发货</p>
         </div>
       </van-cell>
 
       <van-cell>
         <div>
-          {{address.person}}
-          {{address.telephone}}
-          <p>{{address.location}}</p>
+          {{this.orderData.receiveName}}
+          {{this.orderData.telephone}}
+          <p>{{this.orderData.address}}</p>
         </div>
       </van-cell>
 
       <van-cell>
         <div class="product box">
-          <img :src="product.picture"/>
-          <span>{{product.title}}</span>
+          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
+          <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
 
       <van-cell>
         <div class="orderInfo">
-          <div>买家昵称<span class="fr">{{orderInfo.alias}}</span></div>
-          <div>订单编号<span class="fr">{{orderInfo.orderNum}}</span></div>
-          <div>交易时间<span class="fr">{{orderInfo.time}}</span></div>
+          <div>买家昵称<span class="fr">{{this.orderData.buyAlias}}</span></div>
+          <div>订单编号<span class="fr">{{this.orderData.orderNum}}</span></div>
+          <div>交易时间<span class="fr">{{this.orderData.buyTimeStr}}</span></div>
+          <div>快递单号<span class="fr">{{this.orderData.postCompany}}  {{this.orderData.postNum}}</span></div>
         </div>
       </van-cell>
 
     </van-cell-group>
-
+    <center><van-button class="vanCloseButton" bottom-action>等待买家收货</van-button></center>
   </div>
 </template>
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
 export default {
   components: {
     CrossLine
   },
   data () {
     return {
-      active: 2,
-      product:{
-        picture: require("../../assets/project/UAV1.jpg"),
-        price: 22.00,
-        title: "御Mavic Pro铂金版"
-      },
-      address:{
-        person: "凌鹏",
-        telephone: "13996598949",
-        location: "重庆市理工大学花溪校区"
-      },
-      orderInfo:{
-        alias: "le471925552",
-        orderNum: "123456789987654321",
-        time: "2018-05-04 00:03"
-      }
+      orderData:{},
     }
   },
   methods: {
@@ -77,6 +64,39 @@ export default {
       this.$router.go(-3)
     },
   },
+  created(){
+    // 取到路由带过来的参数
+    let orderData = this.$route.query.data;
+    let flag = this.$route.query.flag;
+    this.flag = flag;
+
+    var that = this
+    if (flag=="rent") {
+      this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/" + orderData.orderId)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.orderData = result.data.data;
+          } else {
+            Toast(result.data.message)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    }else if (flag=="sale"){
+      this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/" + orderData.orderId)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.orderData = result.data.data;
+          } else {
+            Toast(result.data.message)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    }
+  }
 }
 </script>
 
@@ -84,12 +104,13 @@ export default {
 .price{
   padding-top: 25px;
   font-size: 35px;
-  color: gray;
+  color: red;
   text-align: center;
 }
 .price p{
   padding-top: 10px;
   font-size: 10px;
+  color: gray;
 }
 .product{
   padding-left: 10px;

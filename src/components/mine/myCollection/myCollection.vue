@@ -14,12 +14,12 @@
         </div>
         <div v-if="CollectRentData!=''">
           <div class="seller-list-item" v-for="item in CollectRentData" :item= "item" :key="item">
-            <div class="left"  @click="toRentDetail(item.id)">
+            <div class="left"  @click="toRentDetail(item.id,item.flag)">
               <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
             </div>
 
             <div class="content">
-              <div class="name"  @click="toRentDetail(item.id)">
+              <div class="name"  @click="toRentDetail(item.id,item.flag)">
                 {{item.rentProductName}}
               </div>
 
@@ -47,12 +47,12 @@
           </div>
           <div v-if="CollectSaleData!=''">
             <div class="seller-list-item" v-for="item in CollectSaleData" :item= "item" :key="item">
-                <div class="left" @click="toSaleDetail(item.id)">
+                <div class="left" @click="toSaleDetail(item.id,item.flag)">
                   <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
                 </div>
 
                 <div class="content">
-                  <div class="name" @click="toSaleDetail(item.id)">
+                  <div class="name" @click="toSaleDetail(item.id,item.flag)">
                     {{item.saleProductName}}
                   </div>
 
@@ -75,6 +75,7 @@
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
   export default {
     components: {
       CrossLine
@@ -94,21 +95,29 @@
       }
     },
     methods:{
-      toRentDetail(id){
-        this.$router.push({
-          path:'rentDetailInfo',
-          query: {
-            data: id
-          }
-        })
+      toRentDetail(id,flag){
+        if (flag==1){
+          Toast("收藏的商品被卖了哦！o(╥﹏╥)o");
+        } else if (flag==0) {
+          this.$router.push({
+            path: 'rentDetailInfo',
+            query: {
+              data: id
+            }
+          })
+        }
       },
-      toSaleDetail(id){
-        this.$router.push({
-          path:'saleDetailInfo',
-          query: {
-            data: id
-          }
-        })
+      toSaleDetail(id,flag){
+        if (flag==1){
+          Toast("收藏的商品被卖了哦！o(╥﹏╥)o");
+        } else if (flag==0) {
+          this.$router.push({
+            path: 'saleDetailInfo',
+            query: {
+              data: id
+            }
+          })
+        }
       },
       toDeleteRentMyCollect(id){
         var that = this;
@@ -146,7 +155,7 @@
         this.$toast('编辑'+id);
       },
       onClickLeft(){
-        this.$router.go(-1)
+        this.$router.push({path:"/mine"})
       },
       onRefresh() {
         setTimeout(() => {
@@ -179,6 +188,7 @@
       this.$axios.get("http://127.0.0.1:8081/collect/getCollectRent/"+this.userInfo.id)
         .then(function (result) {
           that.CollectRentData = result.data.data;
+          console.log(that.CollectRentData)
         })
         .catch(function (error) {
           console.log(error)

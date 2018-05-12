@@ -4,7 +4,7 @@
     <cross-line></cross-line>
     <van-steps :active="this.orderData.active" style="height: 65px">
       <van-step>已拍下</van-step>
-      <van-step>已付款</van-step>
+      <van-step>待付款</van-step>
       <van-step>待发货</van-step>
       <van-step>待收货</van-step>
       <van-step>待评价</van-step>
@@ -14,7 +14,7 @@
       <van-cell>
         <div class="price">
           {{this.orderData.price}}元
-          <p>已付款</p>
+          <p>未付款</p>
         </div>
       </van-cell>
 
@@ -44,35 +44,27 @@
     </van-cell-group>
 
     <van-row gutter="1">
-      <center><van-button class="vanButton" bottom-action @click="toDelivery">去发货</van-button></center>
+      <center><van-button class="vanCloseButton" bottom-action>等待买家付款</van-button></center>
     </van-row>
   </div>
 </template>
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
 export default {
   components: {
     CrossLine
   },
   data () {
     return {
-      userInfo:{},
       orderData:{},
+      flag:""
     }
   },
   methods: {
-    toDelivery(){
-      this.$router.push({
-        path:"order_sale_toDelivery",
-        query:{
-          data:this.orderData,
-          flag:this.flag
-        }
-      })
-    },
     onClickLeft(){
-      this.$router.push({path:"/mySale"})
+      this.$router.push({path:'/mySale'})
     },
   },
   created(){

@@ -2,19 +2,15 @@
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" title="订单信息"/>
     <cross-line></cross-line>
-    <van-steps :active="this.orderData.active" style="height: 65px">
-      <van-step>已拍下</van-step>
-      <van-step>已付款</van-step>
-      <van-step>待发货</van-step>
-      <van-step>待收货</van-step>
-      <van-step>待评价</van-step>
-    </van-steps>
 
     <van-cell-group>
       <van-cell>
+        <div style="font-size: 16px;text-align: center;padding-top: 20px">
+          <b>该订单已被关闭</b>
+        </div>
         <div class="price">
           {{this.orderData.price}}元
-          <p>已付款</p>
+          <p>订单已关闭（买家退款）</p>
         </div>
       </van-cell>
 
@@ -38,14 +34,12 @@
           <div>买家昵称<span class="fr">{{this.orderData.buyAlias}}</span></div>
           <div>订单编号<span class="fr">{{this.orderData.orderNum}}</span></div>
           <div>交易时间<span class="fr">{{this.orderData.buyTimeStr}}</span></div>
+          <div>退款理由<span class="fr">{{this.orderData.refundRes}}</span></div>
         </div>
       </van-cell>
 
     </van-cell-group>
 
-    <van-row gutter="1">
-      <center><van-button class="vanButton" bottom-action @click="toDelivery">去发货</van-button></center>
-    </van-row>
   </div>
 </template>
 
@@ -57,22 +51,12 @@ export default {
   },
   data () {
     return {
-      userInfo:{},
-      orderData:{},
+      orderData:{}
     }
   },
   methods: {
-    toDelivery(){
-      this.$router.push({
-        path:"order_sale_toDelivery",
-        query:{
-          data:this.orderData,
-          flag:this.flag
-        }
-      })
-    },
     onClickLeft(){
-      this.$router.push({path:"/mySale"})
+      this.$router.push({path:'/mine'})
     },
   },
   created(){
@@ -81,10 +65,34 @@ export default {
     this.userInfo = userInfo;
 
     // 取到路由带过来的参数
-    let orderData = this.$route.query.data;
+    let orderId = this.$route.query.orderId;
     let flag = this.$route.query.flag;
-    this.flag = flag;
-    this.orderData = orderData;
+    var that = this;
+    if (flag=="rent") {
+      this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/" + orderId)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.orderData = result.data.data;
+            console.log(that.orderData)
+          } else {
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    }else if (flag=="sale"){
+      this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/" + orderId)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.orderData = result.data.data;
+            console.log(that.orderData)
+          } else {
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    }
   }
 }
 </script>
@@ -93,13 +101,13 @@ export default {
 .price{
   padding-top: 25px;
   font-size: 35px;
-  color: red;
+  color: gray;
   text-align: center;
 }
 .price p{
   padding-top: 10px;
-  font-size: 10px;
   color: gray;
+  font-size: 10px;
 }
 .product{
   padding-left: 10px;

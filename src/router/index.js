@@ -37,6 +37,7 @@ import order_sale_toDelivery from "@/components/order/order_sale_toDelivery"
 import order_sale_receive from "@/components/order/order_sale_receive"
 import order_sale_confirm from "@/components/order/order_sale_confirm"
 import order_sale_evaluate from "@/components/order/order_sale_evaluate"
+import order_sale_paying from "@/components/order/order_sale_paying"
 import rentAdminDetailInfo from '@/components/rent/rentAdminDetailInfo'
 import saleAdminDetailInfo from '@/components/sale/saleAdminDetailInfo'
 import rentEdit from '@/components/publish/rentEdit'
@@ -45,6 +46,7 @@ import rentSimpleInfo from '@/components/rent/rentSimpleInfo'
 import saleSimpleInfo from '@/components/sale/saleSimpleInfo'
 import rentToBuy from '@/components/rent/rentToBuy'
 import saleToBuy from '@/components/sale/saleToBuy'
+import order_refund from '@/components/order/order_refund'
 
 
 Vue.use(Router)
@@ -291,6 +293,14 @@ export default new Router({
     {
       path: '/saleToBuy',
       component: saleToBuy
+    },
+    {
+      path: '/order_sale_paying',
+      component: order_sale_paying
+    },
+    {
+      path: '/order_refund',
+      component: order_refund
     },
   ]
 })

@@ -30,7 +30,7 @@
           <div>
             <span class="price fl"><b>￥{{item.price}}</b></span>
             <div class="fr">
-              <van-button size="small" @click="toOrderRentInfo(item.orderId)">订单信息</van-button>
+              <van-button size="small" @click="toOrderRentInfo(item.orderId,item.active)">订单信息</van-button>
               <van-button v-if="item.active>=3" size="small" @click="toDeleteRentOrder(item.orderId)">删除</van-button>
             </div>
           </div>
@@ -65,7 +65,7 @@
           <div>
             <span class="price fl"><b>￥{{item.price}}</b></span>
             <div class="fr">
-              <van-button size="small" @click="toOrderSaleInfo(item.orderId)">订单信息</van-button>
+              <van-button size="small" @click="toOrderSaleInfo(item.orderId,item.active)">订单信息</van-button>
               <van-button v-if="item.active>=3" size="small" @click="toDeleteSaleOrder(item.orderId)">删除</van-button>
             </div>
           </div>
@@ -108,7 +108,7 @@
       },
       toRentSimpleInfo(id){
         this.$router.push({
-          path:'rentSimpleInfo',
+          path: 'rentSimpleInfo',
           query: {
             data: id
           }
@@ -117,14 +117,137 @@
       toDeleteRentOrder(id){
         this.$toast('删除'+id);
       },
-      toOrderRentInfo(id){
-        this.$toast('编辑'+id);
+      toOrderRentInfo(id,active){
+        if (active != 5) {
+          var that = this;
+          this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/"+id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                if (result.data.data.active==0){
+                  that.$router.push({
+                    path:"order_sale_paying",
+                    query:{
+                      data:result.data.data,
+                      flag:"rent"
+                    }
+                  })
+                }else if (result.data.data.active==1){
+                  that.$router.push({
+                    path:"order_sale_delivery",
+                    query:{
+                      data:result.data.data,
+                      flag:"rent"
+                    }
+                  })
+                }else if (result.data.data.active==2){
+                  that.$router.push({
+                    path:"order_sale_receive",
+                    query:{
+                      data:result.data.data,
+                      flag:"rent"
+                    }
+                  })
+                }else if (result.data.data.active==3){
+                  that.$router.push({
+                    path:"order_sale_confirm",
+                    query:{
+                      data:result.data.data,
+                      flag:"rent"
+                    }
+                  })
+                }else if (result.data.data.active==4){
+                  that.$router.push({
+                    path:"order_sale_evaluate",
+                    query:{
+                      data:result.data.data,
+                      flag:"rent"
+                    }
+                  })
+                }
+              }else {
+                Toast("系统错误！")
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }else {
+          this.$router.push({
+            path: 'order_refund',
+            query: {
+              orderId: id,
+              flag:"rent"
+            }
+          })
+        }
       },
       toDeleteSaleOrder(id){
         this.$toast('删除'+id);
       },
-      toOrderSaleInfo(id){
-        this.$toast('编辑'+id);
+      toOrderSaleInfo(id,active){
+        if (active != 5) {
+          var that = this;
+          this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/"+id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                if (result.data.data.active==0){
+                  that.$router.push({
+                    path:"order_sale_paying",
+                    query:{
+                      data:result.data.data,
+                      flag:"sale"
+                    }
+                  })
+                }else if (result.data.data.active==1){
+                  that.$router.push({
+                    path:"order_sale_delivery",
+                    query:{
+                      data:result.data.data,
+                      flag:"sale"
+                    }
+                  })
+                }else if (result.data.data.active==2){
+                  that.$router.push({
+                    path:"order_sale_receive",
+                    query:{
+                      data:result.data.data,
+                      flag:"sale"
+                    }
+                  })
+                }else if (result.data.data.active==3){
+                  that.$router.push({
+                    path:"order_sale_confirm",
+                    query:{
+                      data:result.data.data,
+                      flag:"sale"
+                    }
+                  })
+                }else if (result.data.data.active==4){
+                  that.$router.push({
+                    path:"order_sale_evaluate",
+                    query:{
+                      data:result.data.data,
+                      flag:"sale"
+                    }
+                  })
+                }
+              }else {
+                Toast("系统错误！")
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }else {
+          this.$router.push({
+            path: 'order_refund',
+            query: {
+              orderId: id,
+              flag:"sale"
+            }
+          })
+        }
+
       },
       onClickLeft(){
         this.$router.push({path:"/mine"})
