@@ -216,7 +216,7 @@ export default {
       this.$router.push({path:'/order_buy_confirm'})
     },
     onClickLeft(){
-      this.$router.go(-3)
+      this.$router.push({path:'/myBuy'})
     },
   },
   created(){

@@ -2,7 +2,7 @@
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" title="订单信息"/>
     <cross-line></cross-line>
-    <van-steps :active="active" style="height: 65px">
+    <van-steps :active="4" style="height: 65px">
       <van-step>已拍下</van-step>
       <van-step>已付款</van-step>
       <van-step>已发货</van-step>
@@ -13,31 +13,32 @@
     <van-cell-group>
       <van-cell>
         <div class="price">
-          {{product.price}}元
+          {{this.orderData.price}}元
           <p>已评价</p>
         </div>
       </van-cell>
 
       <van-cell>
         <div>
-          {{address.person}}
-          {{address.telephone}}
-          <p>{{address.location}}</p>
+          {{this.orderData.receiveName}}
+          {{this.orderData.telephone}}
+          <p>{{this.orderData.address}}</p>
         </div>
       </van-cell>
 
       <van-cell>
         <div class="product box">
-          <img :src="product.picture"/>
-          <span>{{product.title}}</span>
+          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
+          <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
 
       <van-cell>
         <div class="orderInfo">
-          <div>买家昵称<span class="fr">{{orderInfo.alias}}</span></div>
-          <div>订单编号<span class="fr">{{orderInfo.orderNum}}</span></div>
-          <div>交易时间<span class="fr">{{orderInfo.time}}</span></div>
+          <div>买家昵称<span class="fr">{{this.orderData.buyAlias}}</span></div>
+          <div>订单编号<span class="fr">{{this.orderData.orderNum}}</span></div>
+          <div>交易时间<span class="fr">{{this.orderData.buyTimeStr}}</span></div>
+          <div>快递单号<span class="fr">{{this.orderData.postCompany}}  {{this.orderData.postNum}}</span></div>
         </div>
       </van-cell>
 
@@ -55,22 +56,8 @@ export default {
   },
   data () {
     return {
-      active: 4,
-      product:{
-        picture: require("../../assets/project/UAV1.jpg"),
-        price: 22.00,
-        title: "御Mavic Pro铂金版"
-      },
-      address:{
-        person: "凌鹏",
-        telephone: "13996598949",
-        location: "重庆市理工大学花溪校区"
-      },
-      orderInfo:{
-        alias: "le471925552",
-        orderNum: "123456789987654321",
-        time: "2018-05-04 00:03"
-      }
+      orderData:{},
+      flag:""
     }
   },
   methods: {
@@ -78,9 +65,16 @@ export default {
       this.$router.push({path:'/'})
     },
     onClickLeft(){
-      this.$router.go(-3)
+      this.$router.push({path:'/mySale'})
     },
   },
+  created(){
+    // 取到路由带过来的参数
+    let orderData = this.$route.query.data;
+    let flag = this.$route.query.flag;
+    this.flag = flag;
+    this.orderData = orderData;
+  }
 }
 </script>
 

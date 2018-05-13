@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     onClickLeft(){
-      this.$router.go(-3)
+      this.$router.push({path:'/mySale'})
     },
   },
   created(){

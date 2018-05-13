@@ -155,12 +155,20 @@
                       flag:"rent"
                     }
                   })
-                }else if (result.data.data.active==4){
+                }else if (result.data.data.active==4 && result.data.data.sale_evaluate_flag==1){
                   that.$router.push({
                     path:"order_sale_evaluate",
                     query:{
                       data:result.data.data,
-                      flag:"rent"
+                      flag:"rent",
+                    }
+                  })
+                }else if (result.data.data.active==4 && result.data.data.sale_evaluate_flag==0){
+                  that.$router.push({
+                    path:"order_sale_confirm",
+                    query:{
+                      data:result.data.data,
+                      flag:"rent",
                     }
                   })
                 }

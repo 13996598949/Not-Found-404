@@ -72,7 +72,7 @@ export default {
       })
     },
     onClickLeft(){
-      this.$router.push({path:"/mySale"})
+      this.$router.push({path:'/mySale'})
     },
   },
   created(){
