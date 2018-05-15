@@ -1,6 +1,6 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-  <div>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
+  <div style="height: 100%">
     <van-nav-bar left-arrow @click-left="onClickLeft" title="待评价"/>
     <cross-line></cross-line>
 
@@ -13,12 +13,12 @@
     </div>
     <div v-if="RentData!=''">
     <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
-      <div class="left">
+      <div class="left" @click="toRentSimpleInfo(item.productId)">
         <img :src="'http://127.0.0.1:8081/'+item.picture">
       </div>
 
       <div class="content">
-        <div class="name">
+        <div class="name" @click="toRentSimpleInfo(item.productId)">
           {{item.productName}}
         </div>
 
@@ -30,7 +30,7 @@
           <span class="price fl"><b>￥{{item.price}}/天</b></span>
           <div class="fr">
             <van-button size="small" @click="toEditMyPublish(item.orderId)">删除订单</van-button>
-            <van-button size="small" @click="toDeleteMyPublish(item.orderId)">评价</van-button>
+            <van-button size="small" @click="toOrderRentInfo(item.orderId)">订单信息</van-button>
           </div>
         </div>
       </div>
@@ -46,12 +46,12 @@
     </div>
     <div v-if="SaleData!=''">
       <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
-        <div class="left">
+        <div class="left" @click="toSaleSimpleInfo(item.productId)">
           <img :src="'http://127.0.0.1:8081/'+item.picture">
         </div>
 
         <div class="content">
-          <div class="name">
+          <div class="name" @click="toSaleSimpleInfo(item.productId)">
             {{item.productName}}
           </div>
 
@@ -62,8 +62,8 @@
           <div>
             <span class="price fl"><b>￥{{item.price}}/天</b></span>
             <div class="fr">
-              <van-button size="small" @click="toEditMyPublish(item.orderId)">删除订单</van-button>
-              <van-button size="small" @click="toDeleteMyPublish(item.orderId)">评价</van-button>
+              <van-button size="small" @click="toDeleteSaleOrder(item.orderId)">删除订单</van-button>
+              <van-button size="small" @click="toOrderSaleInfo(item.orderId)">订单信息</van-button>
             </div>
           </div>
         </div>
@@ -78,6 +78,7 @@
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import { Dialog } from 'vant';
   export default {
     components: {
       CrossLine
@@ -86,7 +87,8 @@
       return {
         isLoading: false,
         RentData:{},
-        SaleData:{}
+        SaleData:{},
+        userInfo:{}
       }
     },
     props: {
@@ -96,11 +98,120 @@
       }
     },
     methods:{
-      toDeleteMyPublish(id){
-        this.$toast('删除'+id);
+      toOrderRentInfo(id){
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.$router.push({
+                path:"order_buy_confirm",
+                query:{
+                  data:result.data.data,
+                  flag:"rent"
+                }
+              })
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       },
-      toEditMyPublish(id){
-        this.$toast('编辑'+id);
+      toOrderSaleInfo(id){
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.$router.push({
+                path:"order_buy_confirm",
+                query:{
+                  data:result.data.data,
+                  flag:"sale"
+                }
+              })
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      },
+      toSaleSimpleInfo(id){
+        this.$router.push({
+          path:'saleSimpleInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toRentSimpleInfo(id){
+        this.$router.push({
+          path:'rentSimpleInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toDeleteRentOrder(id){
+        Dialog.confirm({
+          title: '提示',
+          message: '确定要删除订单吗？'
+        }).then(() => {
+            var that = this;
+            this.$axios.delete("http://127.0.0.1:8081/order/deleteRentOrder/" + id + "/" + "buy")
+              .then(function (result) {
+                if (result.data.status != false) {
+                  Toast("删除成功！")
+                  that.$axios.get("http://127.0.0.1:8081/order/getEvaluateRentList/" + that.userInfo.id)
+                    .then(function (result) {
+                      if (result.data.status != false) {
+                        that.RentData = result.data.data;
+                      } else {
+                        Toast(result.data.message);
+                      }
+                    })
+                    .catch(function (error) {
+                      console.log(error)
+                    });
+                }
+              })
+            }).catch(()=>{
+
+            })
+      },
+      toDeleteSaleOrder(id){
+        Dialog.confirm({
+          title: '提示',
+          message: '确定要删除订单吗？'
+        }).then(() => {
+          var that = this;
+          this.$axios.delete("http://127.0.0.1:8081/order/deleteSaleOrder/" + id + "/" + "buy")
+            .then(function (result) {
+              if (result.data.status != false) {
+                Toast("删除成功！")
+                that.$axios.get("http://127.0.0.1:8081/order/getEvaluateSaleList/"+that.userInfo.id)
+                  .then(function (result) {
+                    if (result.data.status != false) {
+                      that.SaleData = result.data.data;
+                    }else {
+                      Toast(result.data.message);
+                    }
+                  })
+                  .catch(function (error) {
+                    console.log(error)
+                  });
+              } else {
+                Toast(result.data.message)
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }).catch(()=>{
+
+        })
       },
       onClickLeft(){
         this.$router.go(-1)

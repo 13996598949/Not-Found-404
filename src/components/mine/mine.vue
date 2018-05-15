@@ -1,71 +1,72 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-  <div class="page">
-    <div class="user-box">
-      <div class="info">
-        <img v-if="this.userInfo == null" src="./img/default_header.jpg"/>
-        <van-uploader :after-read="onRead" multiple>
-          <img v-if="this.userInfo != null" id="header" :src="'http://127.0.0.1:8081/'+this.userInfo.header" width="40px" height="40px"/>
-        </van-uploader>
-        <p v-if="this.userInfo == null" class="username" @click="login">点击登录</p>
-        <p v-if="this.userInfo != null" class="username">{{this.userInfo.userName}}</p>
-      </div>
-    </div>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
+      <div  style="height: 100%">
+        <div class="user-box">
+          <div class="info">
+            <img v-if="this.userInfo == null" src="./img/default_header.jpg"/>
+            <van-uploader :after-read="onRead" multiple>
+              <img v-if="this.userInfo != null" id="header" :src="'http://127.0.0.1:8081/'+this.userInfo.header" width="40px" height="40px"/>
+            </van-uploader>
+            <p v-if="this.userInfo == null" class="username" @click="login">点击登录</p>
+            <p v-if="this.userInfo != null" class="username">{{this.userInfo.userName}}</p>
+          </div>
+        </div>
 
-    <cross-line></cross-line>
+        <cross-line></cross-line>
 
-    <div class="nav">
-      <div class="nav-item" @click="toPayingList">
-        <!--<img src="./img/paying.png">-->
-        <van-icon v-if="this.CountData.payNum>0" style="font-size:21px;color:#1296db" name="cash-back-record" :info="this.CountData.payNum"/>
-        <van-icon v-if="this.CountData.payNum<=0" style="font-size:21px;color:#1296db" name="cash-back-record"/>
-        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="cash-back-record"/>
-        <p>待付款</p>
-      </div>
-      <div class="nav-item" @click="toDeliveryList">
-        <!--<img src="./img/sendProject.png"/>-->
-        <van-icon v-if="this.CountData.deliveryNum>0" style="font-size:21px;color:#1296db" name="logistics" :info="this.CountData.deliveryNum"/>
-        <van-icon v-if="this.CountData.deliveryNum<=0" style="font-size:21px;color:#1296db" name="logistics" />
-        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="logistics" />
-        <p>待发货</p>
-      </div>
-      <div class="nav-item" @click="toConfirmList">
-        <!--<img src="./img/rePorject.png"/>-->
-        <van-icon v-if="this.CountData.reciveNum>0" style="font-size:21px;color:#1296db" name="pending-deliver" :info="this.CountData.reciveNum"/>
-        <van-icon v-if="this.CountData.reciveNum<=0" style="font-size:21px;color:#1296db" name="pending-deliver"/>
-        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="pending-deliver"/>
-        <p>待收货</p>
-      </div>
-      <div class="nav-item" @click="toEvaluationList">
-        <!--<img src="./img/ok.png"/>-->
-        <van-icon v-if="this.CountData.confirmNum>0" style="font-size:21px;color:#1296db" name="completed" :info="this.CountData.confirmNum"/>
-        <van-icon v-if="this.CountData.confirmNum<=0" style="font-size:21px;color:#1296db" name="completed"/>
-        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="completed"/>
-        <p>待评价</p>
-      </div>
-    </div>
+        <div class="nav">
+          <div class="nav-item" @click="toPayingList">
+            <!--<img src="./img/paying.png">-->
+            <van-icon v-if="this.CountData.payNum>0" style="font-size:21px;color:#1296db" name="cash-back-record" :info="this.CountData.payNum"/>
+            <van-icon v-if="this.CountData.payNum<=0" style="font-size:21px;color:#1296db" name="cash-back-record"/>
+            <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="cash-back-record"/>
+            <p>待付款</p>
+          </div>
+          <div class="nav-item" @click="toDeliveryList">
+            <!--<img src="./img/sendProject.png"/>-->
+            <van-icon v-if="this.CountData.deliveryNum>0" style="font-size:21px;color:#1296db" name="logistics" :info="this.CountData.deliveryNum"/>
+            <van-icon v-if="this.CountData.deliveryNum<=0" style="font-size:21px;color:#1296db" name="logistics" />
+            <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="logistics" />
+            <p>待发货</p>
+          </div>
+          <div class="nav-item" @click="toConfirmList">
+            <!--<img src="./img/rePorject.png"/>-->
+            <van-icon v-if="this.CountData.confirmNum>0" style="font-size:21px;color:#1296db" name="pending-deliver" :info="this.CountData.confirmNum"/>
+            <van-icon v-if="this.CountData.confirmNum<=0" style="font-size:21px;color:#1296db" name="pending-deliver"/>
+            <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="pending-deliver"/>
+            <p>待收货</p>
+          </div>
+          <div class="nav-item" @click="toEvaluationList">
+            <!--<img src="./img/ok.png"/>-->
+            <van-icon v-if="this.CountData.evaluateNum>0" style="font-size:21px;color:#1296db" name="completed" :info="this.CountData.evaluateNum"/>
+            <van-icon v-if="this.CountData.evaluateNum<=0" style="font-size:21px;color:#1296db" name="completed"/>
+            <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="completed"/>
+            <p>待评价</p>
+          </div>
+        </div>
 
-    <cross-line></cross-line>
+        <cross-line></cross-line>
 
-    <div class="menu">
-      <div class="menu-item" @click="toPerson">
-        <img src="./img/peopleMessage.png"/>个人中心<img class="fr" src="./img/right.png"/>
+        <div class="menu">
+          <div class="menu-item" @click="toPerson">
+            <img src="./img/peopleMessage.png"/>个人中心<img class="fr" src="./img/right.png"/>
+          </div>
+          <div class="menu-item" @click="toMyPublish">
+            <img src="./img/public.png"/>我发布的<img class="fr" src="./img/right.png"/>
+          </div>
+          <div class="menu-item" @click="toMySale">
+            <img src="./img/sell.png"/>我卖出的<img class="fr" src="./img/right.png"/>
+          </div>
+          <div class="menu-item" @click="toMyBuy">
+            <img src="./img/buy.png"/>我买到的<img class="fr" src="./img/right.png"/>
+          </div>
+          <div class="menu-item" @click="toMyCollection">
+            <img src="./img/collect.png"/>我收藏的<img class="fr" src="./img/right.png"/>
+          </div>
+        </div>
       </div>
-      <div class="menu-item" @click="toMyPublish">
-        <img src="./img/public.png"/>我发布的<img class="fr" src="./img/right.png"/>
-      </div>
-      <div class="menu-item" @click="toMySale">
-        <img src="./img/sell.png"/>我卖出的<img class="fr" src="./img/right.png"/>
-      </div>
-      <div class="menu-item" @click="toMyBuy">
-        <img src="./img/buy.png"/>我买到的<img class="fr" src="./img/right.png"/>
-      </div>
-      <div class="menu-item" @click="toMyCollection">
-        <img src="./img/collect.png"/>我收藏的<img class="fr" src="./img/right.png"/>
-      </div>
-    </div>
-  </div>
   </van-pull-refresh>
+
 </template>
 
 <script>

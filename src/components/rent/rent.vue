@@ -1,7 +1,13 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-  <div>
-    <Search></Search>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
+  <div style="height: 100%">
+    <form action="/">
+      <van-search
+        v-model="value"
+        placeholder="请输入商品名称"
+        @search="toSearch"
+      />
+    </form>
     <div class="nearby">
       <div class="title-bar">
         <span>精品租赁</span>
@@ -14,23 +20,38 @@
 </template>
 
 <script>
-  import Search from "@/components/base/search/search"
   import rentListItem from '@/components/base/shop-list-item/rent-list-item'
 export default {
   components: {
-    Search,
     rentListItem
   },
   data () {
     return {
       RentData: [],
       isLoading: false,
-      userInfo:{}
+      userInfo:{},
+      value:"",
     }
   },
   props: {},
   watch: {},
   methods: {
+    toSearch(){
+      var id;
+      if (this.userInfo == null){
+        id=0;
+      } else {
+        id=this.userInfo.id
+      }
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/rent/getRentAllInfo/"+id,{params:{"rentName":this.value}})
+        .then(function (RentResult) {
+          that.RentData = RentResult.data.data;
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    },
     onRefresh() {
       var id;
       if (this.userInfo == null){
@@ -40,7 +61,7 @@ export default {
       }
       setTimeout(() => {
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/rent/getRentAllInfo/"+id)
+        this.$axios.get("http://127.0.0.1:8081/rent/getRentAllInfo/"+id,{params:{"rentName":this.value}})
           .then(function (RentResult) {
             that.RentData = RentResult.data.data;
           })
@@ -65,9 +86,8 @@ export default {
     } else {
       id=this.userInfo.id
     }
-
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/rent/getRentAllInfo/"+id)
+    this.$axios.get("http://127.0.0.1:8081/rent/getRentAllInfo/"+id,{params:{"rentName":this.value}})
       .then(function (RentResult) {
         that.RentData = RentResult.data.data;
       })

@@ -2,30 +2,57 @@
   <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
     <div>
       <van-nav-bar left-arrow @click-left="onClickLeft" title="新品专区"/>
-      <cross-line></cross-line>
+      <form action="/">
+        <van-search
+          v-model="value"
+          placeholder="请输入商品名称"
+          @search="toSearchNew"
+        />
+      </form>
+      <van-tabs sticky>
+        <van-tab title="全部">
+          <div class="title-bar">
+            <span>租赁区</span>
+          </div>
+          <div v-if="RentData==''">
+            <span style="font-size: 14px;text-align: center;padding-top: 30px">租赁区暂无商品哦~</span>
+            <div class="bottomFix"></div>
+          </div>
+          <div v-if="RentData!=''">
+            <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
+            <cross-line></cross-line>
+          </div>
+          <div class="title-bar">
+            <span>出售区</span>
+          </div>
+          <div v-if="SaleData==''">
+            <span style="font-size: 14px;text-align: center;padding-top: 30px">出售区暂无商品哦~</span>
+            <div class="bottomFix"></div>
+          </div>
+          <div v-if="SaleData!=''">
+            <sale-list-item v-for="item in SaleData" :item= "item" :key="item"></sale-list-item>
+          </div>
+        </van-tab>
+        <van-tab title="租赁区">
+          <div v-if="RentData==''">
+            <span style="font-size: 14px;text-align: center;padding-top: 30px">租赁区暂无商品哦~</span>
+            <div class="bottomFix"></div>
+          </div>
+          <div v-if="RentData!=''">
+            <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
+          </div>
+        </van-tab>
+        <van-tab title="出售区">
+          <div v-if="SaleData==''">
+            <span style="font-size: 14px;text-align: center;padding-top: 30px">出售区暂无商品哦~</span>
+            <div class="bottomFix"></div>
+          </div>
+          <div v-if="SaleData!=''">
+            <sale-list-item v-for="item in SaleData" :item= "item" :key="item"></sale-list-item>
+          </div>
+        </van-tab>
+      </van-tabs>
 
-      <div class="title-bar">
-        <span>租赁区</span>
-      </div>
-      <div v-if="RentData==''">
-        <span style="font-size: 14px;text-align: center;padding-top: 30px">租赁区暂无商品哦~</span>
-        <div class="bottomFix"></div>
-      </div>
-      <div v-if="RentData!=''">
-      <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
-      <cross-line></cross-line>
-      </div>
-
-      <div class="title-bar">
-        <span>出售区</span>
-      </div>
-      <div v-if="SaleData==''">
-        <span style="font-size: 14px;text-align: center;padding-top: 30px">出售区暂无商品哦~</span>
-        <div class="bottomFix"></div>
-      </div>
-      <div v-if="SaleData!=''">
-      <sale-list-item v-for="item in SaleData" :item= "item" :key="item"></sale-list-item>
-      </div>
     </div>
   </van-pull-refresh>
 </template>
@@ -47,6 +74,7 @@
         userInfo: {},
         RentData: [],
         SaleData: [],
+        value:""
       }
     },
     props: {
@@ -56,6 +84,40 @@
       }
     },
     methods:{
+      toSearchNew(){
+        var that = this;
+        var id;
+        if (this.userInfo == null){
+          id=0;
+        } else {
+          id=this.userInfo.id
+        }
+        this.$axios.get("http://127.0.0.1:8081/index/getNewRent/"+id,{params:{"searchName":this.value}})
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.RentData = result.data.data;
+            }else {
+              Toast("系统错误！");
+              that.$router.push({path:"/index"})
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+
+        this.$axios.get("http://127.0.0.1:8081/index/getNewSale/"+id,{params:{"searchName":this.value}})
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.SaleData = result.data.data;
+            }else {
+              Toast("系统错误！");
+              that.$router.push({path:"/index"})
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      },
       onClickLeft(){
         this.$router.push({path:"/index"})
       },
@@ -68,7 +130,7 @@
           } else {
             id=this.userInfo.id
           }
-          this.$axios.get("http://127.0.0.1:8081/index/getNewRent/"+id)
+          this.$axios.get("http://127.0.0.1:8081/index/getNewRent/"+id,{params:{"searchName":this.value}})
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData = result.data.data;
@@ -81,7 +143,7 @@
               console.log(error)
             });
 
-          this.$axios.get("http://127.0.0.1:8081/index/getNewSale/"+id)
+          this.$axios.get("http://127.0.0.1:8081/index/getNewSale/"+id,{params:{"searchName":this.value}})
             .then(function (result) {
               if (result.data.status != false) {
                 that.SaleData = result.data.data;
@@ -111,7 +173,7 @@
       }
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/index/getNewRent/"+id)
+      this.$axios.get("http://127.0.0.1:8081/index/getNewRent/"+id,{params:{"searchName":this.value}})
         .then(function (result) {
           if (result.data.status != false) {
             that.RentData = result.data.data;
@@ -124,7 +186,7 @@
           console.log(error)
         });
 
-      this.$axios.get("http://127.0.0.1:8081/index/getNewSale/"+id)
+      this.$axios.get("http://127.0.0.1:8081/index/getNewSale/"+id,{params:{"searchName":this.value}})
         .then(function (result) {
           if (result.data.status != false) {
             that.SaleData = result.data.data;

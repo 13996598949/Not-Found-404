@@ -1,6 +1,6 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-    <div>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
+    <div style="height: 100%">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="我收藏的"/>
       <cross-line></cross-line>
 

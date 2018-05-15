@@ -1,6 +1,6 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-  <div>
+  <div style="height: 100%">
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
     <van-nav-bar left-arrow @click-left="onClickLeft" title="待付款"/>
     <cross-line></cross-line>
 
@@ -13,12 +13,12 @@
     </div>
     <div v-if="RentData!=''">
     <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
-      <div class="left">
+      <div class="left" @click="toRentSimpleInfo(item.productId)">
         <img :src="'http://127.0.0.1:8081/'+item.picture">
       </div>
 
       <div class="content">
-        <div class="name">
+        <div class="name" @click="toRentSimpleInfo(item.productId)">
           {{item.productName}}
         </div>
 
@@ -27,10 +27,9 @@
         </div>
 
         <div>
-          <span class="price fl"><b>￥{{item.price}}/天</b></span>
+          <span class="price fl"><b>￥{{item.price}}/天&nbsp;&nbsp;&nbsp;租用{{item.rentDay}}天</b></span>
           <div class="fr">
-            <van-button size="small" @click="toEditMyPublish(item.orderId)">取消订单</van-button>
-            <van-button size="small" @click="toDeleteMyPublish(item.orderId)">付款</van-button>
+            <van-button size="small" @click="toOrderRentInfo(item.orderId)">订单信息</van-button>
           </div>
         </div>
       </div>
@@ -46,12 +45,12 @@
     </div>
     <div v-if="SaleData!=''">
       <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
-        <div class="left">
+        <div class="left" @click="toSaleSimpleInfo(item.productId)">
           <img :src="'http://127.0.0.1:8081/'+item.picture">
         </div>
 
         <div class="content">
-          <div class="name">
+          <div class="name" @click="toSaleSimpleInfo(item.productId)">
             {{item.productName}}
           </div>
 
@@ -62,17 +61,15 @@
           <div>
             <span class="price fl"><b>￥{{item.price}}/天</b></span>
             <div class="fr">
-              <van-button size="small" @click="toEditMyPublish(item.orderId)">取消订单</van-button>
-              <van-button size="small" @click="toDeleteMyPublish(item.orderId)">付款</van-button>
+              <van-button size="small" @click="toOrderSaleInfo(item.orderId)">订单信息</van-button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+  </van-pull-refresh>
 
   </div>
-  </van-pull-refresh>
 </template>
 
 <script>
@@ -86,7 +83,7 @@
       return {
         isLoading: false,
         RentData:{},
-        SaleData:{}
+        SaleData:{},
       }
     },
     props: {
@@ -96,11 +93,61 @@
       }
     },
     methods:{
-      toDeleteMyPublish(id){
-        this.$toast('删除'+id);
+      toSaleSimpleInfo(id){
+        this.$router.push({
+          path:'saleSimpleInfo',
+          query: {
+            data: id
+          }
+        })
       },
-      toEditMyPublish(id){
-        this.$toast('编辑'+id);
+      toRentSimpleInfo(id){
+        this.$router.push({
+          path:'rentSimpleInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toOrderRentInfo(id){
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.$router.push({
+                path:"order_buy_paying",
+                query:{
+                  data:result.data.data,
+                  flag:"rent"
+                }
+              })
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      },
+      toOrderSaleInfo(id){
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.$router.push({
+                path:"order_buy_paying",
+                query:{
+                  data:result.data.data,
+                  flag:"sale"
+                }
+              })
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       },
       onClickLeft(){
         this.$router.go(-1)
@@ -135,6 +182,7 @@
           this.isLoading = false;
         }, 500);
       }
+
     },
     created(){
       var storage = window.sessionStorage;
@@ -170,6 +218,17 @@
 </script>
 
 <style scoped>
+  .priceDialog{
+    padding-top: 25px;
+    font-size: 35px;
+    color: red;
+    text-align: center;
+  }
+  .priceDialog p{
+    padding-top: 10px;
+    font-size: 10px;
+    color: gray;
+  }
   .seller-list-item {
     margin-bottom: 5px;
     display: flex;

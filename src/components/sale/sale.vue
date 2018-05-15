@@ -1,7 +1,13 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-  <div>
-      <Search></Search>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
+  <div style="height: 100%">
+    <form action="/">
+      <van-search
+        v-model="value"
+        placeholder="请输入商品名称"
+        @search="toSearch"
+      />
+    </form>
       <div class="nearby">
         <div class="title-bar">
           <span>热门出售</span>
@@ -14,23 +20,38 @@
 </template>
 
 <script>
-  import Search from "@/components/base/search/search"
   import saleListItem from '@/components/base/shop-list-item/sale-list-item'
 export default {
   components: {
-    Search,
     saleListItem
   },
   data () {
     return {
       SaleData: [],
       isLoading: false,
-      userInfo:{}
+      userInfo:{},
+      value:""
     }
   },
   props: {},
   watch: {},
   methods: {
+    toSearch(){
+      var id;
+      if (this.userInfo == null){
+        id=0;
+      } else {
+        id=this.userInfo.id
+      }
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
+        .then(function (RentResult) {
+          that.SaleData = RentResult.data.data;
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    },
     onRefresh() {
       var id;
       if (this.userInfo == null){
@@ -40,7 +61,7 @@ export default {
       }
       setTimeout(() => {
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id)
+        this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
           .then(function (SaleResult) {
             that.SaleData = SaleResult.data.data;
           })
@@ -67,7 +88,7 @@ export default {
     }
 
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id)
+    this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
       .then(function (SaleResult) {
         that.SaleData = SaleResult.data.data;
       })

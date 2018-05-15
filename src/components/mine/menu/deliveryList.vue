@@ -1,6 +1,6 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-  <div>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
+  <div style="height: 100%">
     <van-nav-bar left-arrow @click-left="onClickLeft" title="待发货"/>
     <cross-line></cross-line>
 
@@ -13,12 +13,12 @@
     </div>
     <div v-if="RentData!=''">
     <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
-      <div class="left">
+      <div class="left" @click="toRentSimpleInfo(item.productId)">
         <img :src="'http://127.0.0.1:8081/'+item.picture">
       </div>
 
       <div class="content">
-        <div class="name">
+        <div class="name" @click="toRentSimpleInfo(item.productId)">
           {{item.productName}}
         </div>
 
@@ -27,9 +27,9 @@
         </div>
 
         <div>
-          <span class="price fl"><b>￥{{item.price}}/天</b></span>
+          <span class="price fl"><b>￥{{item.price}}/天&nbsp;&nbsp;&nbsp;租用{{item.rentDay}}天</b></span>
           <div class="fr">
-            <van-button size="small" @click="toEditMyPublish(item.orderId)">退款</van-button>
+            <van-button size="small" @click="toOrderRentInfo(item.orderId)">订单信息</van-button>
           </div>
         </div>
       </div>
@@ -45,12 +45,12 @@
     </div>
     <div v-if="SaleData!=''">
       <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
-        <div class="left">
+        <div class="left" @click="toSaleSimpleInfo(item.productId)">
           <img :src="'http://127.0.0.1:8081/'+item.picture">
         </div>
 
         <div class="content">
-          <div class="name">
+          <div class="name" @click="toSaleSimpleInfo(item.productId)">
             {{item.productName}}
           </div>
 
@@ -59,9 +59,9 @@
           </div>
 
           <div>
-            <span class="price fl"><b>￥{{item.price}}/天</b></span>
+            <span class="price fl"><b>￥{{item.price}}</b></span>
             <div class="fr">
-              <van-button size="small" @click="toEditMyPublish(item.orderId)">退款</van-button>
+              <van-button size="small" @click="toOrderSaleInfo(item.orderId)">订单信息</van-button>
             </div>
           </div>
         </div>
@@ -94,11 +94,61 @@
       }
     },
     methods:{
-      toDeleteMyPublish(id){
-        this.$toast('删除'+id);
+      toOrderRentInfo(id){
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.$router.push({
+                path:"order_buy_delivery",
+                query:{
+                  data:result.data.data,
+                  flag:"rent"
+                }
+              })
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       },
-      toEditMyPublish(id){
-        this.$toast('编辑'+id);
+      toOrderSaleInfo(id){
+        var that = this;
+        this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/"+id)
+          .then(function (result) {
+            if (result.data.status != false) {
+              that.$router.push({
+                path:"order_buy_delivery",
+                query:{
+                  data:result.data.data,
+                  flag:"sale"
+                }
+              })
+            }else {
+              Toast("系统错误！")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      },
+      toSaleSimpleInfo(id){
+        this.$router.push({
+          path:'saleSimpleInfo',
+          query: {
+            data: id
+          }
+        })
+      },
+      toRentSimpleInfo(id){
+        this.$router.push({
+          path:'rentSimpleInfo',
+          query: {
+            data: id
+          }
+        })
       },
       onClickLeft(){
         this.$router.go(-1)

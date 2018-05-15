@@ -1,6 +1,6 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-    <div>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height: 100%">
+    <div style="height: 100%">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="我卖出的"/>
       <cross-line></cross-line>
 
@@ -79,6 +79,7 @@
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import { Dialog } from 'vant';
   export default {
     components: {
       CrossLine
@@ -115,7 +116,37 @@
         })
       },
       toDeleteRentOrder(id){
-        this.$toast('删除'+id);
+        Dialog.confirm({
+          title: '提示',
+          message: '确定要删除订单吗？'
+        }).then(() => {
+          var that = this;
+          this.$axios.delete("http://127.0.0.1:8081/order/deleteRentOrder/" + id + "/" + "sale")
+            .then(function (result) {
+              if (result.data.status != false) {
+                Toast("删除成功！")
+                that.$axios.get("http://127.0.0.1:8081/order/getMySellRentInfo/"+that.userInfo.id)
+                  .then(function (result) {
+                    if (result.data.status != false) {
+                      that.RentData = result.data.data;
+                    }else {
+                      Toast("系统错误！");
+                      that.$router.push({path:"/mine"})
+                    }
+                  })
+                  .catch(function (error) {
+                    console.log(error)
+                  });
+              } else {
+                Toast(result.data.message)
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }).catch(()=>{
+
+        })
       },
       toOrderRentInfo(id,active){
         if (active != 5) {
@@ -190,7 +221,37 @@
         }
       },
       toDeleteSaleOrder(id){
-        this.$toast('删除'+id);
+        Dialog.confirm({
+          title: '提示',
+          message: '确定要删除订单吗？'
+        }).then(() => {
+          var that = this;
+          this.$axios.delete("http://127.0.0.1:8081/order/deleteSaleOrder/" + id + "/" + "sale")
+            .then(function (result) {
+              if (result.data.status != false) {
+                Toast("删除成功！")
+                that.$axios.get("http://127.0.0.1:8081/order/getMySellSaleInfo/"+that.userInfo.id)
+                  .then(function (result) {
+                    if (result.data.status != false) {
+                      that.SaleData = result.data.data;
+                    }else {
+                      Toast("系统错误！");
+                      that.$router.push({path:"/mine"})
+                    }
+                  })
+                  .catch(function (error) {
+                    console.log(error)
+                  });
+              } else {
+                Toast(result.data.message)
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }).catch(()=>{
+
+        })
       },
       toOrderSaleInfo(id,active){
         if (active != 5) {

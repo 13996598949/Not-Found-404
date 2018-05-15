@@ -108,7 +108,7 @@ export default {
       }
     },
     onClickLeft(){
-      this.$router.push({path:"/index"})
+      this.$router.go(-1)
     },
     formatPrice() {
       return '¥' + (this.SaleData.saleProductPrice).toFixed(2);
