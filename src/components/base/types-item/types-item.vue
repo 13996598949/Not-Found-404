@@ -1,18 +1,18 @@
 <template>
   <div>
-    <div class="types-item">
+    <div class="types-item" @click="toRecommend">
       <img src="../../index/img/types/recommend.png" >
       <span>推荐</span>
     </div>
-    <div class="types-item">
+    <div class="types-item" @click="toNew">
       <img src="../../index/img/types/new.png" >
       <span>新品</span>
     </div>
-    <div class="types-item">
+    <div class="types-item" @click="toConsumer">
       <img src="../../index/img/types/buy.png" >
       <span>消费级</span>
     </div>
-    <div class="types-item">
+    <div class="types-item" @click="toProfessional">
       <img src="../../index/img/types/uav.png" >
       <span>专业级</span>
     </div>
@@ -25,14 +25,21 @@ export default {
   data () {
     return {}
   },
-  props: {},
-  watch: {},
-  methods: {},
-  filters: {},
-  computed: {},
+  methods: {
+    toProfessional(){
+      this.$router.push("/professional")
+    },
+    toConsumer(){
+      this.$router.push("/consumer")
+    },
+    toNew(){
+      this.$router.push("/newProduct")
+    },
+    toRecommend(){
+      this.$router.push("/recommend")
+    }
+  },
   created () {},
-  mounted () {},
-  destroyed () {}
 }
 </script>
 

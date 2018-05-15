@@ -44,12 +44,32 @@
 
     </van-cell-group>
 
-      <center><van-button class="vanButton" bottom-action @click="toEvaluate">查看评价</van-button></center>
+      <center><van-button class="vanButton" bottom-action @click="show = true">查看评价</van-button></center>
+
+    <van-popup v-model="show" position="right" style="height: 100%;width: 100%">
+      <van-nav-bar left-arrow @click-left="onLeft" title="评价详情"/>
+      <cross-line></cross-line>
+      <van-cell-group v-for="item in evaluateData" :item= "item" :key="item">
+        <van-cell>
+          <div class="box">
+            <img class="fl" :src="'http://127.0.0.1:8081/'+item.tallPersonPicture">
+            <div style="padding-left: 20px"  class="fl">{{item.tallPersonAlias}}</div>
+          </div>
+          <div v-if="item.goodFlag==0" class="fr" style="text-align: right"><img style="width: 30px;height: 30px"  src="../../components/order/img/good.png"></div>
+          <div v-if="item.goodFlag==1" class="fr" style="text-align: right"><img style="width: 30px;height: 30px"  src="../../components/order/img/bad.png"></div>
+        </van-cell>
+        <div style="padding-left: 20px;font-size: 14px;padding-top: 20px">{{item.tallPersonEvaluate}}</div>
+        <div style="padding-left: 20px;font-size: 12px;padding-top: 20px;color: gray">{{item.tallTimeStr}}</div>
+        <van-cell/>
+        <cross-line></cross-line>
+      </van-cell-group>
+    </van-popup>
   </div>
 </template>
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
 export default {
   components: {
     CrossLine
@@ -57,12 +77,14 @@ export default {
   data () {
     return {
       orderData:{},
-      flag:""
+      flag:"",
+      show:false,
+      evaluateData:{}
     }
   },
   methods: {
-    toEvaluate(){
-      this.$router.push({path:'/'})
+    onLeft(){
+      this.show = false
     },
     onClickLeft(){
       this.$router.push({path:'/mySale'})
@@ -74,11 +96,50 @@ export default {
     let flag = this.$route.query.flag;
     this.flag = flag;
     this.orderData = orderData;
+
+    var that = this
+    if (flag=="rent") {
+      this.$axios.get("http://127.0.0.1:8081/order/getEvaluateRentInfo/" + this.orderData.orderId)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.evaluateData = result.data.data;
+            console.log(that.evaluateData)
+          } else {
+            Toast(result.data.message)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    }else if (flag=="sale"){
+      this.$axios.get("http://127.0.0.1:8081/order/getEvaluateSaleInfo/" + this.orderData.orderId)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.evaluateData = result.data.data;
+            console.log(that.evaluateData)
+          } else {
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    }
   }
 }
 </script>
 
 <style scoped>
+  .box{
+    display:flex;
+    align-items: center;//子元素垂直居中
+    justify-content: center;//子元素水平居中
+    padding-top: 10px;
+  }
+  .box img{
+    padding-left: 10px;
+    width: 40px;
+    height: 40px;
+  }
 .price{
   padding-top: 25px;
   font-size: 35px;

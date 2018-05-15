@@ -61,12 +61,17 @@ export default {
   },
   methods: {
     toOrderPaying(){
-      this.$router.push({
-        path:'saleToBuy',
-        query:{
-          SaleData:this.SaleData
-        }
-      })
+      if (this.userInfo == null) {
+        this.$router.push({path: '/login'});
+        Toast("请先登录");
+      }else {
+        this.$router.push({
+          path: 'saleToBuy',
+          query: {
+            SaleData: this.SaleData
+          }
+        })
+      }
     },
     collect(){
       if (this.userInfo == null) {

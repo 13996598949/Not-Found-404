@@ -39,7 +39,8 @@ export default {
   data () {
     return {
       userInfo:{},
-      item:{}
+      item:{},
+      recordNumDto:{}
     }
   },
   props: {
@@ -83,7 +84,7 @@ export default {
       }
     },
     toSaleDetail() {
-      if (this.item.userId == this.userInfo.id) {
+      if (this.userInfo!=null && this.item.userId == this.userInfo.id){
         this.$router.push({
           path: 'saleAdminDetailInfo',
           query: {
@@ -97,6 +98,23 @@ export default {
             data: this.item.id
           }
         })
+
+        var that = this;
+        that.recordNumDto.id = that.item.id;
+        that.recordNumDto.userId = that.userInfo.id;
+        that.recordNumDto.type = that.item.type;
+
+        this.$axios.put("http://127.0.0.1:8081/sale/recordSaleNum",that.recordNumDto)
+          .then(function (RentResult) {
+            if (RentResult.data.status){
+
+            } else {
+              Toast(RentResult.data.message);
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       }
     }
   },

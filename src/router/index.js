@@ -20,7 +20,7 @@ import MySale from "@/components/mine/mySale/mySale"
 import MyBuy from "@/components/mine/myBuy/myBuy"
 import MyCollection from "@/components/mine/myCollection/myCollection"
 import deliveryList from "@/components/mine/menu/deliveryList"
-import receiptList from "@/components/mine/menu/receiptList"
+import confirmList from "@/components/mine/menu/confirmList"
 import payingList from "@/components/mine/menu/payingList"
 import evaluationList from "@/components/mine/menu/evaluationList"
 import salePublish from "@/components/publish/salePublish"
@@ -47,6 +47,10 @@ import saleSimpleInfo from '@/components/sale/saleSimpleInfo'
 import rentToBuy from '@/components/rent/rentToBuy'
 import saleToBuy from '@/components/sale/saleToBuy'
 import order_refund from '@/components/order/order_refund'
+import recommend from '@/components/index/recommend'
+import newProduct from '@/components/index/newProduct'
+import professional from '@/components/index/professional'
+import consumer from '@/components/index/consumer'
 
 
 Vue.use(Router)
@@ -180,8 +184,8 @@ export default new Router({
     },
     // 待收货
     {
-      path: '/receiptList',
-      component: receiptList
+      path: '/confirmList',
+      component: confirmList
     },
     // 待评价
     {
@@ -301,6 +305,22 @@ export default new Router({
     {
       path: '/order_refund',
       component: order_refund
+    },
+    {
+      path: '/recommend',
+      component: recommend
+    },
+    {
+      path: '/newProduct',
+      component: newProduct
+    },
+    {
+      path: '/professional',
+      component: professional
+    },
+    {
+      path: '/consumer',
+      component: consumer
     },
   ]
 })

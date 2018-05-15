@@ -28,7 +28,7 @@
           </div>
 
           <div>
-            <span class="price fl"><b>￥{{item.price}}</b></span>
+            <span class="price fl"><b>￥{{item.price}}/天&nbsp;&nbsp;&nbsp;租用{{item.rentDay}}天</b></span>
             <div class="fr">
               <van-button size="small" @click="toOrderRentInfo(item.orderId,item.active)">订单信息</van-button>
               <van-button v-if="item.active>=3" size="small" @click="toDeleteRentOrder(item.orderId)">删除</van-button>

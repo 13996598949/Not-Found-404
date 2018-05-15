@@ -1,7 +1,7 @@
 <template>
   <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
   <div>
-    <van-nav-bar left-arrow @click-left="onClickLeft" title="待发货"/>
+    <van-nav-bar left-arrow @click-left="onClickLeft" title="待收货"/>
     <cross-line></cross-line>
 
     <div class="title-bar">
@@ -30,6 +30,7 @@
           <span class="price fl"><b>￥{{item.price}}/天</b></span>
           <div class="fr">
             <van-button size="small" @click="toEditMyPublish(item.orderId)">退款</van-button>
+            <van-button size="small" @click="toEditMyPublish(item.orderId)">确认收货</van-button>
           </div>
         </div>
       </div>
@@ -62,11 +63,13 @@
             <span class="price fl"><b>￥{{item.price}}/天</b></span>
             <div class="fr">
               <van-button size="small" @click="toEditMyPublish(item.orderId)">退款</van-button>
+              <van-button size="small" @click="toEditMyPublish(item.orderId)">确认收货</van-button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
 
 
   </div>
@@ -106,7 +109,7 @@
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/order/getDeliveryRentList/"+this.userInfo.id)
+          this.$axios.get("http://127.0.0.1:8081/order/getConfirmRentList/"+this.userInfo.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData = result.data.data;
@@ -118,7 +121,7 @@
               console.log(error)
             });
 
-          this.$axios.get("http://127.0.0.1:8081/order/getDeliverySaleList/"+this.userInfo.id)
+          this.$axios.get("http://127.0.0.1:8081/order/getConfirmSaleList/"+this.userInfo.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.SaleData = result.data.data;
@@ -140,7 +143,7 @@
       this.userInfo = userInfo;
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/order/getDeliveryRentList/"+this.userInfo.id)
+      this.$axios.get("http://127.0.0.1:8081/order/getConfirmRentList/"+this.userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.RentData = result.data.data;
@@ -152,7 +155,7 @@
           console.log(error)
         });
 
-      this.$axios.get("http://127.0.0.1:8081/order/getDeliverySaleList/"+this.userInfo.id)
+      this.$axios.get("http://127.0.0.1:8081/order/getConfirmSaleList/"+this.userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.SaleData = result.data.data;

@@ -4,35 +4,80 @@
     <van-nav-bar left-arrow @click-left="onClickLeft" title="待评价"/>
     <cross-line></cross-line>
 
-    <div class="seller-list-item" v-for="item in publishData" :item= "item" :key="item">
+    <div class="title-bar">
+      <span>租赁区</span>
+    </div>
+    <div v-if="RentData==''">
+      <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在租赁区购买产品哦~快去购买吧！</span>
+      <div class="bottomFix"></div>
+    </div>
+    <div v-if="RentData!=''">
+    <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
       <div class="left">
-        <img :src="item.picture">
+        <img :src="'http://127.0.0.1:8081/'+item.picture">
       </div>
 
       <div class="content">
         <div class="name">
-          {{item.name}}
+          {{item.productName}}
         </div>
 
         <div class="mid">
-          <span class="describe">{{item.describe}}</span>
+          <span class="describe">{{item.productDescribe}}</span>
         </div>
 
         <div>
           <span class="price fl"><b>￥{{item.price}}/天</b></span>
           <div class="fr">
-            <van-button size="small" @click="toEditMyPublish(item.id)">删除订单</van-button>
-            <van-button size="small" @click="toDeleteMyPublish(item.id)">评价</van-button>
+            <van-button size="small" @click="toEditMyPublish(item.orderId)">删除订单</van-button>
+            <van-button size="small" @click="toDeleteMyPublish(item.orderId)">评价</van-button>
           </div>
         </div>
       </div>
     </div>
+    </div>
+
+    <div class="title-bar">
+      <span>出售区</span>
+    </div>
+    <div v-if="SaleData==''">
+      <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在出售区购买产品哦~快去购买吧！</span>
+      <div class="bottomFix"></div>
+    </div>
+    <div v-if="SaleData!=''">
+      <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
+        <div class="left">
+          <img :src="'http://127.0.0.1:8081/'+item.picture">
+        </div>
+
+        <div class="content">
+          <div class="name">
+            {{item.productName}}
+          </div>
+
+          <div class="mid">
+            <span class="describe">{{item.productDescribe}}</span>
+          </div>
+
+          <div>
+            <span class="price fl"><b>￥{{item.price}}/天</b></span>
+            <div class="fr">
+              <van-button size="small" @click="toEditMyPublish(item.orderId)">删除订单</van-button>
+              <van-button size="small" @click="toDeleteMyPublish(item.orderId)">评价</van-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
   </van-pull-refresh>
 </template>
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import { Toast } from 'vant';
   export default {
     components: {
       CrossLine
@@ -40,22 +85,8 @@
     data () {
       return {
         isLoading: false,
-        publishData:[
-          {
-            id: '1',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV1.jpg')
-          },
-          {
-            id: '2',
-            name: '御Mavic Pro铂金版',
-            describe: '可折叠4K航拍无人机',
-            price: 6899,
-            picture: require('../../../assets/project/UAV2.jpg')
-          }
-        ]
+        RentData:{},
+        SaleData:{}
       }
     },
     props: {
@@ -77,9 +108,25 @@
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/")
-            .then(function (RentResult) {
-              that.RentData = RentResult.data.data;
+          this.$axios.get("http://127.0.0.1:8081/order/getEvaluateRentList/"+this.userInfo.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.RentData = result.data.data;
+              }else {
+                Toast(result.data.message);
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+
+          this.$axios.get("http://127.0.0.1:8081/order/getEvaluateSaleList/"+this.userInfo.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.SaleData = result.data.data;
+              }else {
+                Toast(result.data.message);
+              }
             })
             .catch(function (error) {
               console.log(error)
@@ -88,6 +135,36 @@
           this.isLoading = false;
         }, 500);
       }
+    },
+    created(){
+      var storage = window.sessionStorage;
+      var userInfo = JSON.parse(storage.getItem("session"));
+      this.userInfo = userInfo;
+
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/order/getEvaluateRentList/"+this.userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.RentData = result.data.data;
+          }else {
+            Toast(result.data.message);
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+
+      this.$axios.get("http://127.0.0.1:8081/order/getEvaluateSaleList/"+this.userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.SaleData = result.data.data;
+          }else {
+            Toast(result.data.message);
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
     }
   }
 </script>
@@ -166,5 +243,36 @@
   .price{
     font-size: 15px;
     color: red;
+  }
+
+  .title-bar {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 20px;
+  }
+  .title-bar span {
+    display: inline-block;
+    position: relative;
+    font-weight: bold;
+    color: #333;
+  }
+  .title-bar span:before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: -45px;
+    width: 30px;
+    border-top: 1px solid #333;
+    transform: scaleY(0.5);
+  }
+  .title-bar span:after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: -43px;
+    width: 30px;
+    border-top: 1px solid #333;
+    transform: scaleY(0.5);
   }
 </style>

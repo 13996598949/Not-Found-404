@@ -1,4 +1,5 @@
 <template>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
   <div class="page">
     <div class="user-box">
       <div class="info">
@@ -14,20 +15,32 @@
     <cross-line></cross-line>
 
     <div class="nav">
-        <div class="nav-item" @click="toPayingList">
-          <img src="./img/paying.png">
-          <p>待付款</p>
-        </div>
+      <div class="nav-item" @click="toPayingList">
+        <!--<img src="./img/paying.png">-->
+        <van-icon v-if="this.CountData.payNum>0" style="font-size:21px;color:#1296db" name="cash-back-record" :info="this.CountData.payNum"/>
+        <van-icon v-if="this.CountData.payNum<=0" style="font-size:21px;color:#1296db" name="cash-back-record"/>
+        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="cash-back-record"/>
+        <p>待付款</p>
+      </div>
       <div class="nav-item" @click="toDeliveryList">
-        <img src="./img/sendProject.png"/>
+        <!--<img src="./img/sendProject.png"/>-->
+        <van-icon v-if="this.CountData.deliveryNum>0" style="font-size:21px;color:#1296db" name="logistics" :info="this.CountData.deliveryNum"/>
+        <van-icon v-if="this.CountData.deliveryNum<=0" style="font-size:21px;color:#1296db" name="logistics" />
+        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="logistics" />
         <p>待发货</p>
       </div>
-      <div class="nav-item" @click="toReceiptList">
-        <img src="./img/rePorject.png"/>
+      <div class="nav-item" @click="toConfirmList">
+        <!--<img src="./img/rePorject.png"/>-->
+        <van-icon v-if="this.CountData.reciveNum>0" style="font-size:21px;color:#1296db" name="pending-deliver" :info="this.CountData.reciveNum"/>
+        <van-icon v-if="this.CountData.reciveNum<=0" style="font-size:21px;color:#1296db" name="pending-deliver"/>
+        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="pending-deliver"/>
         <p>待收货</p>
       </div>
       <div class="nav-item" @click="toEvaluationList">
-        <img src="./img/ok.png"/>
+        <!--<img src="./img/ok.png"/>-->
+        <van-icon v-if="this.CountData.confirmNum>0" style="font-size:21px;color:#1296db" name="completed" :info="this.CountData.confirmNum"/>
+        <van-icon v-if="this.CountData.confirmNum<=0" style="font-size:21px;color:#1296db" name="completed"/>
+        <van-icon v-if="this.userInfo == null" style="font-size:21px;color:#1296db" name="completed"/>
         <p>待评价</p>
       </div>
     </div>
@@ -52,7 +65,7 @@
       </div>
     </div>
   </div>
-
+  </van-pull-refresh>
 </template>
 
 <script>
@@ -67,15 +80,34 @@ export default {
   data () {
     return {
       userInfo:{},
-      header:""
+      header:"",
+      userInfo:{},
+      CountData:{},
+      isLoading:false
     }
   },
-  created () {
-    var storage = window.sessionStorage;
-    var userInfo = JSON.parse(storage.getItem("session"));
-    this.userInfo = userInfo;
-  },
   methods: {
+    onRefresh() {
+      setTimeout(() => {
+        if (this.userInfo!=null){
+          var that = this;
+          this.$axios.get("http://127.0.0.1:8081/order/countOrderNum/"+this.userInfo.id)
+            .then(function (result) {
+              if (result.data.status != false) {
+                that.CountData = result.data.data;
+              }else {
+                Toast("系统错误！");
+                that.$router.push({path:"/index"})
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+        }
+        this.$toast('刷新成功');
+        this.isLoading = false;
+      }, 500);
+    },
     onRead(file) {
       var reader = new FileReader();
       reader.onload = function (e) {
@@ -111,6 +143,7 @@ export default {
     toDeliveryList(){
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/deliveryList'})
       }
@@ -118,20 +151,23 @@ export default {
     toEvaluationList(){
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/evaluationList'})
       }
     },
-    toReceiptList(){
+    toConfirmList(){
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
-        this.$router.push({path: '/receiptList'})
+        this.$router.push({path: '/confirmList'})
       }
     },
     toPayingList(){
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/payingList'})
       }
@@ -139,6 +175,7 @@ export default {
     toMyPublish () {
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/myPublish'})
       }
@@ -146,6 +183,7 @@ export default {
     toMySale () {
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/mySale'})
       }
@@ -153,6 +191,7 @@ export default {
     toMyBuy () {
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/myBuy'})
       }
@@ -160,6 +199,7 @@ export default {
     toMyCollection () {
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/myCollection'})
       }
@@ -167,9 +207,31 @@ export default {
     toPerson () {
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       }else {
         this.$router.push({path: '/person'})
       }
+    }
+  },
+  created(){
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
+
+    if (this.userInfo!=null){
+      var that = this;
+      this.$axios.get("http://127.0.0.1:8081/order/countOrderNum/"+this.userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.CountData = result.data.data;
+          }else {
+            Toast("系统错误！");
+            that.$router.push({path:"/index"})
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
     }
   }
 }
@@ -181,7 +243,8 @@ export default {
   color: gainsboro;
 }
 .user-box{
-  width: 100%;
+  padding-left: 2px;
+  width: 99%;
   height: 150px;
   background-image: url("img/personBack.jpg");
   border: 1px solid transparent;

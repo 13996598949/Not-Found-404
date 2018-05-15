@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import { Toast } from 'vant';
 export default {
   components: {},
   data(){
@@ -39,6 +40,7 @@ export default {
     toPublish(){
       if (this.userInfo == null){
         this.$router.push({path:'/login'})
+        Toast("请先登录！")
       } else {
         this.publish_show = true;
       }

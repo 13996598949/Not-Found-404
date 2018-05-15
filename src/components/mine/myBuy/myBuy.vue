@@ -8,7 +8,7 @@
         <span>租赁区</span>
       </div>
       <div v-if="RentData==''">
-        <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在租赁区产品哦~快去购买吧！</span>
+        <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在租赁区购买产品哦~快去购买吧！</span>
         <div class="bottomFix"></div>
       </div>
       <div v-if="RentData!=''">
@@ -28,7 +28,7 @@
             </div>
 
             <div>
-              <span class="price fl"><b>￥{{item.price}}</b></span>
+              <span class="price fl"><b>￥{{item.price}}/天&nbsp;&nbsp;&nbsp;租用{{item.rentDay}}天</b></span>
               <div class="fr">
                 <van-button size="small" @click="toOrderRentInfo(item.orderId,item.active)">订单信息</van-button>
                 <van-button v-if="item.active>=3" size="small" @click="toDeleteRentOrder(item.orderId)">删除</van-button>

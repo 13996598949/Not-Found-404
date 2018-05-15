@@ -39,7 +39,8 @@ export default {
   data () {
     return {
       userInfo:{},
-      item:{}
+      item:{},
+      recordNumDto:{}
     }
   },
   props: {
@@ -50,13 +51,13 @@ export default {
   },
   methods: {
     toRentDetail(){
-      if (this.item.userId == this.userInfo.id){
-        this.$router.push({
-          path:'rentAdminDetailInfo',
-          query: {
-            data: this.item.id
-          }
-        })
+      if (this.userInfo!=null && this.item.userId == this.userInfo.id){
+          this.$router.push({
+            path: 'rentAdminDetailInfo',
+            query: {
+              data: this.item.id
+            }
+          })
       }else {
         this.$router.push({
           path: 'rentDetailInfo',
@@ -64,6 +65,23 @@ export default {
             data: this.item.id
           }
         })
+
+        var that = this;
+        that.recordNumDto.id = that.item.id;
+        that.recordNumDto.userId = that.userInfo.id;
+        that.recordNumDto.type = that.item.type;
+
+        this.$axios.put("http://127.0.0.1:8081/rent/recordRentNum",that.recordNumDto)
+          .then(function (RentResult) {
+            if (RentResult.data.status){
+
+            } else {
+              Toast(RentResult.data.message);
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       }
     },
     collect () {

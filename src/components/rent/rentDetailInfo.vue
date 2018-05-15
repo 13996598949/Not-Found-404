@@ -56,17 +56,22 @@ export default {
     return {
       icon: "like-o",
       RentData:{},
-      userInfo:{}
+      userInfo:{},
     }
   },
   methods: {
     toOrderPaying(){
-      this.$router.push({
-        path:'rentToBuy',
-        query:{
-          RentData:this.RentData
-        }
-      })
+      if (this.userInfo == null) {
+        this.$router.push({path: '/login'});
+        Toast("请先登录");
+      }else {
+        this.$router.push({
+          path: 'rentToBuy',
+          query: {
+            RentData: this.RentData
+          }
+        })
+      }
     },
     collect(){
       if (this.userInfo == null) {
@@ -121,6 +126,7 @@ export default {
     }
     // 取到路由带过来的参数
     let routerParams = this.$route.query.data;
+
     var that = this;
     this.$axios.get("http://127.0.0.1:8081/rent/getRentDetailInfo/"+routerParams+"/"+id)
       .then(function (RentResult) {

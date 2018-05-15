@@ -1,90 +1,52 @@
 <template>
   <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-  <div>
-    <van-nav-bar left-arrow @click-left="onClickLeft" title="待发货"/>
-    <cross-line></cross-line>
+    <div>
+      <van-nav-bar left-arrow @click-left="onClickLeft" title="新品专区"/>
+      <cross-line></cross-line>
 
-    <div class="title-bar">
-      <span>租赁区</span>
-    </div>
-    <div v-if="RentData==''">
-      <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在租赁区购买产品哦~快去购买吧！</span>
-      <div class="bottomFix"></div>
-    </div>
-    <div v-if="RentData!=''">
-    <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
-      <div class="left">
-        <img :src="'http://127.0.0.1:8081/'+item.picture">
+      <div class="title-bar">
+        <span>租赁区</span>
+      </div>
+      <div v-if="RentData==''">
+        <span style="font-size: 14px;text-align: center;padding-top: 30px">租赁区暂无商品哦~</span>
+        <div class="bottomFix"></div>
+      </div>
+      <div v-if="RentData!=''">
+      <rent-list-item v-for="item in RentData" :item= "item" :key="item"></rent-list-item>
+      <cross-line></cross-line>
       </div>
 
-      <div class="content">
-        <div class="name">
-          {{item.productName}}
-        </div>
-
-        <div class="mid">
-          <span class="describe">{{item.productDescribe}}</span>
-        </div>
-
-        <div>
-          <span class="price fl"><b>￥{{item.price}}/天</b></span>
-          <div class="fr">
-            <van-button size="small" @click="toEditMyPublish(item.orderId)">退款</van-button>
-          </div>
-        </div>
+      <div class="title-bar">
+        <span>出售区</span>
+      </div>
+      <div v-if="SaleData==''">
+        <span style="font-size: 14px;text-align: center;padding-top: 30px">出售区暂无商品哦~</span>
+        <div class="bottomFix"></div>
+      </div>
+      <div v-if="SaleData!=''">
+      <sale-list-item v-for="item in SaleData" :item= "item" :key="item"></sale-list-item>
       </div>
     </div>
-    </div>
-
-    <div class="title-bar">
-      <span>出售区</span>
-    </div>
-    <div v-if="SaleData==''">
-      <span style="font-size: 14px;text-align: center;padding-top: 30px">暂未在出售区购买产品哦~快去购买吧！</span>
-      <div class="bottomFix"></div>
-    </div>
-    <div v-if="SaleData!=''">
-      <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
-        <div class="left">
-          <img :src="'http://127.0.0.1:8081/'+item.picture">
-        </div>
-
-        <div class="content">
-          <div class="name">
-            {{item.productName}}
-          </div>
-
-          <div class="mid">
-            <span class="describe">{{item.productDescribe}}</span>
-          </div>
-
-          <div>
-            <span class="price fl"><b>￥{{item.price}}/天</b></span>
-            <div class="fr">
-              <van-button size="small" @click="toEditMyPublish(item.orderId)">退款</van-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-  </div>
   </van-pull-refresh>
 </template>
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import rentListItem from '@/components/base/shop-list-item/rent-list-item'
+  import saleListItem from '@/components/base/shop-list-item/sale-list-item'
   import { Toast } from 'vant';
   export default {
     components: {
-      CrossLine
+      CrossLine,
+      rentListItem,
+      saleListItem
     },
     data () {
       return {
         isLoading: false,
-        RentData:{},
-        SaleData:{}
+        userInfo: {},
+        RentData: [],
+        SaleData: [],
       }
     },
     props: {
@@ -94,36 +56,38 @@
       }
     },
     methods:{
-      toDeleteMyPublish(id){
-        this.$toast('删除'+id);
-      },
-      toEditMyPublish(id){
-        this.$toast('编辑'+id);
-      },
       onClickLeft(){
-        this.$router.go(-1)
+        this.$router.push({path:"/index"})
       },
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/order/getDeliveryRentList/"+this.userInfo.id)
+          var id;
+          if (this.userInfo == null){
+            id=0;
+          } else {
+            id=this.userInfo.id
+          }
+          this.$axios.get("http://127.0.0.1:8081/index/getNewRent/"+id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData = result.data.data;
               }else {
-                Toast(result.data.message);
+                Toast("系统错误！");
+                that.$router.push({path:"/index"})
               }
             })
             .catch(function (error) {
               console.log(error)
             });
 
-          this.$axios.get("http://127.0.0.1:8081/order/getDeliverySaleList/"+this.userInfo.id)
+          this.$axios.get("http://127.0.0.1:8081/index/getNewSale/"+id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.SaleData = result.data.data;
               }else {
-                Toast(result.data.message);
+                Toast("系统错误！");
+                that.$router.push({path:"/index"})
               }
             })
             .catch(function (error) {
@@ -139,25 +103,34 @@
       var userInfo = JSON.parse(storage.getItem("session"));
       this.userInfo = userInfo;
 
+      var id;
+      if (this.userInfo == null){
+        id=0;
+      } else {
+        id=this.userInfo.id
+      }
+
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/order/getDeliveryRentList/"+this.userInfo.id)
+      this.$axios.get("http://127.0.0.1:8081/index/getNewRent/"+id)
         .then(function (result) {
           if (result.data.status != false) {
             that.RentData = result.data.data;
           }else {
-            Toast(result.data.message);
+            Toast("系统错误！");
+            that.$router.push({path:"/index"})
           }
         })
         .catch(function (error) {
           console.log(error)
         });
 
-      this.$axios.get("http://127.0.0.1:8081/order/getDeliverySaleList/"+this.userInfo.id)
+      this.$axios.get("http://127.0.0.1:8081/index/getNewSale/"+id)
         .then(function (result) {
           if (result.data.status != false) {
             that.SaleData = result.data.data;
           }else {
-            Toast(result.data.message);
+            Toast("系统错误！");
+            that.$router.push({path:"/index"})
           }
         })
         .catch(function (error) {
@@ -272,5 +245,9 @@
     width: 30px;
     border-top: 1px solid #333;
     transform: scaleY(0.5);
+  }
+  .bottomFix {
+    height: 50px;
+    background-color: transparent;
   }
 </style>
