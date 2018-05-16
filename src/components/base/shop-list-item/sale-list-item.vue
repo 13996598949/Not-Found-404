@@ -1,7 +1,7 @@
 <template>
   <div class="seller-list-item" >
     <div class="left" @click="toSaleDetail">
-      <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
+      <img :src="'http://120.78.206.183:8081/'+item.saleProductPicture">
     </div>
 
     <div class="content">
@@ -60,7 +60,7 @@ export default {
           Toast("不能收藏自己的商品哦~");
         }else {
           if (that.item.collectFlag) {
-            this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/" + that.userInfo.id + "/" + that.item.id)
+            this.$axios.delete(this.global.ip+"/collect/deleteCollectSale/" + that.userInfo.id + "/" + that.item.id)
               .then(function (result) {
                 if (result.data.status != false) {
                   that.item.collectFlag = false
@@ -70,7 +70,7 @@ export default {
                 console.log(error)
               });
           } else {
-            this.$axios.post("http://127.0.0.1:8081/collect/insertCollectSale/" + that.userInfo.id + "/" + that.item.id)
+            this.$axios.post(this.global.ip+"/collect/insertCollectSale/" + that.userInfo.id + "/" + that.item.id)
               .then(function (result) {
                 if (result.data.status != false) {
                   that.item.collectFlag = true
@@ -104,7 +104,7 @@ export default {
         that.recordNumDto.userId = that.userInfo.id;
         that.recordNumDto.type = that.item.type;
 
-        this.$axios.put("http://127.0.0.1:8081/sale/recordSaleNum",that.recordNumDto)
+        this.$axios.put(this.global.ip+"/sale/recordSaleNum",that.recordNumDto)
           .then(function (RentResult) {
             if (RentResult.data.status){
 

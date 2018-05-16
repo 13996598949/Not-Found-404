@@ -28,7 +28,7 @@
 
       <van-cell>
         <div class="product box">
-          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
+          <img :src="'http://120.78.206.183:8081/'+this.orderData.picture">
           <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
@@ -53,7 +53,7 @@
       <van-cell-group v-for="item in evaluateData" :item= "item" :key="item">
         <van-cell>
           <div class="box">
-            <img class="fl" :src="'http://127.0.0.1:8081/'+item.tallPersonPicture">
+            <img class="fl" :src="'http://120.78.206.183:8081/'+item.tallPersonPicture">
             <div style="padding-left: 20px"  class="fl">{{item.tallPersonAlias}}</div>
           </div>
           <div v-if="item.goodFlag==0" class="fr" style="text-align: right"><img style="width: 30px;height: 30px"  src="../../components/order/img/good.png"></div>
@@ -100,7 +100,7 @@ export default {
 
     var that = this
     if (flag=="rent") {
-      this.$axios.get("http://127.0.0.1:8081/order/getEvaluateRentInfo/" + this.orderData.orderId)
+      this.$axios.get(this.global.ip+"/order/getEvaluateRentInfo/" + this.orderData.orderId)
         .then(function (result) {
           if (result.data.status != false) {
             that.evaluateData = result.data.data;
@@ -113,7 +113,7 @@ export default {
           console.log(error)
         });
     }else if (flag=="sale"){
-      this.$axios.get("http://127.0.0.1:8081/order/getEvaluateSaleInfo/" + this.orderData.orderId)
+      this.$axios.get(this.global.ip+"/order/getEvaluateSaleInfo/" + this.orderData.orderId)
         .then(function (result) {
           if (result.data.status != false) {
             that.evaluateData = result.data.data;

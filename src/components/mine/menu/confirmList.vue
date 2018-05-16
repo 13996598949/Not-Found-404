@@ -14,7 +14,7 @@
     <div v-if="RentData!=''">
     <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
       <div class="left" @click="toRentSimpleInfo(item.productId)">
-        <img :src="'http://127.0.0.1:8081/'+item.picture">
+        <img :src="'http://120.78.206.183:8081/'+item.picture">
       </div>
 
       <div class="content">
@@ -46,7 +46,7 @@
     <div v-if="SaleData!=''">
       <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
         <div class="left" @click="toSaleSimpleInfo(item.productId)">
-          <img :src="'http://127.0.0.1:8081/'+item.picture">
+          <img :src="'http://120.78.206.183:8081/'+item.picture">
         </div>
 
         <div class="content">
@@ -97,7 +97,7 @@
     methods:{
       toOrderRentInfo(id){
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/"+id)
+        this.$axios.get(this.global.ip+"/order/getRentOrderInfo/"+id)
           .then(function (result) {
             if (result.data.status != false) {
               that.$router.push({
@@ -117,7 +117,7 @@
       },
       toOrderSaleInfo(id){
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/"+id)
+        this.$axios.get(this.global.ip+"/order/getSaleOrderInfo/"+id)
           .then(function (result) {
             if (result.data.status != false) {
               that.$router.push({
@@ -157,7 +157,7 @@
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/order/getConfirmRentList/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/order/getConfirmRentList/"+this.userInfo.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData = result.data.data;
@@ -169,7 +169,7 @@
               console.log(error)
             });
 
-          this.$axios.get("http://127.0.0.1:8081/order/getConfirmSaleList/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/order/getConfirmSaleList/"+this.userInfo.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.SaleData = result.data.data;
@@ -191,7 +191,7 @@
       this.userInfo = userInfo;
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/order/getConfirmRentList/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/order/getConfirmRentList/"+this.userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.RentData = result.data.data;
@@ -203,7 +203,7 @@
           console.log(error)
         });
 
-      this.$axios.get("http://127.0.0.1:8081/order/getConfirmSaleList/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/order/getConfirmSaleList/"+this.userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.SaleData = result.data.data;

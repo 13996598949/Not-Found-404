@@ -28,7 +28,7 @@
 
       <van-cell>
         <div class="product box">
-          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
+          <img :src="'http://120.78.206.183:8081/'+this.orderData.picture">
           <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
@@ -120,7 +120,7 @@ export default {
         this.confirmDto.buyPassword = md5(this.buyPassword);
         var that = this;
         if (this.flag=="rent") {
-          this.$axios.put("http://127.0.0.1:8081/order/toConfirmRentOrder",this.confirmDto)
+          this.$axios.put(this.global.ip+"/order/toConfirmRentOrder",this.confirmDto)
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("收货成功！")
@@ -141,7 +141,7 @@ export default {
             });
         }
         else if (this.flag=="sale") {
-          this.$axios.put("http://127.0.0.1:8081/order/toConfirmSaleOrder",this.confirmDto)
+          this.$axios.put(this.global.ip+"/order/toConfirmSaleOrder",this.confirmDto)
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("收货成功！")
@@ -176,7 +176,7 @@ export default {
       this.toRefundDto.refundRes = this.refundRes;
       var that = this
       if (this.flag=="rent") {
-        this.$axios.put("http://127.0.0.1:8081/order/toRefundRentOrder",this.toRefundDto)
+        this.$axios.put(this.global.ip+"/order/toRefundRentOrder",this.toRefundDto)
           .then(function (result) {
             if (result.data.status != false) {
               that.$router.push({
@@ -194,7 +194,7 @@ export default {
             console.log(error)
           });
       }else if (this.flag=="sale"){
-        this.$axios.put("http://127.0.0.1:8081/order/toRefundSaleOrder",this.toRefundDto)
+        this.$axios.put(this.global.ip+"/order/toRefundSaleOrder",this.toRefundDto)
           .then(function (result) {
             if (result.data.status != false) {
               that.$router.push({

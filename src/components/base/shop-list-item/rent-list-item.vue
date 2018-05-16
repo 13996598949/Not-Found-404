@@ -1,7 +1,7 @@
 <template>
   <div class="seller-list-item" >
     <div class="left" @click="toRentDetail">
-      <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
+      <img :src="'http://120.78.206.183:8081/'+item.rentProductPicture">
     </div>
 
     <div class="content">
@@ -71,7 +71,7 @@ export default {
         that.recordNumDto.userId = that.userInfo.id;
         that.recordNumDto.type = that.item.type;
 
-        this.$axios.put("http://127.0.0.1:8081/rent/recordRentNum",that.recordNumDto)
+        this.$axios.put(this.global.ip+"/rent/recordRentNum",that.recordNumDto)
           .then(function (RentResult) {
             if (RentResult.data.status){
 
@@ -94,7 +94,7 @@ export default {
           Toast("不能收藏自己的商品哦~");
         }else {
           if (that.item.collectFlag) {
-            this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectRent/" + that.userInfo.id + "/" + that.item.id)
+            this.$axios.delete(this.global.ip+"/collect/deleteCollectRent/" + that.userInfo.id + "/" + that.item.id)
               .then(function (result) {
                 if (result.data.status != false) {
                   that.item.collectFlag = false
@@ -104,7 +104,7 @@ export default {
                 console.log(error)
               });
           } else {
-            this.$axios.post("http://127.0.0.1:8081/collect/insertCollectRent/" + that.userInfo.id + "/" + that.item.id)
+            this.$axios.post(this.global.ip+"/collect/insertCollectRent/" + that.userInfo.id + "/" + that.item.id)
               .then(function (result) {
                 if (result.data.status != false) {
                   that.item.collectFlag = true

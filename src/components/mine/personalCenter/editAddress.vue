@@ -101,7 +101,7 @@
         this.addressDto.postalCode = this.postal_code;
 
         var that = this;
-        this.$axios.put("http://127.0.0.1:8081/user/editAddress/"+this.addressVo.id,this.addressDto)
+        this.$axios.put(this.global.ip+"/user/editAddress/"+this.addressVo.id,this.addressDto)
           .then(function (result) {
             if (result.data.status != false) {
               Toast('修改成功！');
@@ -116,7 +116,7 @@
       },
       onDelete(){
         var that = this;
-        this.$axios.delete("http://127.0.0.1:8081/user/deleteAddress/"+this.addressVo.id)
+        this.$axios.delete(this.global.ip+"/user/deleteAddress/"+this.addressVo.id)
           .then(function (result) {
             if (result.data.status != false) {
               Toast('删除成功！');

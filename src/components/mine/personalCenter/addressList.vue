@@ -60,7 +60,7 @@
       },
       onEdit(item) {
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/user/getAddressById/"+item.id)
+        this.$axios.get(this.global.ip+"/user/getAddressById/"+item.id)
           .then(function (result) {
             if (result.data.status != false) {
               that.addressList = result.data.data;
@@ -88,7 +88,7 @@
       this.flag = routerParams
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/user/getAddressList/"+userInfo.id)
+      this.$axios.get(this.global.ip+"/user/getAddressList/"+userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.list = result.data.data

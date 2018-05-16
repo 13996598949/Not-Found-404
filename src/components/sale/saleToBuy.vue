@@ -6,7 +6,7 @@
       <div class="seller-list-item">
 
         <div class="left">
-          <img :src="'http://127.0.0.1:8081/'+this.resultData.saleProductPicture">
+          <img :src="'http://120.78.206.183:8081/'+this.resultData.saleProductPicture">
         </div>
 
         <div class="content">
@@ -70,7 +70,7 @@
         this.orderSaleDto.price = this.price/100;
 
         var that = this;
-        this.$axios.post("http://127.0.0.1:8081/order/insertSaleOrder",that.orderSaleDto)
+        this.$axios.post(this.global.ip+"/order/insertSaleOrder",that.orderSaleDto)
           .then(function (result) {
             if (result.data.status != false) {
               that.$router.push({

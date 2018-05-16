@@ -28,7 +28,7 @@
 
       <van-cell>
         <div class="product box">
-          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
+          <img :src="'http://120.78.206.183:8081/'+this.orderData.picture">
           <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
@@ -72,7 +72,7 @@ export default {
 
     var that = this
     if (flag=="rent") {
-      this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/" + orderData.orderId)
+      this.$axios.get(this.global.ip+"/order/getRentOrderInfo/" + orderData.orderId)
         .then(function (result) {
           if (result.data.status != false) {
             that.orderData = result.data.data;
@@ -84,7 +84,7 @@ export default {
           console.log(error)
         });
     }else if (flag=="sale"){
-      this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/" + orderData.orderId)
+      this.$axios.get(this.global.ip+"/order/getSaleOrderInfo/" + orderData.orderId)
         .then(function (result) {
           if (result.data.status != false) {
             that.orderData = result.data.data;

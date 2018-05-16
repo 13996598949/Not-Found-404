@@ -3,7 +3,7 @@
     <div class="goods">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="商品详情"/>
       <cross-line></cross-line>
-      <img :src="'http://127.0.0.1:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
+      <img :src="'http://120.78.206.183:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
 
       <van-cell-group class="goods-cell-group">
         <van-cell>
@@ -13,7 +13,7 @@
         </van-cell>
 
         <div class="box fl">
-          <img :src="'http://127.0.0.1:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
+          <img :src="'http://120.78.206.183:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
           <p style="padding-left: 10px">{{this.RentData.alias}}</p>
         </div>
       </van-cell-group>
@@ -80,7 +80,7 @@ export default {
       } else {
         var that = this
         if (that.RentData.collectFlag) {
-          this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectRent/" + that.userInfo.id + "/" + this.RentData.id)
+          this.$axios.delete(this.global.ip+"/collect/deleteCollectRent/" + that.userInfo.id + "/" + this.RentData.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData.collectFlag = false
@@ -90,7 +90,7 @@ export default {
               console.log(error)
             });
         } else {
-          this.$axios.post("http://127.0.0.1:8081/collect/insertCollectRent/" + that.userInfo.id + "/" + this.RentData.id)
+          this.$axios.post(this.global.ip+"/collect/insertCollectRent/" + that.userInfo.id + "/" + this.RentData.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData.collectFlag = true
@@ -128,7 +128,7 @@ export default {
     let routerParams = this.$route.query.data;
 
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/rent/getRentDetailInfo/"+routerParams+"/"+id)
+    this.$axios.get(this.global.ip+"/rent/getRentDetailInfo/"+routerParams+"/"+id)
       .then(function (RentResult) {
         that.RentData = RentResult.data.data;
         if (that.RentData.collectFlag){

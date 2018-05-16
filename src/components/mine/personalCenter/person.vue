@@ -18,7 +18,7 @@
 
       <!--<van-cell  title="头像" is-link>-->
         <!--<van-uploader :after-read="onRead" multiple>-->
-          <!--<img id="header" :src="'http://127.0.0.1:8081/'+this.userInfo.header" width="40px" height="40px"/>-->
+          <!--<img id="header" :src="'http://120.78.206.183:8081/'+this.userInfo.header" width="40px" height="40px"/>-->
         <!--</van-uploader>-->
       <!--</van-cell>-->
 
@@ -148,7 +148,7 @@
       },
       saveButton(){
         var that = this;
-        this.$axios.put("http://127.0.0.1:8081/user/editPersonInfo",this.userInfo)
+        this.$axios.put(this.global.ip+"/user/editPersonInfo",this.userInfo)
           .then(function (result) {
             that.result = result.data.data;
             if (result.data.status != false) {

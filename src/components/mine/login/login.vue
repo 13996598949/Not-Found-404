@@ -111,7 +111,7 @@
     methods:{
       sendVerification(){
         var that = this;
-        this.$axios.put("http://127.0.0.1:8081/user/sendVerification/"+this.telephone+"/"+this.userName)
+        this.$axios.put(this.global.ip+"/user/sendVerification/"+this.telephone+"/"+this.userName)
           .then(function (result) {
             if (result.data.status!=false){
               Toast("发送成功");
@@ -140,7 +140,7 @@
             this.resetDto.mobileCode = this.verification;
             this.resetDto.resetPassword = md5(this.resetPassword);
             var that = this;
-            this.$axios.put("http://127.0.0.1:8081/user/resetPassword",this.resetDto)
+            this.$axios.put(this.global.ip+"/user/resetPassword",this.resetDto)
               .then(function (result) {
                 if (result.data.status!=false){
                   Toast("密码重置成功！");
@@ -166,7 +166,7 @@
         var storage = window.sessionStorage;
         this.userLoginDto.loginPassword = md5(this.userLoginDto.loginPassword)
         var that = this;
-        this.$axios.put("http://127.0.0.1:8081/user/login",this.userLoginDto)
+        this.$axios.put(this.global.ip+"/user/login",this.userLoginDto)
           .then(function (loginResult) {
             if (loginResult.data.status==false){
               Toast(loginResult.data.message);

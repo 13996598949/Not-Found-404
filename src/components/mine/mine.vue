@@ -5,7 +5,7 @@
           <div class="info">
             <img v-if="this.userInfo == null" src="./img/default_header.jpg"/>
             <van-uploader :after-read="onRead" multiple>
-              <img v-if="this.userInfo != null" id="header" :src="'http://127.0.0.1:8081/'+this.userInfo.header" width="40px" height="40px"/>
+              <img v-if="this.userInfo != null" id="header" :src="'http://120.78.206.183:8081/'+this.userInfo.header" width="40px" height="40px"/>
             </van-uploader>
             <p v-if="this.userInfo == null" class="username" @click="login">点击登录</p>
             <p v-if="this.userInfo != null" class="username">{{this.userInfo.userName}}</p>
@@ -92,7 +92,7 @@ export default {
       setTimeout(() => {
         if (this.userInfo!=null){
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/order/countOrderNum/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/order/countOrderNum/"+this.userInfo.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.CountData = result.data.data;
@@ -121,7 +121,7 @@ export default {
       var that = this;
       let form = new FormData();
       form.append("multipartFile",this.header);
-      this.$axios.put("http://127.0.0.1:8081/user/editHeader/"+this.userInfo.id,form,{headers:{'Content-Type':'multipart/form-data'}})
+      this.$axios.put(this.global.ip+"/user/editHeader/"+this.userInfo.id,form,{headers:{'Content-Type':'multipart/form-data'}})
         .then(function (result) {
           that.result = result.data.data;
           if (result.data.status != false) {
@@ -221,7 +221,7 @@ export default {
 
     if (this.userInfo!=null){
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/order/countOrderNum/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/order/countOrderNum/"+this.userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.CountData = result.data.data;

@@ -3,7 +3,7 @@
     <div class="goods">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="商品详情"/>
       <cross-line></cross-line>
-      <img :src="'http://127.0.0.1:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
+      <img :src="'http://120.78.206.183:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
 
       <van-cell-group class="goods-cell-group">
         <van-cell>
@@ -13,7 +13,7 @@
         </van-cell>
 
         <div class="box fl">
-          <img :src="'http://127.0.0.1:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
+          <img :src="'http://120.78.206.183:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
           <p style="padding-left: 10px">{{this.RentData.alias}}</p>
         </div>
       </van-cell-group>
@@ -63,7 +63,7 @@ export default {
         message: '确认要删除吗？'
       }).then(() => {
         var that = this;
-        this.$axios.delete("http://127.0.0.1:8081/rent/deleteMyPublishRent/"+this.RentData.id)
+        this.$axios.delete(this.global.ip+"/rent/deleteMyPublishRent/"+this.RentData.id)
           .then(function (RentResult) {
             if (RentResult.data.status){
               Toast("删除成功!");
@@ -102,7 +102,7 @@ export default {
     // 取到路由带过来的参数
     let routerParams = this.$route.query.data;
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/rent/getRentDetailInfo/"+routerParams+"/"+this.userInfo.id)
+    this.$axios.get(this.global.ip+"/rent/getRentDetailInfo/"+routerParams+"/"+this.userInfo.id)
       .then(function (RentResult) {
         that.RentData = RentResult.data.data;
       })

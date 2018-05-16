@@ -15,7 +15,7 @@
       <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
 
         <div class="left" @click="toRentSimpleInfo(item.productId)">
-          <img :src="'http://127.0.0.1:8081/'+item.picture">
+          <img :src="'http://120.78.206.183:8081/'+item.picture">
         </div>
 
         <div class="content">
@@ -50,7 +50,7 @@
       <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
 
         <div class="left" @click="toSaleSimpleInfo(item.productId)">
-          <img :src="'http://127.0.0.1:8081/'+item.picture">
+          <img :src="'http://120.78.206.183:8081/'+item.picture">
         </div>
 
         <div class="content">
@@ -121,11 +121,11 @@
           message: '确定要删除订单吗？'
         }).then(() => {
           var that = this;
-          this.$axios.delete("http://127.0.0.1:8081/order/deleteRentOrder/" + id + "/" + "sale")
+          this.$axios.delete(this.global.ip+"/order/deleteRentOrder/" + id + "/" + "sale")
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("删除成功！")
-                that.$axios.get("http://127.0.0.1:8081/order/getMySellRentInfo/"+that.userInfo.id)
+                that.$axios.get(this.global.ip+"/order/getMySellRentInfo/"+that.userInfo.id)
                   .then(function (result) {
                     if (result.data.status != false) {
                       that.RentData = result.data.data;
@@ -151,7 +151,7 @@
       toOrderRentInfo(id,active){
         if (active != 5) {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/order/getRentOrderInfo/"+id)
+          this.$axios.get(this.global.ip+"/order/getRentOrderInfo/"+id)
             .then(function (result) {
               if (result.data.status != false) {
                 if (result.data.data.active==0){
@@ -226,11 +226,11 @@
           message: '确定要删除订单吗？'
         }).then(() => {
           var that = this;
-          this.$axios.delete("http://127.0.0.1:8081/order/deleteSaleOrder/" + id + "/" + "sale")
+          this.$axios.delete(this.global.ip+"/order/deleteSaleOrder/" + id + "/" + "sale")
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("删除成功！")
-                that.$axios.get("http://127.0.0.1:8081/order/getMySellSaleInfo/"+that.userInfo.id)
+                that.$axios.get(this.global.ip+"/order/getMySellSaleInfo/"+that.userInfo.id)
                   .then(function (result) {
                     if (result.data.status != false) {
                       that.SaleData = result.data.data;
@@ -256,7 +256,7 @@
       toOrderSaleInfo(id,active){
         if (active != 5) {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/order/getSaleOrderInfo/"+id)
+          this.$axios.get(this.global.ip+"/order/getSaleOrderInfo/"+id)
             .then(function (result) {
               if (result.data.status != false) {
                 if (result.data.data.active==0){
@@ -324,7 +324,7 @@
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/order/getMySellRentInfo/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/order/getMySellRentInfo/"+this.userInfo.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData = result.data.data;
@@ -337,7 +337,7 @@
               console.log(error)
             });
 
-          this.$axios.get("http://127.0.0.1:8081/order/getMySellSaleInfo/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/order/getMySellSaleInfo/"+this.userInfo.id)
             .then(function (result) {
               if (result.data.status != false) {
                 that.SaleData = result.data.data;
@@ -360,7 +360,7 @@
       this.userInfo = userInfo;
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/order/getMySellRentInfo/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/order/getMySellRentInfo/"+this.userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.RentData = result.data.data;
@@ -373,7 +373,7 @@
           console.log(error)
         });
 
-      this.$axios.get("http://127.0.0.1:8081/order/getMySellSaleInfo/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/order/getMySellSaleInfo/"+this.userInfo.id)
         .then(function (result) {
           if (result.data.status != false) {
             that.SaleData = result.data.data;

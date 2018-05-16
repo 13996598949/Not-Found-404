@@ -83,13 +83,13 @@
         this.saleProductDto.saleProductDescribe = this.desc;
 
         var that = this;
-        this.$axios.post("http://127.0.0.1:8081/sale/insertSaleInfo/"+this.userInfo.id,this.saleProductDto)
+        this.$axios.post(this.global.ip+"/sale/insertSaleInfo/"+this.userInfo.id,this.saleProductDto)
           .then(function (result) {
             if (result.data.status != false) {
               var id = result.data.data;
               let form = new FormData();
               form.append("multipartFile",that.picture);
-              that.$axios.put("http://127.0.0.1:8081/sale/insertSaleInfoPicture/"+id,form,{headers:{'Content-Type':'multipart/form-data'}})
+              that.$axios.put(this.global.ip+"/sale/insertSaleInfoPicture/"+id,form,{headers:{'Content-Type':'multipart/form-data'}})
                 .then(function (result) {
                   if (result.data.status != false) {
                     Toast('发布成功');

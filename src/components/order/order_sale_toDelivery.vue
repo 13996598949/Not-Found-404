@@ -40,7 +40,7 @@ export default {
       this.deliveryDto.postNum = this.postNum;
       var that = this;
       if (that.flag=="rent"){
-        this.$axios.put("http://127.0.0.1:8081/order/toRentDelicery",that.deliveryDto)
+        this.$axios.put(this.global.ip+"/order/toRentDelicery",that.deliveryDto)
           .then(function (result) {
             if (result.data.status != false) {
               that.$router.push({
@@ -58,7 +58,7 @@ export default {
             console.log(error)
           });
       } else if (that.flag=="sale") {
-        this.$axios.put("http://127.0.0.1:8081/order/toSaleDelicery",that.deliveryDto)
+        this.$axios.put(this.global.ip+"/order/toSaleDelicery",that.deliveryDto)
           .then(function (result) {
             if (result.data.status != false) {
               that.$router.push({

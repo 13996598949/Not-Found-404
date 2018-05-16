@@ -14,7 +14,7 @@
     <div v-if="publishRentData!=''">
     <div class="seller-list-item" v-for="item in publishRentData" :item= "item" :key="item">
       <div class="left" @click="toAdminRentDetail(item.id)">
-        <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
+        <img :src="'http://120.78.206.183:8081/'+item.rentProductPicture">
       </div>
 
       <div class="content">
@@ -47,7 +47,7 @@
     <div v-if="publishSaleData!=''">
     <div class="seller-list-item" v-for="item in publishSaleData" :item= "item" :key="item">
       <div class="left" @click="toAdminSaleDetail(item.id)">
-        <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
+        <img :src="'http://120.78.206.183:8081/'+item.saleProductPicture">
       </div>
 
       <div class="content">
@@ -120,11 +120,11 @@
           message: '确认要删除吗？'
         }).then(() => {
           var that = this;
-          this.$axios.delete("http://127.0.0.1:8081/rent/deleteMyPublishRent/"+id)
+          this.$axios.delete(this.global.ip+"/rent/deleteMyPublishRent/"+id)
             .then(function (RentResult) {
               if (RentResult.data.status){
                 Toast("删除成功!");
-                that.$axios.get("http://127.0.0.1:8081/rent/getMyPublishRent/"+that.userInfo.id)
+                that.$axios.get(this.global.ip+"/rent/getMyPublishRent/"+that.userInfo.id)
                   .then(function (RentResult) {
                     that.publishRentData = RentResult.data.data;
                   })
@@ -156,11 +156,11 @@
           message: '确认要删除吗？'
         }).then(() => {
           var that = this;
-          this.$axios.delete("http://127.0.0.1:8081/sale/deleteMyPublishSale/"+id)
+          this.$axios.delete(this.global.ip+"/sale/deleteMyPublishSale/"+id)
             .then(function (SaleResult) {
               if (SaleResult.data.status){
                 Toast("删除成功!");
-                that.$axios.get("http://127.0.0.1:8081/sale/getMyPublishSale/"+that.userInfo.id)
+                that.$axios.get(this.global.ip+"/sale/getMyPublishSale/"+that.userInfo.id)
                   .then(function (SaleResult) {
                     that.publishSaleData = SaleResult.data.data;
                   })
@@ -192,7 +192,7 @@
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/rent/getMyPublishRent/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/rent/getMyPublishRent/"+this.userInfo.id)
             .then(function (RentResult) {
               that.publishRentData = RentResult.data.data;
             })
@@ -200,7 +200,7 @@
               console.log(error)
             });
 
-          this.$axios.get("http://127.0.0.1:8081/sale/getMyPublishSale/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/sale/getMyPublishSale/"+this.userInfo.id)
             .then(function (SaleResult) {
               that.publishSaleData = SaleResult.data.data;
             })
@@ -218,7 +218,7 @@
       this.userInfo = userInfo;
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/rent/getMyPublishRent/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/rent/getMyPublishRent/"+this.userInfo.id)
         .then(function (RentResult) {
           that.publishRentData = RentResult.data.data;
         })
@@ -226,7 +226,7 @@
           console.log(error)
         });
 
-      this.$axios.get("http://127.0.0.1:8081/sale/getMyPublishSale/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/sale/getMyPublishSale/"+this.userInfo.id)
         .then(function (SaleResult) {
           that.publishSaleData = SaleResult.data.data;
         })

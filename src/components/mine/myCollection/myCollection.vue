@@ -15,7 +15,7 @@
         <div v-if="CollectRentData!=''">
           <div class="seller-list-item" v-for="item in CollectRentData" :item= "item" :key="item">
             <div class="left"  @click="toRentDetail(item.id,item.flag)">
-              <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
+              <img :src="'http://120.78.206.183:8081/'+item.rentProductPicture">
             </div>
 
             <div class="content">
@@ -48,7 +48,7 @@
           <div v-if="CollectSaleData!=''">
             <div class="seller-list-item" v-for="item in CollectSaleData" :item= "item" :key="item">
                 <div class="left" @click="toSaleDetail(item.id,item.flag)">
-                  <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
+                  <img :src="'http://120.78.206.183:8081/'+item.saleProductPicture">
                 </div>
 
                 <div class="content">
@@ -121,9 +121,9 @@
       },
       toDeleteRentMyCollect(id){
         var that = this;
-        this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectRent/"+this.userInfo.id+"/"+id)
+        this.$axios.delete(this.global.ip+"/collect/deleteCollectRent/"+this.userInfo.id+"/"+id)
           .then(function (result) {
-            that.$axios.get("http://127.0.0.1:8081/collect/getCollectRent/"+that.userInfo.id)
+            that.$axios.get(this.global.ip+"/collect/getCollectRent/"+that.userInfo.id)
               .then(function (result) {
                 that.CollectRentData = result.data.data;
               })
@@ -137,9 +137,9 @@
       },
       toDeleteSaleMyCollect(id){
         var that = this;
-        this.$axios.delete("http://127.0.0.1:8081/collect/deleteCollectSale/"+this.userInfo.id+"/"+id)
+        this.$axios.delete(this.global.ip+"/collect/deleteCollectSale/"+this.userInfo.id+"/"+id)
           .then(function (result) {
-            that.$axios.get("http://127.0.0.1:8081/collect/getCollectSale/"+that.userInfo.id)
+            that.$axios.get(this.global.ip+"/collect/getCollectSale/"+that.userInfo.id)
               .then(function (result) {
                 that.CollectSaleData = result.data.data;
               })
@@ -160,14 +160,14 @@
       onRefresh() {
         setTimeout(() => {
           var that = this;
-          this.$axios.get("http://127.0.0.1:8081/collect/getCollectRent/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/collect/getCollectRent/"+this.userInfo.id)
             .then(function (result) {
               that.CollectRentData = result.data.data;
             })
             .catch(function (error) {
               console.log(error)
             });
-          this.$axios.get("http://127.0.0.1:8081/collect/getCollectSale/"+this.userInfo.id)
+          this.$axios.get(this.global.ip+"/collect/getCollectSale/"+this.userInfo.id)
             .then(function (result) {
               that.CollectSaleData = result.data.data;
             })
@@ -185,7 +185,7 @@
       this.userInfo = userInfo;
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/collect/getCollectRent/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/collect/getCollectRent/"+this.userInfo.id)
         .then(function (result) {
           that.CollectRentData = result.data.data;
           console.log(that.CollectRentData)
@@ -193,7 +193,7 @@
         .catch(function (error) {
           console.log(error)
         });
-      this.$axios.get("http://127.0.0.1:8081/collect/getCollectSale/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/collect/getCollectSale/"+this.userInfo.id)
         .then(function (result) {
           that.CollectSaleData = result.data.data;
         })

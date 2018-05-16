@@ -97,7 +97,7 @@
         this.addressDto.postalCode = this.postal_code;
 
         var that = this;
-        this.$axios.post("http://127.0.0.1:8081/user/insertAddress/"+this.userInfo.id,this.addressDto)
+        this.$axios.post(this.global.ip+"/user/insertAddress/"+this.userInfo.id,this.addressDto)
           .then(function (result) {
             if (result.data.status != false) {
               Toast('添加成功！');

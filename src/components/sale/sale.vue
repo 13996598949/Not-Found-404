@@ -44,7 +44,7 @@ export default {
         id=this.userInfo.id
       }
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
+      this.$axios.get(this.global.ip+"/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
         .then(function (RentResult) {
           that.SaleData = RentResult.data.data;
         })
@@ -61,7 +61,7 @@ export default {
       }
       setTimeout(() => {
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
+        this.$axios.get(this.global.ip+"/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
           .then(function (SaleResult) {
             that.SaleData = SaleResult.data.data;
           })
@@ -88,7 +88,7 @@ export default {
     }
 
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
+    this.$axios.get(this.global.ip+"/sale/getSaleAllInfo/"+id,{params:{"saleName":this.value}})
       .then(function (SaleResult) {
         that.SaleData = SaleResult.data.data;
       })

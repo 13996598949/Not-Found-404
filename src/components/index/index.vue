@@ -95,14 +95,14 @@
       }
       setTimeout(() => {
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/index/getRentInfo/"+id)
+        this.$axios.get(this.global.ip+"/index/getRentInfo/"+id)
           .then(function (RentResult) {
             that.RentData = RentResult.data.data;
           })
           .catch(function (error) {
             console.log(error)
           });
-        this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo/"+id)
+        this.$axios.get(this.global.ip+"/index/getSaleInfo/"+id)
           .then(function (SaleResult) {
             that.SaleData = SaleResult.data.data;
           })
@@ -128,14 +128,14 @@
       id=this.userInfo.id
     }
     var that = this;
-    this.$axios.get("http://127.0.0.1:8081/index/getRentInfo/"+id)
+    this.$axios.get(this.global.ip+"/index/getRentInfo/"+id)
       .then(function (RentResult) {
         that.RentData = RentResult.data.data;
       })
       .catch(function (error) {
         console.log(error)
       });
-    this.$axios.get("http://127.0.0.1:8081/index/getSaleInfo/"+id)
+    this.$axios.get(this.global.ip+"/index/getSaleInfo/"+id)
       .then(function (SaleResult) {
         that.SaleData = SaleResult.data.data;
       })

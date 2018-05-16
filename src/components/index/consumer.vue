@@ -94,7 +94,7 @@
         }
 
         var that = this;
-        this.$axios.get("http://127.0.0.1:8081/index/getConsumerRent/"+id,{params:{"searchName":this.value}})
+        this.$axios.get(this.global.ip+"/index/getConsumerRent/"+id,{params:{"searchName":this.value}})
           .then(function (result) {
             if (result.data.status != false) {
               that.RentData = result.data.data;
@@ -107,7 +107,7 @@
             console.log(error)
           });
 
-        this.$axios.get("http://127.0.0.1:8081/index/getConsumerSale/"+id,{params:{"searchName":this.value}})
+        this.$axios.get(this.global.ip+"/index/getConsumerSale/"+id,{params:{"searchName":this.value}})
           .then(function (result) {
             if (result.data.status != false) {
               that.SaleData = result.data.data;
@@ -132,7 +132,7 @@
           } else {
             id=this.userInfo.id
           }
-          this.$axios.get("http://127.0.0.1:8081/index/getConsumerRent/"+id,{params:{"searchName":this.value}})
+          this.$axios.get(this.global.ip+"/index/getConsumerRent/"+id,{params:{"searchName":this.value}})
             .then(function (result) {
               if (result.data.status != false) {
                 that.RentData = result.data.data;
@@ -145,7 +145,7 @@
               console.log(error)
             });
 
-          this.$axios.get("http://127.0.0.1:8081/index/getConsumerSale/"+id,{params:{"searchName":this.value}})
+          this.$axios.get(this.global.ip+"/index/getConsumerSale/"+id,{params:{"searchName":this.value}})
             .then(function (result) {
               if (result.data.status != false) {
                 that.SaleData = result.data.data;
@@ -175,7 +175,7 @@
       }
 
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/index/getConsumerRent/"+id,{params:{"searchName":this.value}})
+      this.$axios.get(this.global.ip+"/index/getConsumerRent/"+id,{params:{"searchName":this.value}})
         .then(function (result) {
           if (result.data.status != false) {
             that.RentData = result.data.data;
@@ -188,7 +188,7 @@
           console.log(error)
         });
 
-      this.$axios.get("http://127.0.0.1:8081/index/getConsumerSale/"+id,{params:{"searchName":this.value}})
+      this.$axios.get(this.global.ip+"/index/getConsumerSale/"+id,{params:{"searchName":this.value}})
         .then(function (result) {
           if (result.data.status != false) {
             that.SaleData = result.data.data;

@@ -41,7 +41,7 @@
         this.userDto.loginPassword = md5(this.userDto.loginPassword)
         this.userDto.buyPassword = md5(this.userDto.buyPassword)
         var that = this;
-        this.$axios.post("http://127.0.0.1:8081/user/register",this.userDto)
+        this.$axios.post(this.global.ip+"/user/register",this.userDto)
           .then(function (registerResult) {
             if (registerResult.data.status==false){
               Toast(registerResult.data.message);

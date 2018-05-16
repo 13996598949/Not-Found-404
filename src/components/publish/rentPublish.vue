@@ -84,13 +84,13 @@ export default {
       this.rentProductDto.rentProductDescribe = this.desc;
 
       var that = this;
-      this.$axios.post("http://127.0.0.1:8081/rent/insertRentInfo/"+this.userInfo.id,this.rentProductDto)
+      this.$axios.post(this.global.ip+"/rent/insertRentInfo/"+this.userInfo.id,this.rentProductDto)
         .then(function (result) {
           if (result.data.status != false) {
             var id = result.data.data;
             let form = new FormData();
             form.append("multipartFile",that.picture);
-            that.$axios.put("http://127.0.0.1:8081/rent/insertRentInfoPicture/"+id,form,{headers:{'Content-Type':'multipart/form-data'}})
+            that.$axios.put(this.global.ip+"/rent/insertRentInfoPicture/"+id,form,{headers:{'Content-Type':'multipart/form-data'}})
               .then(function (result) {
                 if (result.data.status != false) {
                   Toast('发布成功');

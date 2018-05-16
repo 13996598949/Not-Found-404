@@ -6,7 +6,9 @@ import router from './router';
 import axios from 'axios';
 import Vant from 'vant';
 import 'vant/lib/vant-css/index.css';
+import base from "././components/base/base"
 
+Vue.prototype.global = base
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 Vue.use(Vant);

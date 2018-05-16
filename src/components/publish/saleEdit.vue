@@ -24,7 +24,7 @@
         <van-cell class="upload">
           <p>上传图片</p>
           <van-uploader :after-read="onRead">
-            <img id="picture" :src="'http://127.0.0.1:8081/'+this.saleProductDto.saleProductPicture" style="width: 40px;height: 40px"/>
+            <img id="picture" :src="'http://120.78.206.183:8081/'+this.saleProductDto.saleProductPicture" style="width: 40px;height: 40px"/>
           </van-uploader>
         </van-cell>
 
@@ -83,12 +83,12 @@
         this.saleProductDto.saleProductDescribe = this.desc;
 
         var that = this;
-        this.$axios.put("http://127.0.0.1:8081/sale/editSaleInfo/"+this.saleProductDto.id,this.saleProductDto)
+        this.$axios.put(this.global.ip+"/sale/editSaleInfo/"+this.saleProductDto.id,this.saleProductDto)
           .then(function (result) {
             if (result.data.status != false) {
               let form = new FormData();
               form.append("multipartFile",that.picture);
-              that.$axios.put("http://127.0.0.1:8081/sale/insertSaleInfoPicture/"+that.saleProductDto.id,form,{headers:{'Content-Type':'multipart/form-data'}})
+              that.$axios.put(this.global.ip+"/sale/insertSaleInfoPicture/"+that.saleProductDto.id,form,{headers:{'Content-Type':'multipart/form-data'}})
                 .then(function (result) {
                   if (result.data.status != false) {
                     Toast('修改成功');
@@ -145,7 +145,7 @@
       // 取到路由带过来的参数
       let routerParams = this.$route.query.data;
       var that = this;
-      this.$axios.get("http://127.0.0.1:8081/sale/getSaleDetailInfo/"+routerParams+"/"+this.userInfo.id)
+      this.$axios.get(this.global.ip+"/sale/getSaleDetailInfo/"+routerParams+"/"+this.userInfo.id)
         .then(function (RentResult) {
           if (RentResult.data.status != false) {
             that.saleProductDto = RentResult.data.data;

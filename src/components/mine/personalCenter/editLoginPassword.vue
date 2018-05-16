@@ -57,7 +57,7 @@
           this.passwordDto.oldPassword = md5(oldPassword);
           this.passwordDto.newPassword = md5(newPassword);
           var that = this;
-          this.$axios.put("http://127.0.0.1:8081/user/editLoginPassword/"+this.userInfo.id,this.passwordDto)
+          this.$axios.put(this.global.ip+"/user/editLoginPassword/"+this.userInfo.id,this.passwordDto)
             .then(function (result) {
               if (result.data.status != false) {
                 Toast('密码修改成功，请重新登录！');
