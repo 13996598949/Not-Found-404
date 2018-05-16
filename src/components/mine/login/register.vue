@@ -18,6 +18,8 @@
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
+  import md5 from 'js-md5';
+  import { Toast } from 'vant';
   export default {
     components: {
       CrossLine
@@ -36,11 +38,14 @@
     },
     methods:{
       toRegister(){
+        this.userDto.loginPassword = md5(this.userDto.loginPassword)
+        this.userDto.buyPassword = md5(this.userDto.buyPassword)
         var that = this;
         this.$axios.post("http://127.0.0.1:8081/user/register",this.userDto)
           .then(function (registerResult) {
             if (registerResult.data.status==false){
-              alert(registerResult.data.message);
+              Toast(registerResult.data.message);
+              that.userDto=""
             } else {
               that.$router.push({path:'/login'})
             }
@@ -50,7 +55,7 @@
           });
       },
       onClickLeft(){
-        this.$router.go(-1)
+        this.$router.push({path:'/login'})
       }
     }
   }

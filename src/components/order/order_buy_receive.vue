@@ -77,6 +77,7 @@
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
   import { Dialog } from 'vant';
+  import md5 from 'js-md5';
 export default {
   components: {
     CrossLine
@@ -116,7 +117,7 @@ export default {
       if (action === 'confirm') {
         this.confirmDto.userId = this.userInfo.id;
         this.confirmDto.orderId = this.orderData.orderId;
-        this.confirmDto.buyPassword = this.buyPassword;
+        this.confirmDto.buyPassword = md5(this.buyPassword);
         var that = this;
         if (this.flag=="rent") {
           this.$axios.put("http://127.0.0.1:8081/order/toConfirmRentOrder",this.confirmDto)

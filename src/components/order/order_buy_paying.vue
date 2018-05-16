@@ -75,6 +75,7 @@
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
   import { Dialog } from 'vant';
+  import md5 from 'js-md5';
 export default {
   components: {
     CrossLine
@@ -97,7 +98,7 @@ export default {
         if (this.flag=="rent") {
           this.payDto.userId = this.userInfo.id;
           this.payDto.orderId = this.orderData.orderId;
-          this.payDto.buyPassword = this.buyPassword;
+          this.payDto.buyPassword = md5(this.buyPassword);
           this.$axios.put("http://127.0.0.1:8081/order/toPayRentOrder",this.payDto)
             .then(function (result) {
               if (result.data.status != false) {
@@ -121,7 +122,7 @@ export default {
         else if (this.flag=="sale") {
           this.payDto.userId = this.userInfo.id;
           this.payDto.orderId = this.orderData.orderId;
-          this.payDto.buyPassword = this.buyPassword;
+          this.payDto.buyPassword = md5(this.buyPassword);
           this.$axios.put("http://127.0.0.1:8081/order/toPaySaleOrder",this.payDto)
             .then(function (result) {
               if (result.data.status != false) {

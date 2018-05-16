@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "dayjs": "^1.5.14",
+    "js-md5": "^0.7.3",
     "less": "^3.0.2",
     "less-loader": "^4.1.0",
     "mint-ui": "^2.2.13",

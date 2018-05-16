@@ -39,6 +39,7 @@
 
 <script>
   import { Toast } from 'vant';
+  import md5 from 'js-md5';
   export default {
     components: {},
     data () {
@@ -53,8 +54,8 @@
     methods:{
       editLoginPassword(oldPassword,newPassword,okPassword){
         if (newPassword==okPassword){
-          this.passwordDto.oldPassword = oldPassword;
-          this.passwordDto.newPassword = newPassword;
+          this.passwordDto.oldPassword = md5(oldPassword);
+          this.passwordDto.newPassword = md5(newPassword);
           var that = this;
           this.$axios.put("http://127.0.0.1:8081/user/editLoginPassword/"+this.userInfo.id,this.passwordDto)
             .then(function (result) {
