@@ -5,7 +5,7 @@
           <div class="info">
             <img v-if="this.userInfo == null" src="./img/default_header.jpg"/>
             <van-uploader :after-read="onRead" multiple>
-              <img v-if="this.userInfo != null" id="header" :src="'http://120.78.206.183:8081/'+this.userInfo.header" width="40px" height="40px"/>
+              <img v-if="this.userInfo != null" id="header" :src="this.global.ip+'/'+this.userInfo.header" width="40px" height="40px"/>
             </van-uploader>
             <p v-if="this.userInfo == null" class="username" @click="login">点击登录</p>
             <p v-if="this.userInfo != null" class="username">{{this.userInfo.userName}}</p>
@@ -49,19 +49,22 @@
 
         <div class="menu">
           <div class="menu-item" @click="toPerson">
-            <img src="./img/peopleMessage.png"/>个人中心<img class="fr" src="./img/right.png"/>
+            <img src="./img/peopleMessage.png"/>个人中心<img class="fr" style="padding-top: 5px" src="./img/right.png"/>
+          </div>
+          <div class="menu-item" @click="toMyMessage">
+            <img src="./img/message.png"/>我的消息<img class="fr"style="padding-top: 5px" src="./img/right.png"/>
           </div>
           <div class="menu-item" @click="toMyPublish">
-            <img src="./img/public.png"/>我发布的<img class="fr" src="./img/right.png"/>
+            <img src="./img/public.png"/>我发布的<img class="fr" style="padding-top: 5px" src="./img/right.png"/>
           </div>
           <div class="menu-item" @click="toMySale">
-            <img src="./img/sell.png"/>我卖出的<img class="fr" src="./img/right.png"/>
+            <img src="./img/sell.png"/>我卖出的<img class="fr" style="padding-top: 5px" src="./img/right.png"/>
           </div>
           <div class="menu-item" @click="toMyBuy">
-            <img src="./img/buy.png"/>我买到的<img class="fr" src="./img/right.png"/>
+            <img src="./img/buy.png"/>我买到的<img class="fr" style="padding-top: 5px" src="./img/right.png"/>
           </div>
           <div class="menu-item" @click="toMyCollection">
-            <img src="./img/collect.png"/>我收藏的<img class="fr" src="./img/right.png"/>
+            <img src="./img/collect.png"/>我收藏的<img class="fr" style="padding-top: 5px" src="./img/right.png"/>
           </div>
         </div>
       </div>
@@ -171,6 +174,14 @@ export default {
         Toast("请先登录！")
       }else {
         this.$router.push({path: '/payingList'})
+      }
+    },
+    toMyMessage(){
+      if (this.userInfo == null){
+        this.$router.push({path:'/login'})
+        Toast("请先登录！")
+      }else {
+        this.$router.push({path: '/myMessage'})
       }
     },
     toMyPublish () {

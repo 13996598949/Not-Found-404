@@ -28,7 +28,7 @@
 
       <van-cell>
         <div class="product box">
-          <img :src="'http://120.78.206.183:8081/'+this.orderData.picture">
+          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
           <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
@@ -113,6 +113,12 @@ export default {
       this.show=false
     },
     toEvaluate(){
+
+      if (this.evaluate==''){
+        Toast("评价不能为空！");
+        return;
+      }
+
       this.evaluateDto.orderId = this.orderData.orderId;
       this.evaluateDto.tallPersonId = this.orderData.buyId;
       this.evaluateDto.talledPersonId = this.orderData.sellId;
@@ -126,7 +132,7 @@ export default {
             if (result.data.status != false) {
               Toast("评价成功！")
               that.$router.push({
-                path:"order_sale_evaluate",
+                path:"order_buy_evaluate",
                 query:{
                   data:result.data.data,
                   flag:"rent"
@@ -145,7 +151,7 @@ export default {
             if (result.data.status != false) {
               Toast("评价成功！")
               that.$router.push({
-                path:"order_sale_evaluate",
+                path:"order_buy_evaluate",
                 query:{
                   data:result.data.data,
                   flag:"sale"

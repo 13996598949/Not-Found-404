@@ -110,6 +110,15 @@
     },
     methods:{
       sendVerification(){
+        if (this.userName==''){
+          Toast("请输入用户名");
+          return;
+        }
+        if (this.telephone==''){
+          Toast("请输入手机号");
+          return;
+        }
+
         var that = this;
         this.$axios.put(this.global.ip+"/user/sendVerification/"+this.telephone+"/"+this.userName)
           .then(function (result) {
@@ -135,6 +144,27 @@
       },
       beforeClose(action, done){
         if (action === 'confirm') {
+          if(this.userName==''){
+            Toast("请输入用户名")
+            done();
+            return;
+          }
+          if(this.telephone==''){
+            Toast("请输入手机号")
+            done();
+            return;
+          }
+          if(this.verification==''){
+            Toast("请输入验证码")
+            done();
+            return;
+          }
+          if(this.resetPassword==''){
+            Toast("请输入重置的密码")
+            done();
+            return;
+          }
+
           if (this.resetPassword==this.okPassword) {
             this.resetDto.userName = this.userName;
             this.resetDto.mobileCode = this.verification;
@@ -157,12 +187,22 @@
             done();
           }else {
             Toast("两次密码输入不一致！")
+            done();
           }
         } else {
           done();
         }
       },
       toLogin(){
+        if (this.userLoginDto.userName==''){
+          Toast("用户名不能为空！")
+          return;
+        }
+        if (this.userLoginDto.loginPassword==''){
+          Toast("请输入密码！")
+          return;
+        }
+
         var storage = window.sessionStorage;
         this.userLoginDto.loginPassword = md5(this.userLoginDto.loginPassword)
         var that = this;

@@ -3,17 +3,19 @@
     <div class="goods">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="商品详情"/>
       <cross-line></cross-line>
-      <img :src="'http://120.78.206.183:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
+      <img :src="'http://127.0.0.1:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
 
       <van-cell-group class="goods-cell-group">
         <van-cell>
           <div class="goods-title">{{ this.RentData.rentProductName }}</div>
           <div class="goods-describe">{{ this.RentData.rentProductDescribe }}</div>
           <div class="goods-price">{{ formatPrice(this.RentData.rentProductPrice) }}/天</div>
+          <span class="type fr" v-if="this.RentData.type==0">消费级</span>
+          <span class="type fr" v-if="this.RentData.type==1">专业级</span>
         </van-cell>
 
         <div class="box fl">
-          <img :src="'http://120.78.206.183:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
+          <img :src="'http://127.0.0.1:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
           <p style="padding-left: 10px">{{this.RentData.alias}}</p>
         </div>
       </van-cell-group>
@@ -21,14 +23,32 @@
 
     <cross-line></cross-line>
 
+    <div class="goods">
     <p class="liuyan"><b>留言</b></p>
-    <van-cell-group class="goods-cell-group">
+    <p v-if="RentMessage==''"  style="padding-top:20px;font-size: 16px;text-align: center;">暂无留言！快来添加留言吧~</p>
+    <van-cell-group v-if="RentMessage!=null" class="goods-cell-group" v-for="item in RentMessage" :item= "item" :key="item">
       <van-cell>
-        <p style="padding-left: 10px">{{this.RentData.alias}}:</p>
+        <div class="box fl">
+          <img :src="'http://127.0.0.1:8081/'+item.header" style="width: 30px;height: 30px">
+          <p style="padding-left: 10px"><b>{{item.personName}}</b></p>
+        </div>
+        <div style="padding-top: 40px;padding-left: 50px">
+          {{item.message}}
+          <p style="color: gray">{{item.messageTimeStr}}</p>
+        </div>
+      </van-cell>
+      <van-cell style="padding-left: 60px" v-if="item.replyPersonName != null">
+        <div class="box fl">
+          <img :src="'http://127.0.0.1:8081/'+item.replyHeader" style="width: 30px;height: 30px">
+          <p style="padding-left: 10px"><b>{{item.replyPersonName}}</b></p>
+        </div>
+        <div style="padding-top: 40px;padding-left: 50px">
+          {{item.replyMessage}}
+          <p style="color: gray">{{item.replyTimeStr}}</p>
+        </div>
       </van-cell>
     </van-cell-group>
 
-    <div class="goods">
       <van-goods-action>
         <van-goods-action-mini-btn icon="close" @click="toDeleteRent">
           删除
@@ -53,7 +73,8 @@ export default {
   data () {
     return {
       RentData:{},
-      userInfo:{}
+      userInfo:{},
+      RentMessage:{}
     }
   },
   methods: {
@@ -88,7 +109,7 @@ export default {
       })
     },
     onClickLeft(){
-      this.$router.push({path:"/myPublish"})
+      this.$router.go(-1)
     },
     formatPrice() {
       return '¥' + (this.RentData.rentProductPrice).toFixed(2);
@@ -109,11 +130,27 @@ export default {
       .catch(function (error) {
 
       });
+
+    this.$axios.get(this.global.ip+"/rent/getRentMessage/"+routerParams)
+      .then(function (MessageResult) {
+        if(MessageResult.data.status != false) {
+          that.RentMessage = MessageResult.data.data;
+        }else {
+          Toast(MessageResult.data.message)
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
   },
 }
 </script>
 
 <style lang="less" scoped>
+  .type{
+    color: gray;
+    font-size: 14px;
+  }
   .liuyan{
     padding-top: 10px;
     padding-left: 5px;

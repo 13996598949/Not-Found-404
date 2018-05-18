@@ -35,6 +35,14 @@ export default {
   },
   methods: {
     toReceive(){
+      if (this.postCompany==''){
+        Toast("快递公司不能为空")
+        return;
+      }
+      if (this.postNum==''){
+        Toast("快递单号不能为空")
+        return;
+      }
       this.deliveryDto.orderId = this.orderData.orderId;
       this.deliveryDto.postCompany = this.postCompany;
       this.deliveryDto.postNum = this.postNum;

@@ -87,7 +87,69 @@
       toShow(){
         this.show=true;
       },
+      myValidate(name,data,length,level){
+        // 账号正则
+        var username = /^[a-zA-z]\w{3,15}$/;
+
+        // 密码正则
+        var password = /^(\w){6,20}$/;
+
+        // 邮箱正则
+        var mail = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+
+        // 手机号正则
+        var telephone = /^1\d{10}$/;
+
+        if (data==''&&level>0){
+          Toast(name + "不能为空")
+          return false;
+        }
+        if (data.length<length&&level>0){
+          Toast(name+"至少需要"+length+"个字符")
+          return false;
+        }
+        if (data.indexOf(" ") !=-1 &&level>0){
+          Toast(name+"不能存在空格")
+          return false;
+        }
+        if (!username.test(data)&&level==2){
+          Toast(name+"只能由字母、数字、下划线组成，字母开头")
+          return false;
+        }
+
+        if (!password.test(data)&&level==5){
+          Toast(name+"只能输入6-20个字母、数字、下划线 ")
+          return false;
+        }
+
+        if (!mail.test((data)) && level==3){
+          Toast(name+"请输入正确的邮箱格式")
+          return false;
+        }
+
+        if (!telephone.test((data)) && level==4){
+          Toast(name+"请输入正确的手机号格式")
+          return false;
+        }
+
+        return true
+      },
       onSave() {
+        if (!this.myValidate("收货人",this.receiveName,2,1)){
+          return;
+        }
+        if (!this.myValidate("手机号",this.telephone,11,4)){
+          return;
+        }
+        if (this.province==''||this.city==''||this.city==''){
+          Toast("请选择收货地区")
+          return;
+        }
+        if (this.district_detail==''){
+          Toast("详细地址不能为空")
+          return;
+        }
+
         this.addressDto.receiveName = this.receiveName;
         this.addressDto.telephone = this.telephone;
         this.addressDto.province = this.province;

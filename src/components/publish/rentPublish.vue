@@ -80,6 +80,18 @@ export default {
   },
   methods: {
     saveButton(){
+      if (this.rentProductDto.rentProductName==''){
+        Toast("标题不能为空")
+        return;
+      }
+      if (this.rentProductDto.rentProductPrice==''){
+        Toast("价格不能为空")
+        return;
+      }
+      if (this.picture==''){
+        Toast("请上传图片")
+        return;
+      }
       this.rentProductDto.rentProductName = this.title;
       this.rentProductDto.rentProductDescribe = this.desc;
 
@@ -90,7 +102,7 @@ export default {
             var id = result.data.data;
             let form = new FormData();
             form.append("multipartFile",that.picture);
-            that.$axios.put(this.global.ip+"/rent/insertRentInfoPicture/"+id,form,{headers:{'Content-Type':'multipart/form-data'}})
+            that.$axios.put(that.global.ip+"/rent/insertRentInfoPicture/"+id,form,{headers:{'Content-Type':'multipart/form-data'}})
               .then(function (result) {
                 if (result.data.status != false) {
                   Toast('发布成功');

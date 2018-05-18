@@ -3,17 +3,19 @@
     <div class="goods">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="商品详情"/>
       <cross-line></cross-line>
-      <img :src="'http://120.78.206.183:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
+      <img :src="'http://127.0.0.1:8081/'+this.RentData.rentProductPicture" style="width: 375px;height: 375px">
 
       <van-cell-group class="goods-cell-group">
         <van-cell>
           <div class="goods-title">{{ this.RentData.rentProductName }}</div>
           <div class="goods-describe">{{ this.RentData.rentProductDescribe }}</div>
           <div class="goods-price">{{ formatPrice(this.RentData.rentProductPrice) }}/天</div>
+          <span class="type fr" v-if="this.RentData.type==0">消费级</span>
+          <span class="type fr" v-if="this.RentData.type==1">专业级</span>
         </van-cell>
 
         <div class="box fl">
-          <img :src="'http://120.78.206.183:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
+          <img :src="'http://127.0.0.1:8081/'+this.RentData.header" style="width: 50px;height: 50px"/>
           <p style="padding-left: 10px">{{this.RentData.alias}}</p>
         </div>
       </van-cell-group>
@@ -21,16 +23,34 @@
 
     <cross-line></cross-line>
 
-    <p class="liuyan"><b>留言</b></p>
-    <van-cell-group class="goods-cell-group">
-      <van-cell>
-        <p style="padding-left: 10px">{{this.RentData.alias}}:</p>
-      </van-cell>
-    </van-cell-group>
+    <div class="goods">
+      <p class="liuyan"><b>留言</b></p>
+        <p v-if="RentMessage==''"  style="padding-top:20px;font-size: 16px;text-align: center;">暂无留言！快来添加留言吧~</p>
+        <van-cell-group v-if="RentMessage!=null" class="goods-cell-group" v-for="item in RentMessage" :item= "item" :key="item">
+          <van-cell>
+            <div class="box fl">
+              <img :src="'http://127.0.0.1:8081/'+item.header" style="width: 30px;height: 30px">
+              <p style="padding-left: 10px"><b>{{item.personName}}</b></p>
+            </div>
+            <div style="padding-top: 40px;padding-left: 50px">
+              {{item.message}}
+              <p style="color: gray">{{item.messageTimeStr}}</p>
+            </div>
+          </van-cell>
+          <van-cell style="padding-left: 60px" v-if="item.replyPersonName != null">
+            <div class="box fl">
+              <img :src="'http://127.0.0.1:8081/'+item.replyHeader" style="width: 30px;height: 30px">
+              <p style="padding-left: 10px"><b>{{item.replyPersonName}}</b></p>
+            </div>
+            <div style="padding-top: 40px;padding-left: 50px">
+              {{item.replyMessage}}
+              <p style="color: gray">{{item.replyTimeStr}}</p>
+            </div>
+          </van-cell>
+        </van-cell-group>
 
-    <div>
       <van-goods-action>
-        <van-goods-action-mini-btn icon="chat">
+        <van-goods-action-mini-btn icon="chat" @click="toMessage">
           留言
         </van-goods-action-mini-btn>
         <van-goods-action-mini-btn :icon=icon @click="collect">
@@ -40,8 +60,16 @@
           立即下单
         </van-goods-action-big-btn>
       </van-goods-action>
+    <van-dialog v-model="show"
+                show-cancel-button
+                :before-close="beforeClose">
+      <van-field
+        v-model="message"
+        label="留言"
+        placeholder="请输入留言"
+      />
+    </van-dialog>
     </div>
-
     </div>
 </template>
 
@@ -57,9 +85,58 @@ export default {
       icon: "like-o",
       RentData:{},
       userInfo:{},
+      show:false,
+      message:"",
+      messageDto:{},
+      RentMessage:[]
     }
   },
   methods: {
+    toMessage(){
+      if (this.userInfo == null){
+        Toast("请先登录哦！")
+      } else {
+        this.show = true;
+      }
+    },
+    beforeClose(action,done){
+        if (action === 'confirm') {
+          if (this.message != "") {
+            this.messageDto.productId = this.RentData.id;
+            this.messageDto.personId = this.userInfo.id;
+            this.messageDto.message = this.message;
+            var that = this;
+            this.$axios.post(this.global.ip + "/rent/insertRentMessage", this.messageDto)
+              .then(function (result) {
+                if (result.data.status != false) {
+                  Toast("留言成功！")
+                  that.$axios.get(that.global.ip+"/rent/getRentMessage/"+that.RentData.id)
+                    .then(function (MessageResult) {
+                      if(MessageResult.data.status != false) {
+                        that.RentMessage = MessageResult.data.data;
+                      }else {
+                        Toast(MessageResult.data.message)
+                      }
+                    })
+                    .catch(function (error) {
+                      console.log(error)
+                    });
+                } else {
+                  Toast(result.data.message);
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              });
+            done();
+          } else {
+            Toast("留言不能为空哦！")
+            done();
+          }
+        }else {
+          done();
+        }
+    },
     toOrderPaying(){
       if (this.userInfo == null) {
         this.$router.push({path: '/login'});
@@ -140,11 +217,27 @@ export default {
       .catch(function (error) {
         console.log(error)
       });
+
+    this.$axios.get(this.global.ip+"/rent/getRentMessage/"+routerParams)
+      .then(function (MessageResult) {
+        if(MessageResult.data.status != false) {
+          that.RentMessage = MessageResult.data.data;
+        }else {
+          Toast(MessageResult.data.message)
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
   },
 }
 </script>
 
 <style lang="less" scoped>
+  .type{
+    color: gray;
+    font-size: 14px;
+  }
   .down {
     flex: 1;
     margin-top: 7px;

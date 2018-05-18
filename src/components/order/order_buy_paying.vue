@@ -28,7 +28,7 @@
 
       <van-cell>
         <div class="product box">
-          <img :src="'http://120.78.206.183:8081/'+this.orderData.picture">
+          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
           <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
@@ -94,11 +94,11 @@ export default {
   methods: {
     beforeClose(action, done) {
       if (action === 'confirm') {
+        this.payDto.userId = this.userInfo.id;
+        this.payDto.orderId = this.orderData.orderId;
+        this.payDto.buyPassword = md5(this.buyPassword);
         var that = this;
         if (this.flag=="rent") {
-          this.payDto.userId = this.userInfo.id;
-          this.payDto.orderId = this.orderData.orderId;
-          this.payDto.buyPassword = md5(this.buyPassword);
           this.$axios.put(this.global.ip+"/order/toPayRentOrder",this.payDto)
             .then(function (result) {
               if (result.data.status != false) {
@@ -120,9 +120,6 @@ export default {
             });
         }
         else if (this.flag=="sale") {
-          this.payDto.userId = this.userInfo.id;
-          this.payDto.orderId = this.orderData.orderId;
-          this.payDto.buyPassword = md5(this.buyPassword);
           this.$axios.put(this.global.ip+"/order/toPaySaleOrder",this.payDto)
             .then(function (result) {
               if (result.data.status != false) {

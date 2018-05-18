@@ -15,7 +15,7 @@
         <div v-if="CollectRentData!=''">
           <div class="seller-list-item" v-for="item in CollectRentData" :item= "item" :key="item">
             <div class="left"  @click="toRentDetail(item.id,item.flag)">
-              <img :src="'http://120.78.206.183:8081/'+item.rentProductPicture">
+              <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
             </div>
 
             <div class="content">
@@ -48,7 +48,7 @@
           <div v-if="CollectSaleData!=''">
             <div class="seller-list-item" v-for="item in CollectSaleData" :item= "item" :key="item">
                 <div class="left" @click="toSaleDetail(item.id,item.flag)">
-                  <img :src="'http://120.78.206.183:8081/'+item.saleProductPicture">
+                  <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
                 </div>
 
                 <div class="content">
@@ -123,7 +123,7 @@
         var that = this;
         this.$axios.delete(this.global.ip+"/collect/deleteCollectRent/"+this.userInfo.id+"/"+id)
           .then(function (result) {
-            that.$axios.get(this.global.ip+"/collect/getCollectRent/"+that.userInfo.id)
+            that.$axios.get(that.global.ip+"/collect/getCollectRent/"+that.userInfo.id)
               .then(function (result) {
                 that.CollectRentData = result.data.data;
               })
@@ -139,7 +139,7 @@
         var that = this;
         this.$axios.delete(this.global.ip+"/collect/deleteCollectSale/"+this.userInfo.id+"/"+id)
           .then(function (result) {
-            that.$axios.get(this.global.ip+"/collect/getCollectSale/"+that.userInfo.id)
+            that.$axios.get(that.global.ip+"/collect/getCollectSale/"+that.userInfo.id)
               .then(function (result) {
                 that.CollectSaleData = result.data.data;
               })

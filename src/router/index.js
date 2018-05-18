@@ -15,6 +15,7 @@ import InsertAddressList from '@/components/mine/personalCenter/insertAddress'
 import EditAddressList from '@/components/mine/personalCenter/editAddress'
 import EditBuyPassword from "@/components/mine/personalCenter/editBuyPassword"
 import EditLoginPassword from "@/components/mine/personalCenter/editLoginPassword"
+import MyMessage from "@/components/mine/myMessage/myMessage"
 import MyPublish from "@/components/mine/myPublish/myPublish"
 import MySale from "@/components/mine/mySale/mySale"
 import MyBuy from "@/components/mine/myBuy/myBuy"
@@ -151,6 +152,10 @@ export default new Router({
     {
       path: '/editLoginPassword',
       component: EditLoginPassword
+    },
+    {
+      path: '/myMessage',
+      component: MyMessage
     },
     // 我发布的
     {

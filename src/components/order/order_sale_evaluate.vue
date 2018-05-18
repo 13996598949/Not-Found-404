@@ -28,7 +28,7 @@
 
       <van-cell>
         <div class="product box">
-          <img :src="'http://120.78.206.183:8081/'+this.orderData.picture">
+          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
           <span>{{this.orderData.productName}}</span>
         </div>
       </van-cell>
@@ -52,7 +52,7 @@
       <van-cell-group v-for="item in evaluateData" :item= "item" :key="item">
         <van-cell>
           <div class="box">
-            <img class="fl" :src="'http://120.78.206.183:8081/'+item.tallPersonPicture">
+            <img class="fl" :src="'http://127.0.0.1:8081/'+item.tallPersonPicture">
             <div style="padding-left: 20px"  class="fl">{{item.tallPersonAlias}}</div>
           </div>
           <div v-if="item.goodFlag==0" class="fr" style="text-align: right"><img style="width: 30px;height: 30px"  src="../../components/order/img/good.png"></div>

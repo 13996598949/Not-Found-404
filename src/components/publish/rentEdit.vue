@@ -24,7 +24,7 @@
         <van-cell class="upload">
           <p>上传图片</p>
           <van-uploader :after-read="onRead">
-            <img id="picture" :src="'http://120.78.206.183:8081/'+this.rentProductDto.rentProductPicture" style="width: 40px;height: 40px"/>
+            <img id="picture" :src="this.global.ip+'/'+this.rentProductDto.rentProductPicture" style="width: 40px;height: 40px"/>
           </van-uploader>
         </van-cell>
 
@@ -80,6 +80,19 @@ export default {
   },
   methods: {
     saveButton(){
+      if (this.rentProductDto.rentProductName==''){
+        Toast("标题不能为空")
+        return;
+      }
+      if (this.rentProductDto.rentProductPrice==''){
+        Toast("价格不能为空")
+        return;
+      }
+      if (this.picture==''){
+        Toast("请上传图片")
+        return;
+      }
+
       this.rentProductDto.rentProductName = this.title;
       this.rentProductDto.rentProductDescribe = this.desc;
       var that = this;
@@ -88,7 +101,7 @@ export default {
           if (result.data.status != false) {
             let form = new FormData();
             form.append("multipartFile",that.picture);
-            that.$axios.put(this.global.ip+"/rent/insertRentInfoPicture/"+that.rentProductDto.id,form,{headers:{'Content-Type':'multipart/form-data'}})
+            that.$axios.put(that.global.ip+"/rent/insertRentInfoPicture/"+that.rentProductDto.id,form,{headers:{'Content-Type':'multipart/form-data'}})
               .then(function (result) {
                 if (result.data.status != false) {
                   Toast('修改成功');

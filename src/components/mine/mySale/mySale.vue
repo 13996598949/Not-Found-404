@@ -15,7 +15,7 @@
       <div class="seller-list-item" v-for="item in RentData" :item= "item" :key="item">
 
         <div class="left" @click="toRentSimpleInfo(item.productId)">
-          <img :src="'http://120.78.206.183:8081/'+item.picture">
+          <img :src="'http://127.0.0.1:8081/'+item.picture">
         </div>
 
         <div class="content">
@@ -50,7 +50,7 @@
       <div class="seller-list-item" v-for="item in SaleData" :item= "item" :key="item">
 
         <div class="left" @click="toSaleSimpleInfo(item.productId)">
-          <img :src="'http://120.78.206.183:8081/'+item.picture">
+          <img :src="'http://127.0.0.1:8081/'+item.picture">
         </div>
 
         <div class="content">
@@ -125,7 +125,7 @@
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("删除成功！")
-                that.$axios.get(this.global.ip+"/order/getMySellRentInfo/"+that.userInfo.id)
+                that.$axios.get(that.global.ip+"/order/getMySellRentInfo/"+that.userInfo.id)
                   .then(function (result) {
                     if (result.data.status != false) {
                       that.RentData = result.data.data;
@@ -230,7 +230,7 @@
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("删除成功！")
-                that.$axios.get(this.global.ip+"/order/getMySellSaleInfo/"+that.userInfo.id)
+                that.$axios.get(that.global.ip+"/order/getMySellSaleInfo/"+that.userInfo.id)
                   .then(function (result) {
                     if (result.data.status != false) {
                       that.SaleData = result.data.data;
@@ -291,12 +291,20 @@
                       flag:"sale"
                     }
                   })
-                }else if (result.data.data.active==4){
+                }else if (result.data.data.active==4 && result.data.data.sale_evaluate_flag==1){
                   that.$router.push({
                     path:"order_sale_evaluate",
                     query:{
                       data:result.data.data,
-                      flag:"sale"
+                      flag:"sale",
+                    }
+                  })
+                }else if (result.data.data.active==4 && result.data.data.sale_evaluate_flag==0){
+                  that.$router.push({
+                    path:"order_sale_confirm",
+                    query:{
+                      data:result.data.data,
+                      flag:"sale",
                     }
                   })
                 }

@@ -31,12 +31,29 @@
       return {
         list: [],
         addressList:{},
-        flag:""
+        flag:"",
+        resultData:{}
       }
     },
     methods:{
       onClickLeft(){
-        this.$router.go(-1)
+        if (this.flag=='rent') {
+          this.$router.push({
+            path:'rentToBuy',
+            query:{
+              RentData:this.resultData
+            }
+          })
+        }else if (this.flag=='sale'){
+          this.$router.push({
+            path:'saleToBuy',
+            query:{
+              SaleData:this.resultData
+            }
+          })
+        } else if (this.flag=='person') {
+          this.$router.go(-1)
+        }
       },
       onSelect(item){
         if (this.flag=='rent') {
@@ -85,7 +102,9 @@
 
       // 取到路由带过来的参数
       let routerParams = this.$route.query.data;
-      this.flag = routerParams
+      let resultData = this.$route.query.resultData;
+      this.flag = routerParams;
+      this.resultData = resultData;
 
       var that = this;
       this.$axios.get(this.global.ip+"/user/getAddressList/"+userInfo.id)

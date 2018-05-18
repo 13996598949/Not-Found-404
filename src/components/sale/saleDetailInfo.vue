@@ -3,17 +3,19 @@
     <div class="goods">
       <van-nav-bar left-arrow @click-left="onClickLeft" title="商品详情"/>
       <cross-line></cross-line>
-      <img :src="'http://120.78.206.183:8081/'+this.SaleData.saleProductPicture" style="width: 375px;height: 375px">
+      <img :src="'http://127.0.0.1:8081/'+this.SaleData.saleProductPicture" style="width: 375px;height: 375px">
 
       <van-cell-group class="goods-cell-group">
         <van-cell>
           <div class="goods-title">{{ this.SaleData.saleProductName }}</div>
           <div class="goods-describe">{{ this.SaleData.saleProductDescribe }}</div>
           <div class="goods-price">{{ formatPrice(this.SaleData.saleProductPrice) }}</div>
+          <span class="type fr" v-if="this.SaleData.type==0">消费级</span>
+          <span class="type fr" v-if="this.SaleData.type==1">专业级</span>
         </van-cell>
 
         <div class="box fl">
-          <img :src="'http://120.78.206.183:8081/'+this.SaleData.header" style="width: 50px;height: 50px"/>
+          <img :src="'http://127.0.0.1:8081/'+this.SaleData.header" style="width: 50px;height: 50px"/>
           <p style="padding-left: 10px">{{this.SaleData.alias}}</p>
         </div>
       </van-cell-group>
@@ -21,16 +23,34 @@
 
     <cross-line></cross-line>
 
+    <div class="goods">
     <p class="liuyan"><b>留言</b></p>
-    <van-cell-group class="goods-cell-group">
+    <p v-if="saleMessage==''"  style="padding-top:20px;font-size: 16px;text-align: center;">暂无留言！快来添加留言吧~</p>
+    <van-cell-group v-if="saleMessage!=null" class="goods-cell-group" v-for="item in saleMessage" :item= "item" :key="item">
       <van-cell>
-        <p style="padding-left: 10px">{{this.SaleData.alias}}:</p>
+        <div class="box fl">
+          <img :src="'http://127.0.0.1:8081/'+item.header" style="width: 30px;height: 30px">
+          <p style="padding-left: 10px"><b>{{item.personName}}</b></p>
+        </div>
+        <div style="padding-top: 40px;padding-left: 50px">
+          {{item.message}}
+          <p style="color: gray">{{item.messageTimeStr}}</p>
+        </div>
+      </van-cell>
+      <van-cell style="padding-left: 60px" v-if="item.replyPersonName != null">
+        <div class="box fl">
+          <img :src="'http://127.0.0.1:8081/'+item.replyHeader" style="width: 30px;height: 30px">
+          <p style="padding-left: 10px"><b>{{item.replyPersonName}}</b></p>
+        </div>
+        <div style="padding-top: 40px;padding-left: 50px">
+          {{item.replyMessage}}
+          <p style="color: gray">{{item.replyTimeStr}}</p>
+        </div>
       </van-cell>
     </van-cell-group>
 
-    <div class="goods">
       <van-goods-action>
-        <van-goods-action-mini-btn icon="chat">
+        <van-goods-action-mini-btn icon="chat" @click="show=true">
           留言
         </van-goods-action-mini-btn>
         <van-goods-action-mini-btn :icon=icon @click="collect">
@@ -40,8 +60,16 @@
           立即下单
         </van-goods-action-big-btn>
       </van-goods-action>
+    <van-dialog v-model="show"
+                show-cancel-button
+                :before-close="beforeClose">
+      <van-field
+        v-model="message"
+        label="留言"
+        placeholder="请输入留言"
+      />
+    </van-dialog>
     </div>
-
     </div>
 </template>
 
@@ -56,10 +84,52 @@ export default {
     return {
       icon: "like-o",
       SaleData:{},
-      userInfo:{}
+      userInfo:{},
+      show:false,
+      message:"",
+      messageDto:{},
+      saleMessage:[]
     }
   },
   methods: {
+    beforeClose(action,done){
+      if (action === 'confirm') {
+        if (this.message != "") {
+          this.messageDto.productId = this.SaleData.id;
+          this.messageDto.personId = this.userInfo.id;
+          this.messageDto.message = this.message;
+          var that = this;
+          this.$axios.post(this.global.ip + "/sale/insertSaleMessage", this.messageDto)
+            .then(function (result) {
+              if (result.data.status != false) {
+                Toast("留言成功！")
+                that.$axios.get(that.global.ip+"/sale/getSaleMessage/"+that.SaleData.id)
+                  .then(function (MessageResult) {
+                    if(MessageResult.data.status != false) {
+                      that.saleMessage = MessageResult.data.data;
+                    }else {
+                      Toast(MessageResult.data.message)
+                    }
+                  })
+                  .catch(function (error) {
+                    console.log(error)
+                  });
+              } else {
+                Toast(result.data.message);
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            });
+          done();
+        } else {
+          Toast("留言不能为空哦！")
+          done();
+        }
+      }else {
+        done();
+      }
+    },
     toOrderPaying(){
       if (this.userInfo == null) {
         this.$router.push({path: '/login'});
@@ -141,11 +211,27 @@ export default {
       .catch(function (error) {
         console.log(error)
       });
+
+    this.$axios.get(this.global.ip+"/sale/getSaleMessage/"+routerParams)
+      .then(function (MessageResult) {
+        if(MessageResult.data.status != false) {
+          that.saleMessage = MessageResult.data.data;
+        }else {
+          Toast(MessageResult.data.message)
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
   }
 }
 </script>
 
 <style lang="less" scoped>
+  .type{
+    color: gray;
+    font-size: 14px;
+  }
   .liuyan{
     padding-top: 10px;
     padding-left: 5px;

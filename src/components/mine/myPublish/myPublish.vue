@@ -14,7 +14,7 @@
     <div v-if="publishRentData!=''">
     <div class="seller-list-item" v-for="item in publishRentData" :item= "item" :key="item">
       <div class="left" @click="toAdminRentDetail(item.id)">
-        <img :src="'http://120.78.206.183:8081/'+item.rentProductPicture">
+        <img :src="'http://127.0.0.1:8081/'+item.rentProductPicture">
       </div>
 
       <div class="content">
@@ -47,7 +47,7 @@
     <div v-if="publishSaleData!=''">
     <div class="seller-list-item" v-for="item in publishSaleData" :item= "item" :key="item">
       <div class="left" @click="toAdminSaleDetail(item.id)">
-        <img :src="'http://120.78.206.183:8081/'+item.saleProductPicture">
+        <img :src="'http://127.0.0.1:8081/'+item.saleProductPicture">
       </div>
 
       <div class="content">
@@ -88,7 +88,7 @@
         isLoading: false,
         userInfo:{},
         publishRentData:[],
-        publishSaleData:[]
+        publishSaleData:[],
       }
     },
     props: {
@@ -124,7 +124,7 @@
             .then(function (RentResult) {
               if (RentResult.data.status){
                 Toast("删除成功!");
-                that.$axios.get(this.global.ip+"/rent/getMyPublishRent/"+that.userInfo.id)
+                that.$axios.get(that.global.ip+"/rent/getMyPublishRent/"+that.userInfo.id)
                   .then(function (RentResult) {
                     that.publishRentData = RentResult.data.data;
                   })
@@ -160,7 +160,7 @@
             .then(function (SaleResult) {
               if (SaleResult.data.status){
                 Toast("删除成功!");
-                that.$axios.get(this.global.ip+"/sale/getMyPublishSale/"+that.userInfo.id)
+                that.$axios.get(that.global.ip+"/sale/getMyPublishSale/"+that.userInfo.id)
                   .then(function (SaleResult) {
                     that.publishSaleData = SaleResult.data.data;
                   })

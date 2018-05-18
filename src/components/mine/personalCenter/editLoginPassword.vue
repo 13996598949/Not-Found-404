@@ -52,7 +52,37 @@
       }
     },
     methods:{
+      myValidate(name,data,length,level){
+        // 密码正则
+        var password = /^(\w){6,20}$/;
+        if (data==''&&level>0){
+          Toast(name + "不能为空")
+          return false;
+        }
+        if (data.length<length&&level>0){
+          Toast(name+"至少需要"+length+"个字符")
+          return false;
+        }
+        if (data.indexOf(" ") !=-1 &&level>0){
+          Toast(name+"不能存在空格")
+          return false;
+        }
+        if (!password.test(data)&&level==5){
+          Toast(name+"只能输入6-20个字母、数字、下划线 ")
+          return false;
+        }
+
+        return true;
+      },
       editLoginPassword(oldPassword,newPassword,okPassword){
+
+        if (!this.myValidate("原密码",oldPassword,6,5)){
+          return;
+        }
+        if (!this.myValidate("新密码",newPassword,6,5)){
+          return;
+        }
+
         if (newPassword==okPassword){
           this.passwordDto.oldPassword = md5(oldPassword);
           this.passwordDto.newPassword = md5(newPassword);
@@ -72,7 +102,7 @@
               console.log(error)
             });
         } else {
-          this.$toast("密码输入不一致")
+          Toast("密码输入不一致")
         }
       },
       onClickLeft(){

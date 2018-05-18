@@ -6,7 +6,7 @@
       <div class="seller-list-item">
 
         <div class="left">
-          <img :src="'http://120.78.206.183:8081/'+this.resultData.saleProductPicture">
+          <img :src="'http://127.0.0.1:8081/'+this.resultData.saleProductPicture">
         </div>
 
         <div class="content">
@@ -63,6 +63,11 @@
     },
     methods: {
       onSubmit(){
+        if (this.address == null){
+          Toast("请选择收货地址!");
+          return;
+        }
+
         this.orderSaleDto.sellId = this.resultData.userId;
         this.orderSaleDto.buyId = this.userInfo.id;
         this.orderSaleDto.productId = this.resultData.id;
@@ -92,6 +97,7 @@
         this.$router.push({
           path:"addressList",
           query:{
+            resultData:this.resultData,
             data:"sale"
           }
         })
@@ -125,7 +131,7 @@
       }
       this.address = JSON.parse(storage.getItem("address"));
       this.resultData = JSON.parse(storage.getItem("resultData"));
-      console.log(this.resultData)
+      console.log(this.address)
     },
   }
 </script>
