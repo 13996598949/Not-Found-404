@@ -52,6 +52,7 @@ import recommend from '@/components/index/recommend'
 import newProduct from '@/components/index/newProduct'
 import professional from '@/components/index/professional'
 import consumer from '@/components/index/consumer'
+import myAccount from '@/components/mine/personalCenter/myAccount'
 
 
 Vue.use(Router)
@@ -326,6 +327,10 @@ export default new Router({
     {
       path: '/consumer',
       component: consumer
+    },
+    {
+      path: '/myAccount',
+      component: myAccount
     },
   ]
 })

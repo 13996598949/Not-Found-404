@@ -29,7 +29,7 @@
       <van-cell title="性别" is-link v-model="this.userInfo.sex" @click="sex_show = true"></van-cell>
       <van-actionsheet v-model="sex_show"  :actions="sexList"/>
 
-      <van-cell title="生日" is-link v-model="this.userInfo.birthdayStr" @click="birthday_show = true"/>
+      <!--<van-cell title="生日" is-link v-model="this.userInfo.birthdayStr" @click="birthday_show = true"/>-->
       <van-popup v-model="birthday_show" position="bottom">
         <van-datetime-picker
           v-show="birthday_show"
@@ -62,6 +62,8 @@
           placeholder="请输入邮箱地址"
         />
       </van-dialog>
+
+      <van-cell title="我的账户" is-link @click="toMyAccount"/>
 
       <van-cell title="修改登录密码" is-link @click="toEditLoginPassword"/>
 
@@ -120,6 +122,9 @@
       }
     },
     methods:{
+      toMyAccount(){
+        this.$router.push({path:'/myAccount'})
+      },
       cancelLogin(){
         var storage = window.sessionStorage;
         storage.clear();
