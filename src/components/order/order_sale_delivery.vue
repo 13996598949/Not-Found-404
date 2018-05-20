@@ -14,6 +14,7 @@
       <van-cell>
         <div class="price">
           {{this.orderData.price}}元
+          <p v-if="this.flag=='rent'">(包含押金：{{this.orderData.deposit}}元)</p>
           <p>已付款</p>
         </div>
       </van-cell>

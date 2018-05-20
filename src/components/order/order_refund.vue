@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     onClickLeft(){
-      this.$router.push({path:'/mine'})
+      this.$router.go(-1)
     },
   },
   created(){

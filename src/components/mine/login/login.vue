@@ -210,6 +210,7 @@
           .then(function (loginResult) {
             if (loginResult.data.status==false){
               Toast(loginResult.data.message);
+              that.userLoginDto.loginPassword=""
             } else {
               var userInfo = JSON.stringify(loginResult.data.data);
               storage.setItem("session",userInfo);

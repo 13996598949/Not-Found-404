@@ -10,6 +10,7 @@
           <div class="goods-title">{{ this.RentData.rentProductName }}</div>
           <div class="goods-describe">{{ this.RentData.rentProductDescribe }}</div>
           <div class="goods-price">{{ formatPrice(this.RentData.rentProductPrice) }}/天</div>
+          <div class="goods-deposit">押金：{{this.RentData.deposit}}</div>
           <span class="type fr" v-if="this.RentData.type==0">消费级</span>
           <span class="type fr" v-if="this.RentData.type==1">专业级</span>
         </van-cell>
@@ -185,7 +186,7 @@ export default {
       }
     },
     onClickLeft(){
-      this.$router.go(-1)
+      this.$router.push({path:"/index"})
     },
     formatPrice() {
       return '¥' + (this.RentData.rentProductPrice).toFixed(2);
@@ -279,6 +280,9 @@ export default {
   }
   &-price {
     color: #f44;
+  }
+  &-deposit{
+    color: gray;
   }
   &-express {
     color: #999;

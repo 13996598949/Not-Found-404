@@ -14,6 +14,7 @@
       <van-cell>
         <div class="price">
           {{this.orderData.price}}元
+          <p v-if="this.flag=='rent'">(包含押金：{{this.orderData.deposit}}元)</p>
           <p>未付款</p>
         </div>
       </van-cell>
@@ -58,6 +59,9 @@
           <div class="price">￥{{this.orderData.price}}</div>
         </van-cell>
         <van-cell>
+          <div style="text-align: center">账户余额：￥{{this.userInfo.account}}</div>
+        </van-cell>
+        <van-cell>
             <van-field
               v-model="buyPassword"
               type="password"
@@ -94,15 +98,23 @@ export default {
   methods: {
     beforeClose(action, done) {
       if (action === 'confirm') {
+        if (this.orderData.price>this.userInfo.account) {
+          Toast("账户余额不足！")
+          done();
+          return;
+        }
         this.payDto.userId = this.userInfo.id;
         this.payDto.orderId = this.orderData.orderId;
         this.payDto.buyPassword = md5(this.buyPassword);
+        this.payDto.price = this.orderData.price;
         var that = this;
         if (this.flag=="rent") {
           this.$axios.put(this.global.ip+"/order/toPayRentOrder",this.payDto)
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("支付成功！")
+                var storage = window.sessionStorage;
+                storage.setItem("session",JSON.stringify(result.data.data.userVo));
                 that.$router.push({
                   path:"order_buy_delivery",
                   query:{
@@ -124,6 +136,8 @@ export default {
             .then(function (result) {
               if (result.data.status != false) {
                 Toast("支付成功！")
+                var storage = window.sessionStorage;
+                storage.setItem("session",JSON.stringify(result.data.data.userVo));
                 that.$router.push({
                   path:"order_buy_delivery",
                   query:{
@@ -188,6 +202,7 @@ export default {
     var storage = window.sessionStorage;
     var userInfo = JSON.parse(storage.getItem("session"));
     this.userInfo = userInfo;
+    console.log(this.userInfo)
 
     // 取到路由带过来的参数
     let orderData = this.$route.query.data;

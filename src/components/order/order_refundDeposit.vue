@@ -2,20 +2,15 @@
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" title="订单信息"/>
     <cross-line></cross-line>
-    <van-steps :active="this.orderData.active" style="height: 65px">
-      <van-step>已拍下</van-step>
-      <van-step>已付款</van-step>
-      <van-step>已发货</van-step>
-      <van-step>待收货</van-step>
-      <van-step>待评价</van-step>
-    </van-steps>
 
     <van-cell-group>
       <van-cell>
+        <div style="font-size: 16px;text-align: center;padding-top: 20px">
+          <b>该订单已被关闭</b>
+        </div>
         <div class="price">
           {{this.orderData.price}}元
-          <p v-if="this.flag=='rent'">(包含押金：{{this.orderData.deposit}}元)</p>
-          <p>已发货</p>
+          <p>订单已关闭（买家退款）</p>
         </div>
       </van-cell>
 
@@ -39,64 +34,50 @@
           <div>买家昵称<span class="fr">{{this.orderData.buyAlias}}</span></div>
           <div>订单编号<span class="fr">{{this.orderData.orderNum}}</span></div>
           <div>交易时间<span class="fr">{{this.orderData.buyTimeStr}}</span></div>
-          <div>快递单号<span class="fr">{{this.orderData.postCompany}}  {{this.orderData.postNum}}</span></div>
+          <div>退款理由<span class="fr">{{this.orderData.refundRes}}</span></div>
         </div>
       </van-cell>
 
     </van-cell-group>
-    <center><van-button class="vanCloseButton" bottom-action>等待买家收货</van-button></center>
+
   </div>
 </template>
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
-  import { Toast } from 'vant';
 export default {
   components: {
     CrossLine
   },
   data () {
     return {
-      orderData:{},
+      orderData:{}
     }
   },
   methods: {
     onClickLeft(){
-      this.$router.push({path:'/mySale'})
+      this.$router.go(-1)
     },
   },
   created(){
-    // 取到路由带过来的参数
-    let orderData = this.$route.query.data;
-    let flag = this.$route.query.flag;
-    this.flag = flag;
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
 
-    var that = this
-    if (flag=="rent") {
-      this.$axios.get(this.global.ip+"/order/getRentOrderInfo/" + orderData.orderId)
-        .then(function (result) {
-          if (result.data.status != false) {
-            that.orderData = result.data.data;
-          } else {
-            Toast(result.data.message)
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
-    }else if (flag=="sale"){
-      this.$axios.get(this.global.ip+"/order/getSaleOrderInfo/" + orderData.orderId)
-        .then(function (result) {
-          if (result.data.status != false) {
-            that.orderData = result.data.data;
-          } else {
-            Toast(result.data.message)
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
-    }
+    // 取到路由带过来的参数
+    let orderId = this.$route.query.orderId;
+    var that = this;
+    this.$axios.get(this.global.ip+"/order/getRefundDepositInfo/" + orderId)
+      .then(function (result) {
+        if (result.data.status != false) {
+          that.orderData = result.data.data;
+          console.log(that.orderData)
+        } else {
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      });
   }
 }
 </script>
@@ -105,13 +86,13 @@ export default {
 .price{
   padding-top: 25px;
   font-size: 35px;
-  color: red;
+  color: gray;
   text-align: center;
 }
 .price p{
   padding-top: 10px;
-  font-size: 10px;
   color: gray;
+  font-size: 10px;
 }
 .product{
   padding-left: 10px;

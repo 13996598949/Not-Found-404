@@ -20,6 +20,7 @@
 
           <div>
             <span class="price fl"><b>￥{{this.resultData.rentProductPrice}}/天</b></span>
+            <span class="deposit fr"><b>押金：￥{{this.resultData.deposit}}</b></span>
           </div>
         </div>
       </div>
@@ -49,7 +50,7 @@
         </van-cell>
       </div>
         <van-submit-bar
-          :price="formatPrice(this.resultData.rentProductPrice,rentDay)"
+          :price="formatPrice(this.resultData.rentProductPrice,rentDay,this.resultData.deposit)"
           button-text="确认下单"
           @submit="onSubmit"
         />
@@ -125,8 +126,8 @@ export default {
         }
       })
     },
-    formatPrice(price,rentday) {
-      this.price = price*rentday*100;
+    formatPrice(price,rentday,depoist) {
+      this.price = ((price*rentday)+depoist)*100;
       return (this.price);
     }
   },
@@ -239,5 +240,9 @@ export default {
   .price{
     font-size: 15px;
     color: red;
+  }
+  .deposit{
+    font-size: 13px;
+    color: gray;
   }
 </style>

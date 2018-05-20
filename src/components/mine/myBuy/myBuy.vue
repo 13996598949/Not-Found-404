@@ -31,13 +31,13 @@
               <span class="price fl"><b>￥{{item.price}}/天&nbsp;&nbsp;&nbsp;租用{{item.rentDay}}天</b></span>
               <div class="fr">
                 <van-button size="small" @click="toOrderRentInfo(item.orderId,item.active)">订单信息</van-button>
-                <van-button v-if="item.active>=3" size="small" @click="toDeleteRentOrder(item.orderId)">删除</van-button>
+                <van-button v-if="item.active>=3" size="small" @click="toRefundDeposit(item.orderId)">申请退还押金</van-button>
+                <van-button v-if="item.active==7" size="small" @click="toDeleteRentOrder(item.orderId)">删除订单</van-button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
 
       <div class="title-bar">
         <span>出售区</span>
@@ -91,6 +91,7 @@
         userInfo: {},
         RentData: [],
         SaleData: [],
+        show:false,
       }
     },
     props: {
@@ -100,6 +101,14 @@
       }
     },
     methods:{
+      toRefundDeposit(id){
+        this.$router.push({
+          path:'toRefundDeposit',
+          query: {
+            data: id
+          }
+        })
+      },
       toSaleSimpleInfo(id){
         this.$router.push({
           path:'saleSimpleInfo',

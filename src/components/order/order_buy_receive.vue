@@ -14,6 +14,7 @@
       <van-cell>
         <div class="price">
           {{this.orderData.price}}元
+          <p v-if="this.flag=='rent'">(包含押金：{{this.orderData.deposit}}元)</p>
           <p>已发货</p>
         </div>
       </van-cell>
@@ -173,13 +174,18 @@ export default {
       this.refund();
     },
     refund(){
+      this.toRefundDto.userId = this.userInfo.id;
       this.toRefundDto.orderId = this.orderData.orderId;
       this.toRefundDto.refundRes = this.refundRes;
+      this.toRefundDto.price = this.orderData.price;
       var that = this
       if (this.flag=="rent") {
         this.$axios.put(this.global.ip+"/order/toRefundRentOrder",this.toRefundDto)
           .then(function (result) {
             if (result.data.status != false) {
+              Toast("退款成功！")
+              var storage = window.sessionStorage;
+              storage.setItem("session",JSON.stringify(result.data.data));
               that.$router.push({
                 path: "order_refund",
                 query: {
@@ -188,7 +194,7 @@ export default {
                 }
               })
             } else {
-              Toast("系统错误!")
+              Toast(result.data.message)
             }
           })
           .catch(function (error) {
@@ -198,6 +204,9 @@ export default {
         this.$axios.put(this.global.ip+"/order/toRefundSaleOrder",this.toRefundDto)
           .then(function (result) {
             if (result.data.status != false) {
+              Toast("退款成功！")
+              var storage = window.sessionStorage;
+              storage.setItem("session",JSON.stringify(result.data.data));
               that.$router.push({
                 path: "order_refund",
                 query: {
@@ -206,7 +215,7 @@ export default {
                 }
               })
             } else {
-              Toast("系统错误!")
+              Toast(result.data.message)
             }
           })
           .catch(function (error) {

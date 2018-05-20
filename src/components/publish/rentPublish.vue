@@ -28,7 +28,7 @@
           </van-uploader>
         </van-cell>
 
-        <van-cell title="价格" is-link :value="this.price+'/天'" @click="price_show = true"/>
+        <van-cell title="价格" is-link :value="'￥'+this.price+'/天'" @click="price_show = true"/>
         <van-dialog v-model="price_show"
                     show-cancel-button
                     :before-close="price_beforeClose">
@@ -38,6 +38,18 @@
             placeholder="请输入价格"
           >
             <van-icon slot="icon">/天</van-icon>
+          </van-field>
+        </van-dialog>
+
+        <van-cell title="押金" is-link :value="'￥'+this.deposit" @click="deposit_show = true"/>
+        <van-dialog v-model="deposit_show"
+                    show-cancel-button
+                    :before-close="deposit_beforeClose">
+          <van-field
+            v-model="deposit"
+            label="押金"
+            placeholder="请输入押金"
+          >
           </van-field>
         </van-dialog>
 
@@ -71,6 +83,8 @@ export default {
       desc: "",
       price_show: false,
       type_show: false,
+      deposit_show:false,
+      deposit:"",
       price: "",
       picture:"",
       type: "0",
@@ -80,11 +94,11 @@ export default {
   },
   methods: {
     saveButton(){
-      if (this.rentProductDto.rentProductName==''){
+      if (this.title==''){
         Toast("标题不能为空")
         return;
       }
-      if (this.rentProductDto.rentProductPrice==''){
+      if (this.price==''){
         Toast("价格不能为空")
         return;
       }
@@ -133,6 +147,14 @@ export default {
     type_beforeClose(action,done){
       if (action === 'confirm') {
         this.rentProductDto.type = this.type;
+        setTimeout(done, 1000);
+      } else {
+        done();
+      }
+    },
+    deposit_beforeClose(action,done) {
+      if (action === 'confirm') {
+        this.rentProductDto.deposit = this.deposit;
         setTimeout(done, 1000);
       } else {
         done();

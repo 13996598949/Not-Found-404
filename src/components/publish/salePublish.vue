@@ -79,11 +79,11 @@
     },
     methods: {
       saveButton(){
-        if (this.rentProductDto.rentProductName==''){
+        if (this.title==''){
           Toast("标题不能为空")
           return;
         }
-        if (this.rentProductDto.rentProductPrice==''){
+        if (this.price==''){
           Toast("价格不能为空")
           return;
         }

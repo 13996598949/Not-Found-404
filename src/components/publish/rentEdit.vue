@@ -41,6 +41,18 @@
           </van-field>
         </van-dialog>
 
+        <van-cell title="押金" is-link :value="'￥'+this.rentProductDto.deposit" @click="deposit_show = true"/>
+        <van-dialog v-model="deposit_show"
+                    show-cancel-button
+                    :before-close="deposit_beforeClose">
+          <van-field
+            v-model="deposit"
+            label="押金"
+            placeholder="请输入押金"
+          >
+          </van-field>
+        </van-dialog>
+
 
         <van-cell title="分类" is-link v-if="this.rentProductDto.type==0" value="消费级" @click="type_show = true"/>
         <van-cell title="分类" is-link v-if="this.rentProductDto.type==1" value="专业级" @click="type_show = true"/>
@@ -71,6 +83,8 @@ export default {
       desc: "",
       price_show: false,
       type_show: false,
+      deposit_show:false,
+      deposit:"",
       price: "",
       picture:"",
       type: "0",
@@ -80,11 +94,11 @@ export default {
   },
   methods: {
     saveButton(){
-      if (this.rentProductDto.rentProductName==''){
+      if (this.title==''){
         Toast("标题不能为空")
         return;
       }
-      if (this.rentProductDto.rentProductPrice==''){
+      if (this.price==''){
         Toast("价格不能为空")
         return;
       }
@@ -120,6 +134,14 @@ export default {
         .catch(function (error) {
           console.log(error)
         });
+    },
+    deposit_beforeClose(action,done) {
+      if (action === 'confirm') {
+        this.rentProductDto.deposit = this.deposit;
+        setTimeout(done, 1000);
+      } else {
+        done();
+      }
     },
     price_beforeClose(action,done) {
       if (action === 'confirm') {
