@@ -21,6 +21,7 @@
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import { Dialog } from 'vant';
 export default {
   components: {
     CrossLine
@@ -35,18 +36,18 @@ export default {
   },
   methods: {
     toReceive(){
+      if (this.postCompany == '') {
+        Toast("快递公司不能为空")
+        return;
+      }
+      if (this.postNum == '') {
+        Toast("快递单号不能为空")
+        return;
+      }
       Dialog.confirm({
         title: '提示',
         message: '提交快递信息后无法更改，是否填写正确？'
       }).then(() => {
-        if (this.postCompany == '') {
-          Toast("快递公司不能为空")
-          return;
-        }
-        if (this.postNum == '') {
-          Toast("快递单号不能为空")
-          return;
-        }
 
         this.refundDepositDto.orderId = this.orderId;
         this.refundDepositDto.postCompany = this.postCompany;

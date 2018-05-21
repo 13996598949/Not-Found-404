@@ -31,7 +31,7 @@
             <span class="price fl"><b>￥{{item.price}}/天&nbsp;&nbsp;&nbsp;租用{{item.rentDay}}天</b></span>
             <div class="fr">
               <van-button size="small" @click="toOrderRentInfo(item.orderId,item.active)">订单信息</van-button>
-              <van-button v-if="item.active>=3" size="small" @click="toDeleteRentOrder(item.orderId)">删除</van-button>
+              <van-button v-if="item.active==7" size="small" @click="toDeleteRentOrder(item.orderId)">删除</van-button>
             </div>
           </div>
         </div>
@@ -186,7 +186,7 @@
                       flag:"rent"
                     }
                   })
-                }else if (result.data.data.active==4 && result.data.data.sale_evaluate_flag==1){
+                }else if (result.data.data.active>=4 && result.data.data.sale_evaluate_flag==1){
                   that.$router.push({
                     path:"order_sale_evaluate",
                     query:{
@@ -194,7 +194,7 @@
                       flag:"rent",
                     }
                   })
-                }else if (result.data.data.active==4 && result.data.data.sale_evaluate_flag==0){
+                }else if (result.data.data.active>=4 && result.data.data.sale_evaluate_flag==0){
                   that.$router.push({
                     path:"order_sale_confirm",
                     query:{

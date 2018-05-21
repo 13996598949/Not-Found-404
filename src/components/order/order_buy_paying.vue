@@ -107,6 +107,7 @@ export default {
         this.payDto.orderId = this.orderData.orderId;
         this.payDto.buyPassword = md5(this.buyPassword);
         this.payDto.price = this.orderData.price;
+        this.payDto.sellId = this.orderData.sellId;
         var that = this;
         if (this.flag=="rent") {
           this.$axios.put(this.global.ip+"/order/toPayRentOrder",this.payDto)
@@ -202,13 +203,13 @@ export default {
     var storage = window.sessionStorage;
     var userInfo = JSON.parse(storage.getItem("session"));
     this.userInfo = userInfo;
-    console.log(this.userInfo)
 
     // 取到路由带过来的参数
     let orderData = this.$route.query.data;
     let flag = this.$route.query.flag;
     this.flag = flag;
     this.orderData = orderData;
+    console.log(this.orderData)
   }
 }
 </script>

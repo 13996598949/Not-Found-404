@@ -46,6 +46,8 @@
     </van-cell-group>
 
       <center><van-button class="vanButton" bottom-action @click="show = true">查看评价</van-button></center>
+      <center><van-button v-if="this.orderData.active=='6'" class="vanButton" bottom-action @click="deposit_show = true">退还押金</van-button></center>
+    <center><van-button v-if="this.orderData.active=='7'" class="vanButton" bottom-action @click="toLookDeposit">查看进度</van-button></center>
 
     <van-popup v-model="show" position="right" style="height: 100%;width: 100%">
       <van-nav-bar left-arrow @click-left="onLeft" title="评价详情"/>
@@ -65,12 +67,34 @@
         <cross-line></cross-line>
       </van-cell-group>
     </van-popup>
+
+    <van-dialog
+      v-model="deposit_show"
+      show-cancel-button
+      :before-close="beforeClose"
+    >
+      <van-cell-group>
+        <van-cell>
+          <div style="text-align: center">押金退还后不能追回，请确认货物！</div>
+        </van-cell>
+        <van-cell>
+          <van-field
+            v-model="buyPassword"
+            type="password"
+            label="交易密码"
+            placeholder="请输入交易密码"
+            required
+          />
+        </van-cell>
+      </van-cell-group>
+    </van-dialog>
   </div>
 </template>
 
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import md5 from 'js-md5';
 export default {
   components: {
     CrossLine
@@ -80,10 +104,53 @@ export default {
       orderData:{},
       flag:"",
       show:false,
-      evaluateData:{}
+      evaluateData:{},
+      deposit_show:false,
+      buyPassword:"",
+      depositDto:{},
+      userInfo:{}
     }
   },
   methods: {
+    toLookDeposit(){
+      this.$router.push({
+        path:'order_refundDeposit',
+        query: {
+          orderId: this.orderData.orderId
+        }
+      })
+    },
+    beforeClose(action,done){
+      if (action === 'confirm') {
+        this.depositDto.orderId = this.orderData.orderId;
+        this.depositDto.userId = this.userInfo.id;
+        this.depositDto.buyPassword = md5(this.buyPassword);
+        var that = this;
+        this.$axios.put(this.global.ip+"/order/sellRefundDeposit",this.depositDto)
+          .then(function (result) {
+            if (result.data.status != false) {
+              Toast("押金退还成功！")
+              var storage = window.sessionStorage;
+              storage.setItem("session",JSON.stringify(result.data.data));
+              that.$router.push({
+                path:"order_refundDeposit",
+                query:{
+                  orderId:that.orderData.orderId,
+                }
+              })
+            }else {
+              that.buyPassword=""
+              Toast(result.data.message)
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+        done();
+      } else {
+        done();
+      }
+    },
     onLeft(){
       this.show = false
     },
@@ -92,6 +159,10 @@ export default {
     },
   },
   created(){
+    var storage = window.sessionStorage;
+    var userInfo = JSON.parse(storage.getItem("session"));
+    this.userInfo = userInfo;
+
     // 取到路由带过来的参数
     let orderData = this.$route.query.data;
     let flag = this.$route.query.flag;

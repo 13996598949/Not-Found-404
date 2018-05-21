@@ -1,45 +1,35 @@
 <template>
   <div>
-    <van-nav-bar left-arrow @click-left="onClickLeft" title="订单信息"/>
+    <van-nav-bar left-arrow @click-left="onClickLeft" title="退还押金申请"/>
     <cross-line></cross-line>
 
     <van-cell-group>
-      <van-cell>
-        <div style="font-size: 16px;text-align: center;padding-top: 20px">
-          <b>该订单已被关闭</b>
-        </div>
-        <div class="price">
-          {{this.orderData.price}}元
-          <p>订单已关闭（买家退款）</p>
-        </div>
-      </van-cell>
 
       <van-cell>
-        <div>
-          {{this.orderData.receiveName}}
-          {{this.orderData.telephone}}
-          <p>{{this.orderData.address}}</p>
-        </div>
-      </van-cell>
-
-      <van-cell>
-        <div class="product box">
-          <img :src="'http://127.0.0.1:8081/'+this.orderData.picture">
-          <span>{{this.orderData.productName}}</span>
+        <div class="product box" style="padding-top: 5%">
+          <img :src="'http://127.0.0.1:8081/'+this.resultData.rent_product_picture">
+          <span>{{this.resultData.rent_product_name}}</span>
         </div>
       </van-cell>
 
       <van-cell>
         <div class="orderInfo">
-          <div>买家昵称<span class="fr">{{this.orderData.buyAlias}}</span></div>
-          <div>订单编号<span class="fr">{{this.orderData.orderNum}}</span></div>
-          <div>交易时间<span class="fr">{{this.orderData.buyTimeStr}}</span></div>
-          <div>退款理由<span class="fr">{{this.orderData.refundRes}}</span></div>
+          <div>订单编号<span class="fr">{{this.resultData.orderNum}}</span></div>
+          <div>交易时间<span class="fr">{{this.resultData.createTimeStr}}</span></div>
+          <div>退还快递单号<span class="fr">{{this.resultData.postCompany}}&nbsp;&nbsp;&nbsp;{{this.resultData.postNum}}</span></div>
+        </div>
+      </van-cell>
+
+      <van-cell>
+        <div v-if="this.resultData.active=='6'" style="font-size: 16px;text-align: center;padding-top: 10%">
+          退还押金申请已提交，等待卖家确认...
+        </div>
+        <div v-if="this.resultData.active=='7'" style="font-size: 16px;text-align: center;padding-top: 10%">
+          押金已退还
         </div>
       </van-cell>
 
     </van-cell-group>
-
   </div>
 </template>
 
@@ -51,12 +41,12 @@ export default {
   },
   data () {
     return {
-      orderData:{}
+      resultData:{}
     }
   },
   methods: {
     onClickLeft(){
-      this.$router.go(-1)
+      this.$router.push({path:"/myBuy"})
     },
   },
   created(){
@@ -70,7 +60,7 @@ export default {
     this.$axios.get(this.global.ip+"/order/getRefundDepositInfo/" + orderId)
       .then(function (result) {
         if (result.data.status != false) {
-          that.orderData = result.data.data;
+          that.resultData = result.data.data;
           console.log(that.orderData)
         } else {
         }
@@ -83,17 +73,6 @@ export default {
 </script>
 
 <style scoped>
-.price{
-  padding-top: 25px;
-  font-size: 35px;
-  color: gray;
-  text-align: center;
-}
-.price p{
-  padding-top: 10px;
-  color: gray;
-  font-size: 10px;
-}
 .product{
   padding-left: 10px;
 }
@@ -113,15 +92,5 @@ export default {
 }
 .orderInfo{
   color: gray;
-}
-.vanButton{
-  background-color: #44BB00;
-  width: 80%;
-  margin-top: 25px;
-}
-.vanCloseButton{
-  background-color: slategray;
-  width: 80%;
-  margin-top: 25px;
 }
 </style>

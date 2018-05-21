@@ -54,7 +54,7 @@ import professional from '@/components/index/professional'
 import consumer from '@/components/index/consumer'
 import myAccount from '@/components/mine/personalCenter/myAccount'
 import toRefundDeposit from '@/components/order/order_toRefundDeposit'
-import order_refundDeposit from '@/components/order/order_toRefundDeposit'
+import order_refundDeposit from '@/components/order/order_refundDeposit'
 
 
 Vue.use(Router)

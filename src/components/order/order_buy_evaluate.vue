@@ -46,7 +46,8 @@
     </van-cell-group>
 
       <center><van-button class="vanButton" bottom-action @click="show = true">查看评价</van-button></center>
-
+      <center><van-button v-if="this.orderData.active=='4' && this.orderData.buy_evaluate_flag=='1' && this.orderData.sale_evaluate_flag=='1'  && this.flag=='rent'" class="vanButton" bottom-action @click="toRefundDeposit">申请退还押金</van-button></center>
+      <center><van-button v-if="this.orderData.active>='6' && this.flag=='rent'" class="vanButton" bottom-action @click="toLookDeposit">查看进度</van-button></center>
 
     <van-popup v-model="show" position="right" style="height: 100%;width: 100%">
       <van-nav-bar left-arrow @click-left="onLeft" title="评价详情"/>
@@ -85,6 +86,22 @@ export default {
     }
   },
   methods: {
+    toLookDeposit(){
+      this.$router.push({
+        path:'order_refundDeposit',
+        query: {
+          orderId: this.orderData.orderId
+        }
+      })
+    },
+    toRefundDeposit(){
+      this.$router.push({
+        path:'toRefundDeposit',
+        query: {
+          data: this.orderData.orderId
+        }
+      })
+    },
     onLeft(){
       this.show = false
     },
@@ -98,14 +115,14 @@ export default {
     let flag = this.$route.query.flag;
     this.flag = flag;
     this.orderData = orderData;
-
+    console.log(this.orderData)
     var that = this
     if (flag=="rent") {
       this.$axios.get(this.global.ip+"/order/getEvaluateRentInfo/" + this.orderData.orderId)
         .then(function (result) {
           if (result.data.status != false) {
             that.evaluateData = result.data.data;
-            console.log(that.evaluateData)
+
           } else {
             Toast(result.data.message)
           }

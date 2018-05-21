@@ -178,6 +178,7 @@ export default {
       this.toRefundDto.orderId = this.orderData.orderId;
       this.toRefundDto.refundRes = this.refundRes;
       this.toRefundDto.price = this.orderData.price;
+      this.toRefundDto.sellId = this.orderData.sellId;
       var that = this
       if (this.flag=="rent") {
         this.$axios.put(this.global.ip+"/order/toRefundRentOrder",this.toRefundDto)
@@ -240,6 +241,8 @@ export default {
     let flag = this.$route.query.flag;
     this.flag = flag;
     this.orderData = orderData;
+
+    console.log(this.orderData)
   }
 }
 </script>

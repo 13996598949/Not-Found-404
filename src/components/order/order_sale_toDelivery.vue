@@ -21,6 +21,7 @@
 <script>
   import CrossLine from "@/components/base/cross-line/cross-line"
   import { Toast } from 'vant';
+  import { Dialog } from 'vant';
 export default {
   components: {
     CrossLine

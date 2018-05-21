@@ -8,7 +8,7 @@
               <img v-if="this.userInfo != null" id="header" :src="this.global.ip+'/'+this.userInfo.header" width="40px" height="40px"/>
             </van-uploader>
             <p v-if="this.userInfo == null" class="username" @click="login">点击登录</p>
-            <p v-if="this.userInfo != null" class="username">{{this.userInfo.userName}}</p>
+            <p v-if="this.userInfo != null" class="username">{{this.userInfo.alias}}</p>
           </div>
         </div>
 

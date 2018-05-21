@@ -31,8 +31,7 @@
               <span class="price fl"><b>￥{{item.price}}/天&nbsp;&nbsp;&nbsp;租用{{item.rentDay}}天</b></span>
               <div class="fr">
                 <van-button size="small" @click="toOrderRentInfo(item.orderId,item.active)">订单信息</van-button>
-                <van-button v-if="item.active>=3" size="small" @click="toRefundDeposit(item.orderId)">申请退还押金</van-button>
-                <van-button v-if="item.active==7" size="small" @click="toDeleteRentOrder(item.orderId)">删除订单</van-button>
+                <van-button v-if="item.active>=7" size="small" @click="toDeleteRentOrder(item.orderId)">删除订单</van-button>
               </div>
             </div>
           </div>
@@ -66,7 +65,7 @@
               <span class="price fl"><b>￥{{item.price}}</b></span>
               <div class="fr">
                 <van-button size="small" @click="toOrderSaleInfo(item.orderId,item.active)">订单信息</van-button>
-                <van-button v-if="item.active>=3" size="small" @click="toDeleteSaleOrder(item.orderId)">删除</van-button>
+                <van-button v-if="item.active>=3" size="small" @click="toDeleteSaleOrder(item.orderId)">删除订单</van-button>
               </div>
             </div>
           </div>
@@ -101,14 +100,7 @@
       }
     },
     methods:{
-      toRefundDeposit(id){
-        this.$router.push({
-          path:'toRefundDeposit',
-          query: {
-            data: id
-          }
-        })
-      },
+
       toSaleSimpleInfo(id){
         this.$router.push({
           path:'saleSimpleInfo',
@@ -196,7 +188,7 @@
                     flag:"rent"
                   }
                 })
-              }else if (result.data.data.active==4 && result.data.data.buy_evaluate_flag == 1){
+              }else if (result.data.data.active>=4 && result.data.data.buy_evaluate_flag == 1){
                 that.$router.push({
                   path:"order_buy_evaluate",
                   query:{
@@ -204,7 +196,7 @@
                     flag:"rent",
                   }
                 })
-              }else if (result.data.data.active==4 && result.data.data.buy_evaluate_flag == 0){
+              }else if (result.data.data.active>=4 && result.data.data.buy_evaluate_flag == 0){
                 that.$router.push({
                   path:"order_buy_confirm",
                   query:{
@@ -302,9 +294,17 @@
                     flag:"sale"
                   }
                 })
-              }else if (result.data.data.active==4){
+              }else if (result.data.data.active==4 && result.data.data.buy_evaluate_flag==1){
                 that.$router.push({
                   path:"order_buy_evaluate",
+                  query:{
+                    data:result.data.data,
+                    flag:"sale"
+                  }
+                })
+              }else if (result.data.data.active==4 && result.data.data.buy_evaluate_flag==0){
+                that.$router.push({
+                  path:"order_buy_confirm",
                   query:{
                     data:result.data.data,
                     flag:"sale"
