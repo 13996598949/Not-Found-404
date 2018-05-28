@@ -125,6 +125,22 @@
       var storage = window.sessionStorage;
       var userInfo = JSON.parse(storage.getItem("session"));
       this.userInfo = userInfo;
+      var that = this;
+      this.$axios.get(this.global.ip+"/user/getUserInfoById/"+this.userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.userInfo = result.data.data;
+            var storage = window.sessionStorage;
+            storage.setItem("session",JSON.stringify(result.data.data))
+          }else {
+            Toast(result.data.message)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+
+
       if(userInfo == null){
         this.$router.push({path:'/mine'})
       }

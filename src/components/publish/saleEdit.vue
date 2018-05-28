@@ -52,7 +52,8 @@
           </van-radio-group>
         </van-dialog>
       </van-cell-group>
-      <center><van-button class="vanButton" bottom-action @click="saveButton">确定发布</van-button></center>
+      <center><van-button v-if="isClick" class="vanButton" bottom-action @click="saveButton">确定发布</van-button></center>
+      <center><van-button v-if="!isClick" class="vanButton" loading bottom-action>确定发布</van-button></center>
     </div>
   </div>
 </template>
@@ -74,7 +75,8 @@
         picture:"",
         type: "0",
         userInfo:{},
-        saleProductDto:{}
+        saleProductDto:{},
+        isClick:true
       }
     },
     methods: {
@@ -93,7 +95,7 @@
         }
         this.saleProductDto.saleProductName = this.title;
         this.saleProductDto.saleProductDescribe = this.desc;
-
+        this.isClick = false;
         var that = this;
         this.$axios.put(this.global.ip+"/sale/editSaleInfo/"+this.saleProductDto.id,this.saleProductDto)
           .then(function (result) {
@@ -107,17 +109,21 @@
                     that.$router.push({path:'/myPublish'})
                   }else {
                     Toast("商品图片上传失败");
+                    this.isClick = true;
                   }
                 })
                 .catch(function (error) {
                   console.log(error)
+                  this.isClick = true;
                 });
             }else {
               Toast(result.data.message);
+              this.isClick = true;
             }
           })
           .catch(function (error) {
             console.log(error)
+            this.isClick = true;
           });
       },
       price_beforeClose(action,done) {
@@ -164,6 +170,7 @@
             that.title = that.saleProductDto.saleProductName;
             that.desc = that.saleProductDto.saleProductDescribe;
             that.picture = that.saleProductDto.saleProductPicture;
+            that.price = that.saleProductDto.saleProductPrice;
           }
         })
         .catch(function (error) {

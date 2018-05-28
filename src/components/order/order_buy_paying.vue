@@ -46,7 +46,7 @@
 
     <van-row gutter="1">
       <center><van-col span="12"><van-button class="vanCloseButton" bottom-action @click="closePay">关闭交易</van-button></van-col></center>
-      <center><van-col span="12"><van-button class="vanButton" bottom-action @click="show = true">我要付款</van-button></van-col></center>
+      <center><van-col span="12"><van-button class="vanButton" bottom-action @click="toPay">我要付款</van-button></van-col></center>
     </van-row>
 
     <van-dialog
@@ -96,10 +96,28 @@ export default {
     }
   },
   methods: {
+    toPay(){
+      var that = this;
+      this.$axios.get(this.global.ip+"/user/getUserInfoById/"+this.userInfo.id)
+        .then(function (result) {
+          if (result.data.status != false) {
+            that.userInfo = result.data.data;
+            var storage = window.sessionStorage;
+            storage.setItem("session",JSON.stringify(result.data.data))
+          }else {
+            Toast(result.data.message)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+      this.show=true;
+    },
     beforeClose(action, done) {
       if (action === 'confirm') {
         if (this.orderData.price>this.userInfo.account) {
           Toast("账户余额不足！")
+          this.buyPassword=""
           done();
           return;
         }

@@ -120,6 +120,8 @@ export default {
         this.confirmDto.userId = this.userInfo.id;
         this.confirmDto.orderId = this.orderData.orderId;
         this.confirmDto.buyPassword = md5(this.buyPassword);
+        this.confirmDto.sellId = this.orderData.sellId;
+        this.confirmDto.price = this.orderData.price;
         var that = this;
         if (this.flag=="rent") {
           this.$axios.put(this.global.ip+"/order/toConfirmRentOrder",this.confirmDto)

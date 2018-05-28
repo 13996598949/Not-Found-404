@@ -65,7 +65,8 @@
           </van-radio-group>
         </van-dialog>
       </van-cell-group>
-      <center><van-button class="vanButton" bottom-action @click="saveButton">确定发布</van-button></center>
+      <center><van-button v-if="isClick" class="vanButton" bottom-action @click="saveButton">确定发布</van-button></center>
+      <center><van-button v-if="!isClick" loading class="vanButton" bottom-action>确定发布</van-button></center>
     </div>
   </div>
 </template>
@@ -89,7 +90,8 @@ export default {
       picture:"",
       type: "0",
       userInfo:{},
-      rentProductDto:{}
+      rentProductDto:{},
+      isClick:true
     }
   },
   methods: {
@@ -108,7 +110,7 @@ export default {
       }
       this.rentProductDto.rentProductName = this.title;
       this.rentProductDto.rentProductDescribe = this.desc;
-
+      this.isClick=false;
       var that = this;
       this.$axios.post(this.global.ip+"/rent/insertRentInfo/"+this.userInfo.id,this.rentProductDto)
         .then(function (result) {
@@ -123,17 +125,21 @@ export default {
                   that.$router.push({path:'/index'})
                 }else {
                   Toast("商品图片上传失败");
+                  this.isClick=true;
                 }
               })
               .catch(function (error) {
                 console.log(error)
+                this.isClick=true;
               });
           }else {
             Toast(result.data.message);
+            this.isClick=true;
           }
         })
         .catch(function (error) {
           console.log(error)
+          this.isClick=true;
         });
     },
     price_beforeClose(action,done) {

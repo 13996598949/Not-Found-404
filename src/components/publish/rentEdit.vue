@@ -65,7 +65,8 @@
           </van-radio-group>
         </van-dialog>
       </van-cell-group>
-      <center><van-button class="vanButton" bottom-action @click="saveButton">确定发布</van-button></center>
+      <center><van-button v-if="isClick" class="vanButton" bottom-action @click="saveButton">确定发布</van-button></center>
+      <center><van-button v-if="!isClick" loading class="vanButton" bottom-action>确定发布</van-button></center>
     </div>
   </div>
 </template>
@@ -89,7 +90,8 @@ export default {
       picture:"",
       type: "0",
       userInfo:{},
-      rentProductDto:{}
+      rentProductDto:{},
+      isClick:true
     }
   },
   methods: {
@@ -109,6 +111,7 @@ export default {
 
       this.rentProductDto.rentProductName = this.title;
       this.rentProductDto.rentProductDescribe = this.desc;
+      this.isClick = false;
       var that = this;
       this.$axios.put(this.global.ip+"/rent/editRentInfo/"+this.rentProductDto.id,this.rentProductDto)
         .then(function (result) {
@@ -122,17 +125,21 @@ export default {
                   that.$router.push({path:'/myPublish'})
                 }else {
                   Toast("商品图片上传失败");
+                  that.isClick=true;
                 }
               })
               .catch(function (error) {
                 console.log(error)
+                that.isClick=true;
               });
           }else {
             Toast(result.data.message);
+            that.isClick=true;
           }
         })
         .catch(function (error) {
           console.log(error)
+          that.isClick=true;
         });
     },
     deposit_beforeClose(action,done) {
@@ -187,6 +194,8 @@ export default {
           that.title = that.rentProductDto.rentProductName;
           that.desc = that.rentProductDto.rentProductDescribe;
           that.picture = that.rentProductDto.rentProductPicture;
+          that.price = that.rentProductDto.rentProductPrice;
+          that.deposit = that.rentProductDto.deposit;
         }
       })
       .catch(function (error) {
