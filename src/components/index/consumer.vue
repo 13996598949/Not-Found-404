@@ -9,6 +9,7 @@
           @search="toSearchConsumer"
         />
       </form>
+
       <van-tabs sticky>
         <van-tab title="全部">
           <div class="title-bar">
@@ -54,6 +55,7 @@
         </van-tab>
       </van-tabs>
 
+
     </div>
   </van-pull-refresh>
 </template>
@@ -75,7 +77,8 @@
         userInfo: {},
         RentData: [],
         SaleData: [],
-        value:""
+        value:"",
+        activeNames: []
       }
     },
     props: {

@@ -203,7 +203,10 @@ export default {
     font-weight: bold;
     overflow: hidden;
   }
-
+  .content .name span{
+    font-size: 17px;
+    font-weight: bold;
+  }
   .content .mid {
     flex: 1;
     margin-top: 7px;

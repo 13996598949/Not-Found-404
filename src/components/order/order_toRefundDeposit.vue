@@ -75,7 +75,7 @@ export default {
       })
     },
     onClickLeft(){
-      this.$router.go(-1)
+      this.$router.push({path:'/myBuy'})
     },
   },
   created(){
