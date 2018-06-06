@@ -114,6 +114,10 @@
           Toast("请输入用户名");
           return;
         }
+        if (this.userName.match(/^\s+$/)){
+          Toast("请正确输入用户名");
+          return;
+        }
         if (this.telephone==''){
           Toast("请输入手机号");
           return;
@@ -124,6 +128,15 @@
           .then(function (result) {
             if (result.data.status!=false){
               Toast("发送成功");
+              that.buttonEable = false;
+              that.time = 60;
+              var timer = setInterval(function () {
+                that.time--;
+                if (that.time<=0) {
+                  that.buttonEable = true;
+                  clearInterval(timer)
+                }
+              }, 1000);
             } else {
               Toast(result.data.message);
             }
@@ -131,16 +144,6 @@
           .catch(function (error) {
             console.log(error)
           });
-
-        that.buttonEable = false;
-        that.time = 60;
-        var timer = setInterval(function () {
-          that.time--;
-          if (that.time<=0) {
-            that.buttonEable = true;
-            clearInterval(timer)
-          }
-        }, 1000);
       },
       beforeClose(action, done){
         if (action === 'confirm') {

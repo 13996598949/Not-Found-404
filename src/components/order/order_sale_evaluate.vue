@@ -46,6 +46,16 @@
     </van-cell-group>
 
       <center><van-button class="vanButton" bottom-action @click="show = true">查看评价</van-button></center>
+
+    <van-cell-group v-if="this.orderData.active=='6'">
+    <van-cell>
+      <div class="orderInfo">
+        <div style="text-align: center;padding-top: 5px;font-size: 18px" ><b>买家申请退还押金</b></div>
+        <div>快递信息</div><div class="fr">{{this.orderData.depositPostCompany}}  {{this.orderData.depositPostNum}}</div>
+      </div>
+    </van-cell>
+
+    </van-cell-group>
       <center><van-button v-if="this.orderData.active=='6'" class="vanButton" bottom-action @click="deposit_show = true">退还押金</van-button></center>
     <center><van-button v-if="this.orderData.active=='7'" class="vanButton" bottom-action @click="toLookDeposit">查看进度</van-button></center>
 

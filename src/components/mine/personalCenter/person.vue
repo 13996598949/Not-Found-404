@@ -276,6 +276,10 @@
       var storage = window.sessionStorage;
       var userInfo = JSON.parse(storage.getItem("session"));
       this.userInfo = userInfo;
+      this.alias = this.userInfo.alias;
+      this.personName = this.userInfo.personName;
+      this.telephone = this.userInfo.telephone;
+      this.mail = this.userInfo.mail;
     }
   }
 </script>

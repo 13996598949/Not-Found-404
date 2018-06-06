@@ -100,8 +100,16 @@ export default {
         Toast("标题不能为空")
         return;
       }
+      if (this.title.match(/^\s+$/)){
+        Toast("标题不能全为空格")
+        return;
+      }
       if (this.price==''){
         Toast("价格不能为空")
+        return;
+      }
+      if (this.price<0){
+        Toast("价格不能为负数")
         return;
       }
       if (this.picture==''){

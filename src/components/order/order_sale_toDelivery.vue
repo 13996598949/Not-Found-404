@@ -10,7 +10,7 @@
           <p style="color: gray;font-size: 10px;padding-top: 10px">快递公司</p>
           <van-field v-model="postCompany" placeholder="请输入快递公司" />
         <p style="color: gray;font-size: 10px;padding-top: 10px">快递单号</p>
-        <van-field v-model="postNum" placeholder="请输入快递单号" />
+        <van-field v-model="postNum" type="number" placeholder="请输入快递单号" />
         </van-cell>
       </van-cell-group>
       <center><van-button class="vanButton" bottom-action @click="toReceive">确认提交</van-button></center>
@@ -44,8 +44,16 @@ export default {
           Toast("快递公司不能为空")
           return;
         }
+        if (this.postCompany.indexOf(" ")!=-1) {
+          Toast("快递公司名不能存在空格")
+          return;
+        }
         if (this.postNum == '') {
           Toast("快递单号不能为空")
+          return;
+        }
+        if (this.postNum.indexOf(" ")!=-1) {
+          Toast("快递单号不能存在空格")
           return;
         }
         this.deliveryDto.orderId = this.orderData.orderId;

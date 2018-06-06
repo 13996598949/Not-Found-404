@@ -10,7 +10,7 @@
         <div class="login-inp"><label style="padding-left: 5px">昵称</label><input style="padding-left: 5px" maxlength="20" minlength="3" type="text" v-model="userDto.alias"/></div>
         <div class="login-inp"><label style="padding-left: 5px">姓名</label><input style="padding-left: 5px" maxlength="5" minlength="2" type="text" v-model="userDto.personName"/></div>
         <div class="login-inp"><label style="padding-left: 5px">邮箱</label><input style="padding-left: 5px" maxlength="30" minlength="5" type="text" v-model="userDto.mail"/></div>
-        <div class="login-inp"><label style="padding-left: 5px">手机号</label><input style="padding-left: 5px" maxlength="11" minlength="11" type="text" v-model="userDto.telephone"/></div>
+        <div class="login-inp"><label style="padding-left: 5px">手机号</label><input style="padding-left: 5px" maxlength="11" minlength="11" type="number" v-model="userDto.telephone"/></div>
         <div class="login-inp" @click="toRegister"><a>立即注册</a></div>
       </div>
     <div class="login-txt"><router-link to="/login">已有账号？请点击登录</router-link></div>

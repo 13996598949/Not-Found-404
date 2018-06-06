@@ -50,7 +50,7 @@
     </van-cell-group>
 
       <van-goods-action>
-        <van-goods-action-mini-btn icon="chat" @click="show=true">
+        <van-goods-action-mini-btn icon="chat" @click="toMessage">
           留言
         </van-goods-action-mini-btn>
         <van-goods-action-mini-btn :icon=icon @click="collect">
@@ -92,6 +92,13 @@ export default {
     }
   },
   methods: {
+    toMessage(){
+      if (this.userInfo == null){
+        Toast("请先登录哦！")
+      } else {
+        this.show = true;
+      }
+    },
     beforeClose(action,done){
       if (action === 'confirm') {
         if (this.message != "") {
